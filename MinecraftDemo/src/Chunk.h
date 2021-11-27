@@ -1,6 +1,7 @@
 #pragma once
 #include "coreInclude.h"
 #include "Shader.h"
+#include "Cube.h"
 
 class Chunk {
 public:
@@ -10,14 +11,22 @@ public:
 	Chunk* backNeighbour;
 	glm::vec3 chunkPosition;
 	bool init;
+	bool shouldRegenerate;
+	bool isMatrixUpdated;
+	bool isMeshBuilt;
+	bool isMeshLoaded;
+	bool shouldRebuild;
 
 	Chunk(int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition);
-	Chunk(int*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition);
+	Chunk(Cube**** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition);
 	~Chunk();
 	void drawChunk();
 	void buildMesh();
-	int getBlockValue(int x, int y, int z);
-	static void deleteChunkData(int*** chunkData, int height, int width);
+	void loadMesh();
+	Cube::CubeId getBlockValue(int x, int y, int z);
+	static void deleteChunkData(Cube**** chunkData, int height, int width, int depth);
+	void setBlockMatrix(Cube**** chunkData);
+	void setPosition(glm::vec3& position);
 private:
 	enum class NeighbourSide {
 		LEFT,
@@ -27,10 +36,10 @@ private:
 	};
 
 	static const float blockSideSize;
-	static const float textureOffset;
 
 	unsigned int VAO, VBO, EBO;
-	int*** blockMatrix;
+	Cube**** blockMatrix;
+	int meshIndexCount;
 	int meshVertexCount;
 	float* verticesCompact;
 	int* indicesCompact;
@@ -39,6 +48,7 @@ private:
 	int chunkHeight;
 	int chunkSideSize;
 
-	int findNeighbourBlock(NeighbourSide neighbour, int height, int width, int depth);
+	Cube::CubeId findNeighbourBlock(NeighbourSide neighbour, int height, int width, int depth);
 	void renderingSetup();
+	void cleanVerticesArrays();
 };

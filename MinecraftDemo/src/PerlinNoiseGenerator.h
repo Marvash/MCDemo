@@ -14,12 +14,6 @@ private:
 	unsigned int southSeed;
 	unsigned int westSeed;
 
-	std::ranlux48_base northRandomEngine;
-	std::ranlux48_base eastRandomEngine;
-	std::ranlux48_base southRandomEngine;
-	std::ranlux48_base westRandomEngine;
-
-	void resetEngines();
 	glm::vec2 getConstantVector(unsigned long long number);
 	float fadeFunc(float val);
 	float scalarLerp(float a, float b, float factor);

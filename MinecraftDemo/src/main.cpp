@@ -7,6 +7,7 @@
 #include "PhysxManager.h"
 #include "AtlasManager.h"
 #include "ChunkManager.h"
+#include "Cube.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -134,7 +135,7 @@ int main() {
 	Shader screenShader("shaders/vScreenShader.vs", "shaders/fScreenShader.fs");
 	screenShader.setInt("screenTexture", 0);
 
-	AtlasManager mainAtlas;
+	AtlasManager* mainAtlas = AtlasManager::instance();
 	std::string atlasBasePath("assets/");
 	std::vector<std::string> atlasFilenames;
 	atlasFilenames.push_back(std::string("atlas0.png"));
@@ -142,10 +143,13 @@ int main() {
 	atlasFilenames.push_back(std::string("atlas2.png"));
 	atlasFilenames.push_back(std::string("atlas3.png"));
 	atlasFilenames.push_back(std::string("atlas4.png"));
-	mainAtlas.loadAtlas(atlasBasePath, atlasFilenames);
+	mainAtlas->loadAtlas(atlasBasePath, atlasFilenames);
 
+	Cube::init();
 	ChunkManager chunkManager(glm::vec3(0.0f, 0.0f, 0.0f));
-	chunkManager.startBuilderThread();
+	chunkManager.startGeneratorThreads();
+	chunkManager.startBuilderThreads();
+	chunkManager.startOriginUpdaterThreads();
 
 	while (!glfwWindowShouldClose(window)) {
 		float currentFrame = glfwGetTime();
@@ -157,7 +161,7 @@ int main() {
 		int screenWidth, screenHeight;
 		glfwGetWindowSize(window, &screenWidth, &screenHeight);
 		
-		chunkManager.updateGenerationOrigin(camera.Position);
+		chunkManager.updatePlayerPosition(camera.Position);
 
 		glViewport(0, 0, screenWidth, screenHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, msaaFramebuffer);
@@ -173,9 +177,9 @@ int main() {
 
 		defaultShader.setInt("texAtlas", 0);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mainAtlas.atlas);
+		glBindTexture(GL_TEXTURE_2D, mainAtlas->atlas);
 
-		chunkManager.rebuildChunks();
+		chunkManager.reloadChunks();
 		chunkManager.drawChunks(defaultShader, projection, view);
 
 		glDisable(GL_DEPTH_TEST);

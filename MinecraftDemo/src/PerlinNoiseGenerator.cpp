@@ -9,7 +9,17 @@ PerlinNoiseGenerator::PerlinNoiseGenerator() {
 }
 
 float PerlinNoiseGenerator::getValue(float x, float y, int period, float amplitude) {
-	resetEngines();
+
+	std::ranlux48_base northRandomEngine;
+	std::ranlux48_base eastRandomEngine;
+	std::ranlux48_base southRandomEngine;
+	std::ranlux48_base westRandomEngine;
+
+	northRandomEngine.seed(northSeed);
+	eastRandomEngine.seed(eastSeed);
+	southRandomEngine.seed(southSeed);
+	westRandomEngine.seed(westSeed);
+
 	unsigned long long topLeftValue = 0;
 	unsigned long long topRightValue = 0;
 	unsigned long long bottomLeftValue = 0;
@@ -133,21 +143,8 @@ float PerlinNoiseGenerator::getValue(float x, float y, int period, float amplitu
 	float v = fadeFunc(yf / period);
 
 	float result = amplitude * scalarLerp(scalarLerp(dotTopRight, dotBottomRight, v), scalarLerp(dotTopLeft, dotBottomLeft, v), u);
-	/*if ((x == 0.5f || x == -0.5f) && y == -10.5f) {
-		std::cout << topLeftValue << " " << topRightValue << " " << bottomLeftValue << " " << bottomRightValue << std::endl;
-		std::cout << topLeftVector.x << " " << topLeftVector.y << " " << topRightVector.x << " " << topRightVector.y << " " << bottomLeftVector.x << " " << bottomLeftVector.y << " " << bottomRightVector.x << " " << bottomRightVector.y << std::endl;
-		std::cout << getConstantVector(topLeftValue).x << " " << getConstantVector(topLeftValue).y << " " << getConstantVector(topRightValue).x << " " << getConstantVector(topRightValue).y << " " << getConstantVector(bottomLeftValue).x << " " << getConstantVector(bottomLeftValue).y << " " << getConstantVector(bottomRightValue).x << " " << getConstantVector(bottomRightValue).y << std::endl;
-		std::cout << dotTopLeft << " " << dotTopRight << " " << dotBottomLeft << " " << dotBottomRight << " " << result << std::endl;
-		std::cout << xf << " " << yf << " " << u << " " << v << std::endl;
-	}*/
-	return result;
-}
 
-void PerlinNoiseGenerator::resetEngines() {
-	northRandomEngine.seed(northSeed);
-	eastRandomEngine.seed(eastSeed);
-	southRandomEngine.seed(southSeed);
-	westRandomEngine.seed(westSeed);
+	return result;
 }
 
 glm::vec2 PerlinNoiseGenerator::getConstantVector(unsigned long long number) {

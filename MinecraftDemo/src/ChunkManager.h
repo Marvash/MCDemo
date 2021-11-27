@@ -2,6 +2,7 @@
 
 #include "coreInclude.h"
 #include "Chunk.h"
+#include "Cube.h"
 #include "PerlinNoiseGenerator.h"
 
 class ChunkManager {
@@ -14,9 +15,13 @@ public:
 	~ChunkManager();
 	void generateChunks();
 	void drawChunks(Shader& shader, glm::mat4& projection, glm::mat4& view);
-	void updateGenerationOrigin(glm::vec3& playerPos);
+	void updatePlayerPosition(glm::vec3& playerPos);
 	void rebuildChunks();
-	void startBuilderThread();
+	void reloadChunks();
+	void startBuilderThreads();
+	void startGeneratorThreads();
+	void startOriginUpdaterThreads();
+
 private:
 	enum class ChunkSide {
 		LEFT,
@@ -27,17 +32,24 @@ private:
 
 	static const int chunkArrayWidth;
 	static const int chunkArrayDepth;
+	static const int nWorkers;
 
 	Chunk*** chunkMatrix;
 	glm::vec3 generationOrigin;
+	glm::vec3 playerPosition;
 	PerlinNoiseGenerator perlinGen;
 	boost::mutex internalLock;
-	bool** rebuildMatrix;
-	boost::thread builderThread;
-	bool builderShouldStop;
+	bool buildersShouldStop;
+	bool generatorsShouldStop;
+	boost::thread_group generatorThreads;
+	boost::thread_group builderThreads;
+	boost::thread_group originUpdaterThreads;
 
-	void generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, int depthIndex);
+	void generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, int depthIndex, Chunk* original);
 	void resetNeighbours();
 	void moveChunkMatrix(ChunkSide side);
+	void generatorThreadFunction();
 	void builderThreadFunction();
+	void originUpdaterThreadFunction();
+	void updateGenerationOrigin();
 };

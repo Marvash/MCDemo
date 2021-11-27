@@ -1,7 +1,6 @@
 #include "Chunk.h"
 
 const float Chunk::blockSideSize = 1.0f;
-const float Chunk::textureOffset = 0.0001f;
 
 Chunk::Chunk(int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
 	leftNeighbour(nullptr), 
@@ -11,24 +10,16 @@ Chunk::Chunk(int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
 	chunkHeight(chunkHeight), 
 	chunkSideSize(chunkSideSize),
 	chunkPosition(chunkPosition),
-	init(false) {
-	blockMatrix = new int**[chunkHeight];
-	for (int i = 0; i < chunkHeight; i++) {
-		blockMatrix[i] = new int* [chunkSideSize];
-		for (int j = 0; j < chunkSideSize; j++) {
-			blockMatrix[i][j] = new int[chunkSideSize];
-			for (int w = 0; w < chunkSideSize; w++) {
-				blockMatrix[i][j][w] = 0;
-			}
-		}
-	}
-	size_t verticesMaxSize = (size_t)chunkHeight * (size_t)chunkSideSize * (size_t)chunkSideSize * (size_t)120;
-	size_t indicesMaxSize = (size_t)chunkHeight * (size_t)chunkSideSize * (size_t)chunkSideSize * (size_t)36;
-	vertices = new float[verticesMaxSize];
-	indices = new int[indicesMaxSize];
+	init(false),
+	shouldRegenerate(true),
+	shouldRebuild(false),
+	isMatrixUpdated(false),
+	isMeshBuilt(false),
+	isMeshLoaded(false) {
+	blockMatrix = nullptr;
 }
 
-Chunk::Chunk(int*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
+Chunk::Chunk(Cube**** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
 	leftNeighbour(nullptr),
 	rightNeighbour(nullptr),
 	frontNeighbour(nullptr),
@@ -36,12 +27,28 @@ Chunk::Chunk(int*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 c
 	chunkHeight(chunkHeight), 
 	chunkSideSize(chunkSideSize),
 	chunkPosition(chunkPosition),
-	init(false) {
+	vertices(nullptr),
+	verticesCompact(nullptr),
+	indices(nullptr),
+	indicesCompact(nullptr),
+	init(false),
+	shouldRegenerate(true),
+	shouldRebuild(false),
+	isMatrixUpdated(false),
+	isMeshBuilt(false),
+	isMeshLoaded(false) {
 	this->blockMatrix = blockMatrix;
-	size_t verticesMaxSize = (size_t)chunkHeight * (size_t)chunkSideSize * (size_t)chunkSideSize * (size_t)120;
-	size_t indicesMaxSize = (size_t)chunkHeight * (size_t)chunkSideSize * (size_t)chunkSideSize * (size_t)36;
-	vertices = new float[verticesMaxSize];
-	indices = new int[indicesMaxSize];
+}
+
+void Chunk::setBlockMatrix(Cube**** chunkData) {
+	if (blockMatrix != nullptr) {
+		deleteChunkData(blockMatrix, chunkHeight, chunkSideSize, chunkSideSize);
+	}
+	blockMatrix = chunkData;
+}
+
+void Chunk::setPosition(glm::vec3& position) {
+	chunkPosition = position;
 }
 
 void Chunk::renderingSetup() {
@@ -51,60 +58,116 @@ void Chunk::renderingSetup() {
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 13 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 13 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 13 * sizeof(float), (void*)(5 * sizeof(float)));
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 13 * sizeof(float), (void*)(7 * sizeof(float)));
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 13 * sizeof(float), (void*)(10 * sizeof(float)));
 	glBindVertexArray(0);
 	init = true;
 }
 
 void Chunk::drawChunk() {
 	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, meshVertexCount, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, meshIndexCount, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
-void Chunk::buildMesh() {
+void Chunk::loadMesh() {
 	if (!init)
 		renderingSetup();
-	
+	size_t vertexDataSize = (size_t)meshVertexCount * (size_t)13;
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexDataSize, verticesCompact, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * (meshIndexCount), indicesCompact, GL_STATIC_DRAW);
+	glBindVertexArray(0);
+	cleanVerticesArrays();
+}
+
+void Chunk::buildMesh() {
+	cleanVerticesArrays();
+	size_t verticesMaxSize = (size_t)chunkHeight * (size_t)chunkSideSize * (size_t)chunkSideSize * (size_t)(13 * 4 * 6);
+	size_t indicesMaxSize = (size_t)chunkHeight * (size_t)chunkSideSize * (size_t)chunkSideSize * (size_t)36;
+	vertices = new float[verticesMaxSize];
+	indices = new int[indicesMaxSize];
 	int correctVertexCount = 0;
 	int correctIndexCount = 0;
 	int vertexIndexBase = 0;
 	for (int i = 0; i < chunkHeight; i++) {
 		for (int j = 0; j < chunkSideSize; j++) {
 			for (int w = 0; w < chunkSideSize; w++) {
-				if (blockMatrix[i][j][w] == 0) {
+				if (blockMatrix[i][j][w]->cubeId == Cube::CubeId::AIR_BLOCK) {
 					continue;
 				}
 				float vertexBaseHeight = i - (blockSideSize / 2.0f);
 				float vertexBaseWidth = j - ((chunkSideSize / 2.0f) - (blockSideSize / 2.0f));
 				float vertexBaseDepth = w - ((chunkSideSize / 2.0f) - (blockSideSize / 2.0f));
-				int vertexBaseIndex = correctVertexCount * 5;
-				if ((i + 1) > (chunkHeight - 1) || blockMatrix[i + 1][j][w] == 0) {
+				int vertexBaseIndex = correctVertexCount * 13;
+				float* texCoords = Cube::getAtlasTexCoords(blockMatrix[i][j][w]->cubeId, Cube::FaceSide::TOP);
+				float* colors = Cube::getTexColor(blockMatrix[i][j][w]->cubeId, Cube::FaceSide::TOP);
+				// TOP
+				if ((i + 1) > (chunkHeight - 1) || blockMatrix[i + 1][j][w]->cubeId == Cube::CubeId::AIR_BLOCK) {
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.25f + textureOffset;
-					vertices[vertexBaseIndex++] = 0.8125f - textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[0];
+					vertices[vertexBaseIndex++] = texCoords[1];
+					vertices[vertexBaseIndex++] = texCoords[2];
+					vertices[vertexBaseIndex++] = texCoords[3];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.28125f - textureOffset;
-					vertices[vertexBaseIndex++] = 0.8125f - textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[4];
+					vertices[vertexBaseIndex++] = texCoords[5];
+					vertices[vertexBaseIndex++] = texCoords[6];
+					vertices[vertexBaseIndex++] = texCoords[7];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth + (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.28125f - textureOffset;
-					vertices[vertexBaseIndex++] = 0.78125f + textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[8];
+					vertices[vertexBaseIndex++] = texCoords[9];
+					vertices[vertexBaseIndex++] = texCoords[10];
+					vertices[vertexBaseIndex++] = texCoords[11];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth + (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.25f + textureOffset;
-					vertices[vertexBaseIndex++] = 0.78125f + textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[12];
+					vertices[vertexBaseIndex++] = texCoords[13];
+					vertices[vertexBaseIndex++] = texCoords[14];
+					vertices[vertexBaseIndex++] = texCoords[15];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					int base = vertexIndexBase;
 
@@ -119,31 +182,66 @@ void Chunk::buildMesh() {
 					vertexIndexBase += 4;
 
 				}
-				vertexBaseIndex = correctVertexCount * 5;
-				if ((i - 1) < 0 || blockMatrix[i - 1][j][w] == 0) {
+				vertexBaseIndex = correctVertexCount * 13;
+				texCoords = Cube::getAtlasTexCoords(blockMatrix[i][j][w]->cubeId, Cube::FaceSide::BOTTOM);
+				colors = Cube::getTexColor(blockMatrix[i][j][w]->cubeId, Cube::FaceSide::BOTTOM);
+				// BOTTOM
+				if ((i - 1) < 0 || blockMatrix[i - 1][j][w]->cubeId == Cube::CubeId::AIR_BLOCK) {
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.25f + textureOffset;
-					vertices[vertexBaseIndex++] = 0.78125f + textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[12];
+					vertices[vertexBaseIndex++] = texCoords[13];
+					vertices[vertexBaseIndex++] = texCoords[14];
+					vertices[vertexBaseIndex++] = texCoords[15];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.28125f - textureOffset;
-					vertices[vertexBaseIndex++] = 0.78125f + textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[8];
+					vertices[vertexBaseIndex++] = texCoords[9];
+					vertices[vertexBaseIndex++] = texCoords[10];
+					vertices[vertexBaseIndex++] = texCoords[11];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth + (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.28125f - textureOffset;
-					vertices[vertexBaseIndex++] = 0.8125f - textureOffset;;
+					vertices[vertexBaseIndex++] = texCoords[4];
+					vertices[vertexBaseIndex++] = texCoords[5];
+					vertices[vertexBaseIndex++] = texCoords[6];
+					vertices[vertexBaseIndex++] = texCoords[7];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth + (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.25f + textureOffset;
-					vertices[vertexBaseIndex++] = 0.8125f - textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[0];
+					vertices[vertexBaseIndex++] = texCoords[1];
+					vertices[vertexBaseIndex++] = texCoords[2];
+					vertices[vertexBaseIndex++] = texCoords[3];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					int base = vertexIndexBase;
 
@@ -158,31 +256,66 @@ void Chunk::buildMesh() {
 					vertexIndexBase += 4;
 
 				}
-				vertexBaseIndex = correctVertexCount * 5;
-				if (((j + 1) > (chunkSideSize - 1) && (findNeighbourBlock(NeighbourSide::RIGHT, i, j, w) == 0)) || ((j + 1) < chunkSideSize && blockMatrix[i][j + 1][w] == 0)) {
+				vertexBaseIndex = correctVertexCount * 13;
+				texCoords = Cube::getAtlasTexCoords(blockMatrix[i][j][w]->cubeId, Cube::FaceSide::RIGHT);
+				colors = Cube::getTexColor(blockMatrix[i][j][w]->cubeId, Cube::FaceSide::RIGHT);
+				// RIGHT
+				if (((j + 1) > (chunkSideSize - 1) && (findNeighbourBlock(NeighbourSide::RIGHT, i, j, w) == Cube::CubeId::AIR_BLOCK)) || ((j + 1) < chunkSideSize && blockMatrix[i][j + 1][w]->cubeId == Cube::CubeId::AIR_BLOCK)) {
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.25f + textureOffset;
-					vertices[vertexBaseIndex++] = 0.8125f - textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[4];
+					vertices[vertexBaseIndex++] = texCoords[5];
+					vertices[vertexBaseIndex++] = texCoords[6];
+					vertices[vertexBaseIndex++] = texCoords[7];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.28125f - textureOffset;
-					vertices[vertexBaseIndex++] = 0.8125f - textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[8];
+					vertices[vertexBaseIndex++] = texCoords[9];
+					vertices[vertexBaseIndex++] = texCoords[10];
+					vertices[vertexBaseIndex++] = texCoords[11];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth + (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.28125f - textureOffset;
-					vertices[vertexBaseIndex++] = 0.78125f + textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[12];
+					vertices[vertexBaseIndex++] = texCoords[13];
+					vertices[vertexBaseIndex++] = texCoords[14];
+					vertices[vertexBaseIndex++] = texCoords[15];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth + (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.25f + textureOffset;
-					vertices[vertexBaseIndex++] = 0.78125f + textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[0];
+					vertices[vertexBaseIndex++] = texCoords[1];
+					vertices[vertexBaseIndex++] = texCoords[2];
+					vertices[vertexBaseIndex++] = texCoords[3];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					int base = vertexIndexBase;
 
@@ -197,31 +330,66 @@ void Chunk::buildMesh() {
 					vertexIndexBase += 4;
 
 				}
-				vertexBaseIndex = correctVertexCount * 5;
-				if (((j - 1) < 0 && (findNeighbourBlock(NeighbourSide::LEFT, i, j, w) == 0)) || (((j - 1) >= 0) && blockMatrix[i][j - 1][w] == 0)) {
+				vertexBaseIndex = correctVertexCount * 13;
+				texCoords = Cube::getAtlasTexCoords(blockMatrix[i][j][w]->cubeId, Cube::FaceSide::LEFT);
+				colors = Cube::getTexColor(blockMatrix[i][j][w]->cubeId, Cube::FaceSide::LEFT);
+				// LEFT
+				if (((j - 1) < 0 && (findNeighbourBlock(NeighbourSide::LEFT, i, j, w) == Cube::CubeId::AIR_BLOCK)) || (((j - 1) >= 0) && blockMatrix[i][j - 1][w]->cubeId == Cube::CubeId::AIR_BLOCK)) {
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.25f + textureOffset;
-					vertices[vertexBaseIndex++] = 0.8125f - textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[0];
+					vertices[vertexBaseIndex++] = texCoords[1];
+					vertices[vertexBaseIndex++] = texCoords[2];
+					vertices[vertexBaseIndex++] = texCoords[3];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.25f - textureOffset;
-					vertices[vertexBaseIndex++] = 0.78125f + textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[12];
+					vertices[vertexBaseIndex++] = texCoords[13];
+					vertices[vertexBaseIndex++] = texCoords[14];
+					vertices[vertexBaseIndex++] = texCoords[15];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth + (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.28125f - textureOffset;
-					vertices[vertexBaseIndex++] = 0.8125f - textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[4];
+					vertices[vertexBaseIndex++] = texCoords[5];
+					vertices[vertexBaseIndex++] = texCoords[6];
+					vertices[vertexBaseIndex++] = texCoords[7];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth + (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.28125f - textureOffset;
-					vertices[vertexBaseIndex++] = 0.78125f + textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[8];
+					vertices[vertexBaseIndex++] = texCoords[9];
+					vertices[vertexBaseIndex++] = texCoords[10];
+					vertices[vertexBaseIndex++] = texCoords[11];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					int base = vertexIndexBase;
 
@@ -236,31 +404,66 @@ void Chunk::buildMesh() {
 					vertexIndexBase += 4;
 
 				}
-				vertexBaseIndex = correctVertexCount * 5;
-				if (((w + 1) > (chunkSideSize - 1) && (findNeighbourBlock(NeighbourSide::FRONT, i, j, w) == 0)) || ((w + 1) < chunkSideSize && blockMatrix[i][j][w + 1] == 0)) {
+				vertexBaseIndex = correctVertexCount * 13;
+				texCoords = Cube::getAtlasTexCoords(blockMatrix[i][j][w]->cubeId, Cube::FaceSide::FRONT);
+				colors = Cube::getTexColor(blockMatrix[i][j][w]->cubeId, Cube::FaceSide::FRONT);
+				// FRONT
+				if (((w + 1) > (chunkSideSize - 1) && (findNeighbourBlock(NeighbourSide::FRONT, i, j, w) == Cube::CubeId::AIR_BLOCK)) || ((w + 1) < chunkSideSize && blockMatrix[i][j][w + 1]->cubeId == Cube::CubeId::AIR_BLOCK)) {
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth + (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.25f + textureOffset;
-					vertices[vertexBaseIndex++] = 0.8125f - textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[4];
+					vertices[vertexBaseIndex++] = texCoords[5];
+					vertices[vertexBaseIndex++] = texCoords[6];
+					vertices[vertexBaseIndex++] = texCoords[7];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth + (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.28125f - textureOffset;
-					vertices[vertexBaseIndex++] = 0.8125f - textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[8];
+					vertices[vertexBaseIndex++] = texCoords[9];
+					vertices[vertexBaseIndex++] = texCoords[10];
+					vertices[vertexBaseIndex++] = texCoords[11];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth + (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.28125f - textureOffset;
-					vertices[vertexBaseIndex++] = 0.78125f + textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[12];
+					vertices[vertexBaseIndex++] = texCoords[13];
+					vertices[vertexBaseIndex++] = texCoords[14];
+					vertices[vertexBaseIndex++] = texCoords[15];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth + (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.25f + textureOffset;
-					vertices[vertexBaseIndex++] = 0.78125f + textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[0];
+					vertices[vertexBaseIndex++] = texCoords[1];
+					vertices[vertexBaseIndex++] = texCoords[2];
+					vertices[vertexBaseIndex++] = texCoords[3];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					int base = vertexIndexBase;
 
@@ -275,31 +478,66 @@ void Chunk::buildMesh() {
 					vertexIndexBase += 4;
 
 				}
-				vertexBaseIndex = correctVertexCount * 5;
-				if (((w - 1) < 0 && (findNeighbourBlock(NeighbourSide::BACK, i, j, w) == 0)) || ((w - 1) >= 0 && blockMatrix[i][j][w - 1] == 0)) {
+				vertexBaseIndex = correctVertexCount * 13;
+				texCoords = Cube::getAtlasTexCoords(blockMatrix[i][j][w]->cubeId, Cube::FaceSide::BACK);
+				colors = Cube::getTexColor(blockMatrix[i][j][w]->cubeId, Cube::FaceSide::BACK);
+				// BACK
+				if (((w - 1) < 0 && (findNeighbourBlock(NeighbourSide::BACK, i, j, w) == Cube::CubeId::AIR_BLOCK)) || ((w - 1) >= 0 && blockMatrix[i][j][w - 1]->cubeId == Cube::CubeId::AIR_BLOCK)) {
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.28125f - textureOffset;
-					vertices[vertexBaseIndex++] = 0.8125f - textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[4];
+					vertices[vertexBaseIndex++] = texCoords[5];
+					vertices[vertexBaseIndex++] = texCoords[6];
+					vertices[vertexBaseIndex++] = texCoords[7];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.25f + textureOffset;
-					vertices[vertexBaseIndex++] = 0.78125f + textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[12];
+					vertices[vertexBaseIndex++] = texCoords[13];
+					vertices[vertexBaseIndex++] = texCoords[14];
+					vertices[vertexBaseIndex++] = texCoords[15];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.28125f - textureOffset;
-					vertices[vertexBaseIndex++] = 0.78125f + textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[8];
+					vertices[vertexBaseIndex++] = texCoords[9];
+					vertices[vertexBaseIndex++] = texCoords[10];
+					vertices[vertexBaseIndex++] = texCoords[11];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
-					vertices[vertexBaseIndex++] = 0.25f + textureOffset;
-					vertices[vertexBaseIndex++] = 0.8125f - textureOffset;
+					vertices[vertexBaseIndex++] = texCoords[0];
+					vertices[vertexBaseIndex++] = texCoords[1];
+					vertices[vertexBaseIndex++] = texCoords[2];
+					vertices[vertexBaseIndex++] = texCoords[3];
+					vertices[vertexBaseIndex++] = colors[0];
+					vertices[vertexBaseIndex++] = colors[1];
+					vertices[vertexBaseIndex++] = colors[2];
+					vertices[vertexBaseIndex++] = colors[3];
+					vertices[vertexBaseIndex++] = colors[4];
+					vertices[vertexBaseIndex++] = colors[5];
 
 					int base = vertexIndexBase;
 
@@ -317,38 +555,39 @@ void Chunk::buildMesh() {
 			}
 		}
 	}
-	//std::cout << "Vertices " << correctVertexCount << std::endl;
+
 	if (correctIndexCount > 0 && correctVertexCount > 2) {
-		meshVertexCount = correctIndexCount;
-		size_t vertexDataSize = (size_t)correctVertexCount * (size_t)5;
+		meshIndexCount = correctIndexCount;
+		meshVertexCount = correctVertexCount;
+		size_t vertexDataSize = (size_t)meshVertexCount * (size_t)13;
 		verticesCompact = new float[vertexDataSize];
-		indicesCompact = new int[meshVertexCount];
+		indicesCompact = new int[meshIndexCount];
 		for (int i = 0; i < vertexDataSize; i++) {
 			verticesCompact[i] = vertices[i];
 		}
 		
-		for (int i = 0; i < meshVertexCount; i++) {
+		for (int i = 0; i < meshIndexCount; i++) {
 			indicesCompact[i] = indices[i];
 		}
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexDataSize, verticesCompact, GL_STATIC_DRAW);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * (meshVertexCount), indicesCompact, GL_STATIC_DRAW);
-		glBindVertexArray(0);
-
-		delete[] verticesCompact;
-		delete[] indicesCompact;
-		verticesCompact = nullptr;
-		indicesCompact = nullptr;
 	}
 }
 
-int Chunk::getBlockValue(int height, int width, int depth) {
-	return blockMatrix[height][width][depth];
+void Chunk::cleanVerticesArrays() {
+	delete[] verticesCompact;
+	delete[] indicesCompact;
+	verticesCompact = nullptr;
+	indicesCompact = nullptr;
+	delete[] vertices;
+	delete[] indices;
+	vertices = nullptr;
+	indices = nullptr;
 }
 
-int Chunk::findNeighbourBlock(Chunk::NeighbourSide neighbourSide, int height, int width, int depth) {
+Cube::CubeId Chunk::getBlockValue(int height, int width, int depth) {
+	return blockMatrix[height][width][depth]->cubeId;
+}
+
+Cube::CubeId Chunk::findNeighbourBlock(Chunk::NeighbourSide neighbourSide, int height, int width, int depth) {
 	Chunk* neighbour = nullptr;
 	switch (neighbourSide) {
 	case NeighbourSide::LEFT:
@@ -368,8 +607,8 @@ int Chunk::findNeighbourBlock(Chunk::NeighbourSide neighbourSide, int height, in
 		depth = chunkSideSize - 1;
 		break;
 	}
-	if (neighbour == nullptr) {
-		return 0;
+	if (neighbour == nullptr || !neighbour->isMatrixUpdated) {
+		return Cube::CubeId::AIR_BLOCK;
 	}
 	return neighbour->getBlockValue(height, width, depth);
 }
@@ -394,16 +633,16 @@ Chunk::~Chunk() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
 	glDeleteBuffers(1, &EBO);
-	deleteChunkData(blockMatrix, chunkHeight, chunkSideSize);
-	delete[] verticesCompact;
-	delete[] indicesCompact;
-	delete[] vertices;
-	delete[] indices;
+	deleteChunkData(blockMatrix, chunkHeight, chunkSideSize, chunkSideSize);
+	cleanVerticesArrays();
 }
 
-void Chunk::deleteChunkData(int*** chunkData, int height, int width) {
+void Chunk::deleteChunkData(Cube**** chunkData, int height, int width, int depth) {
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
+			for (int w = 0; w < depth; w++) {
+				delete chunkData[i][j][w];
+			}
 			delete[] chunkData[i][j];
 		}
 		delete[] chunkData[i];
