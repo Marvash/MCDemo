@@ -3,6 +3,8 @@
 #include "coreInclude.h"
 #include "AtlasManager.h"
 
+class Chunk;
+
 class Cube {
 public:
 
@@ -23,9 +25,12 @@ public:
 	};
 
 	CubeId cubeId;
+	Chunk* chunkRef;
+	physx::PxRigidStatic* staticBody;
 
 	Cube();
-	Cube(CubeId cubeId);
+	~Cube();
+	Cube(CubeId cubeId, Chunk* chunkRef);
 	static void init();
 	static std::string getDisplayName(CubeId cubeId);
 	static int getNumericId(CubeId cubeId);
@@ -37,5 +42,9 @@ public:
 private:
 	static float* grassBlockTexCoords;
 	static float* grassBlockTexColors;
+	static float* dirtBlockTexCoords;
+	static float* dirtBlockTexColors;
+	static float* stoneBlockTexCoords;
+	static float* stoneBlockTexColors;
 };
 

@@ -32,7 +32,9 @@ private:
 
 	static const int chunkArrayWidth;
 	static const int chunkArrayDepth;
-	static const int nWorkers;
+	static const int nWorkersRegen;
+	static const int nWorkersRebuild;
+	static const int nWorkersUpdate;
 
 	Chunk*** chunkMatrix;
 	glm::vec3 generationOrigin;
@@ -41,6 +43,7 @@ private:
 	boost::mutex internalLock;
 	bool buildersShouldStop;
 	bool generatorsShouldStop;
+	bool updaterShouldStop;
 	boost::thread_group generatorThreads;
 	boost::thread_group builderThreads;
 	boost::thread_group originUpdaterThreads;

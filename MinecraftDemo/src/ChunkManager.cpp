@@ -5,9 +5,11 @@ const int ChunkManager::chunkArrayDepth = 24;
 const int ChunkManager::seaLevelOffset = 128;
 const int ChunkManager::chunkSideSize = 16;
 const int ChunkManager::chunkHeight = 256;
-const int ChunkManager::nWorkers = 1;
+const int ChunkManager::nWorkersRebuild = 1;
+const int ChunkManager::nWorkersRegen = 1;
+const int ChunkManager::nWorkersUpdate = 1;
 
-ChunkManager::ChunkManager(glm::vec3 origin) : generationOrigin(origin), buildersShouldStop(false), generatorsShouldStop(false) {
+ChunkManager::ChunkManager(glm::vec3 origin) : generationOrigin(origin), buildersShouldStop(false), generatorsShouldStop(false), updaterShouldStop(false) {
 	chunkMatrix = new Chunk ** [chunkArrayWidth];
 	generationOrigin.y = 0.0f;
 	playerPosition = generationOrigin;
@@ -30,8 +32,8 @@ void ChunkManager::generateChunks() {
 				return;
 			}
 			internalLock.lock();
-			if (chunkMatrix[i][j]->shouldRegenerate) {
-				chunkMatrix[i][j]->shouldRegenerate = false;
+			if (chunkMatrix[i][j]->state == Chunk::ChunkState::SHOULDREGENERATE) {
+				chunkMatrix[i][j]->state = Chunk::ChunkState::ISREGENERATING;
 				float xPos = generationOrigin.x + ((i - (chunkArrayWidth / 2)) * chunkSideSize) + (chunkSideSize / 2);
 				float yPos = generationOrigin.y + (-seaLevelOffset);
 				float zPos = generationOrigin.z + ((j - (chunkArrayDepth / 2)) * chunkSideSize) + (chunkSideSize / 2);
@@ -48,14 +50,11 @@ void ChunkManager::generateChunks() {
 }
 
 void ChunkManager::generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, int depthIndex, Chunk* original) {
-	Cube**** blockMatrix = new Cube*** [chunkHeight];
+	Cube*** blockMatrix = new Cube** [chunkHeight];
 	for (int i = 0; i < chunkHeight; i++) {
-		blockMatrix[i] = new Cube** [chunkSideSize];
+		blockMatrix[i] = new Cube* [chunkSideSize];
 		for (int j = 0; j < chunkSideSize; j++) {
-			blockMatrix[i][j] = new Cube*[chunkSideSize];
-			for (int w = 0; w < chunkSideSize; w++) {
-				blockMatrix[i][j][w] = nullptr;
-			}
+			blockMatrix[i][j] = new Cube[chunkSideSize];
 		}
 	}
 	for (int j = 0; j < chunkSideSize; j++) {
@@ -71,12 +70,21 @@ void ChunkManager::generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, 
 				amplitude = amplitude / 2.0f;
 				perlinFrequency = perlinFrequency / 2;
 			}
+			int dirtHeight = 70;
 			for (int i = 0; i < chunkHeight; i++) {
-				if (i >= 0 && i < height) {
-					blockMatrix[i][j][w] = new Cube(Cube::CubeId::GRASS_BLOCK);
+				if (i <= height) {
+					if (i < dirtHeight) {
+						blockMatrix[i][j][w] = Cube(Cube::CubeId::STONE_BLOCK, original);
+					}
+					else if (i >= dirtHeight && i < height) {
+						blockMatrix[i][j][w] = Cube(Cube::CubeId::DIRT_BLOCK, original);
+					}
+					else if (i == height) {
+						blockMatrix[i][j][w] = Cube(Cube::CubeId::GRASS_BLOCK, original);
+					}
 				}
 				else {
-					blockMatrix[i][j][w] = new Cube(Cube::CubeId::AIR_BLOCK);
+					blockMatrix[i][j][w] = Cube(Cube::CubeId::AIR_BLOCK, original);
 				}
 			}
 		}
@@ -90,34 +98,23 @@ void ChunkManager::generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, 
 		chunk->setBlockMatrix(blockMatrix);
 		chunk->setPosition(chunkPosition);
 		resetNeighbours();
-		chunk->isMatrixUpdated = true;
-		chunk->isMeshBuilt = false;
-		chunk->isMeshLoaded = false;
-		chunk->shouldRebuild = true;
-		if (chunk->leftNeighbour != nullptr) {
-			chunk->leftNeighbour->isMeshBuilt = false;
-			chunk->leftNeighbour->isMeshLoaded = false;
-			chunk->leftNeighbour->shouldRebuild = true;
+		chunk->state = Chunk::ChunkState::SHOULDREBUILD;
+		if (chunk->leftNeighbour != nullptr && chunk->leftNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			chunk->leftNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
 		}
-		if (chunk->rightNeighbour != nullptr) {
-			chunk->rightNeighbour->isMeshBuilt = false;
-			chunk->rightNeighbour->isMeshLoaded = false;
-			chunk->rightNeighbour->shouldRebuild = true;
+		if (chunk->rightNeighbour != nullptr && chunk->rightNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			chunk->rightNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
 		}
-		if (chunk->frontNeighbour != nullptr) {
-			chunk->frontNeighbour->isMeshBuilt = false;
-			chunk->frontNeighbour->isMeshLoaded = false;
-			chunk->frontNeighbour->shouldRebuild = true;
+		if (chunk->frontNeighbour != nullptr && chunk->frontNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			chunk->frontNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
 		}
-		if (chunk->backNeighbour != nullptr) {
-			chunk->backNeighbour->isMeshBuilt = false;
-			chunk->backNeighbour->isMeshLoaded = false;
-			chunk->backNeighbour->shouldRebuild = true;
+		if (chunk->backNeighbour != nullptr && chunk->backNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			chunk->backNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
 		}
 	}
 	else {
-		original->shouldRegenerate = true;
-		Chunk::deleteChunkData(blockMatrix, chunkHeight, chunkSideSize, chunkSideSize);
+		original->state = Chunk::ChunkState::SHOULDREGENERATE;
+		Chunk::deleteChunkData(blockMatrix, chunkHeight, chunkSideSize);
 	}
 	internalLock.unlock();
 }
@@ -148,19 +145,19 @@ void ChunkManager::resetNeighbours() {
 }
 
 void ChunkManager::startBuilderThreads() {
-	for (int i = 0; i < nWorkers; i++) {
+	for (int i = 0; i < nWorkersRebuild; i++) {
 		builderThreads.create_thread(boost::bind(&ChunkManager::builderThreadFunction, this));
 	}
 }
 
 void ChunkManager::startGeneratorThreads() {
-	for (int i = 0; i < nWorkers; i++) {
+	for (int i = 0; i < nWorkersRegen; i++) {
 		generatorThreads.create_thread(boost::bind(&ChunkManager::generatorThreadFunction, this));
 	}
 }
 
 void ChunkManager::startOriginUpdaterThreads() {
-	for (int i = 0; i < nWorkers; i++) {
+	for (int i = 0; i < nWorkersUpdate; i++) {
 		originUpdaterThreads.create_thread(boost::bind(&ChunkManager::originUpdaterThreadFunction, this));
 	}
 }
@@ -178,7 +175,7 @@ void ChunkManager::builderThreadFunction() {
 }
 
 void ChunkManager::originUpdaterThreadFunction() {
-	while (!buildersShouldStop) {
+	while (!updaterShouldStop) {
 		updateGenerationOrigin();
 	}
 }
@@ -191,9 +188,10 @@ void ChunkManager::reloadChunks() {
 				return;
 			}
 			internalLock.lock();
-			if (!chunkMatrix[i][j]->isMeshLoaded && chunkMatrix[i][j]->isMeshBuilt && chunkMatrix[i][j]->isMatrixUpdated) {
+			if (chunkMatrix[i][j]->state == Chunk::ChunkState::MESHBUILT) {
 				chunkMatrix[i][j]->loadMesh();
-				chunkMatrix[i][j]->isMeshLoaded = true;
+				chunkMatrix[i][j]->state = Chunk::ChunkState::MESHLOADED;
+				chunkMatrix[i][j]->canDraw = true;
 				rebuiltChunks++;
 			}
 			internalLock.unlock();
@@ -208,10 +206,10 @@ void ChunkManager::rebuildChunks() {
 				return;
 			}
 			internalLock.lock();
-			if (chunkMatrix[i][j]->shouldRebuild && chunkMatrix[i][j]->isMatrixUpdated) {
+			if (chunkMatrix[i][j]->state == Chunk::ChunkState::SHOULDREBUILD) {
 				chunkMatrix[i][j]->buildMesh();
-				chunkMatrix[i][j]->shouldRebuild = false;
-				chunkMatrix[i][j]->isMeshBuilt = true;
+				chunkMatrix[i][j]->state = Chunk::ChunkState::MESHBUILT;
+				
 			}
 			internalLock.unlock();
 		}
@@ -222,7 +220,7 @@ void ChunkManager::drawChunks(Shader& shader, glm::mat4& projection, glm::mat4& 
 	for (int i = 0; i < chunkArrayWidth; i++) {
 		for (int j = 0; j < chunkArrayDepth; j++) {
 			internalLock.lock();
-			if (chunkMatrix[i][j]->isMatrixUpdated && chunkMatrix[i][j]->isMeshLoaded) {
+			if (chunkMatrix[i][j]->state >= Chunk::ChunkState::MESHLOADED || chunkMatrix[i][j]->canDraw) {
 				glm::mat4 model = glm::mat4(1.0f);
 				model = glm::translate(model, chunkMatrix[i][j]->chunkPosition);
 				glm::mat4 mvp = projection * view * model * glm::mat4(1.0f);
@@ -280,20 +278,16 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 		for (int i = 0; i < chunkArrayWidth; i++) {
 			for (int j = 0; j < chunkArrayDepth; j++) {
 				if (i == 0) {
+					chunkMatrix[i][j]->state = Chunk::ChunkState::SHOULDREGENERATE;
+					chunkMatrix[i][j]->canDraw = false;
 					toMove[j] = chunkMatrix[i][j];
-				}
-				if (i != chunkArrayWidth - 1) {
 					chunkMatrix[i][j] = chunkMatrix[i + 1][j];
-					if (i == 0) {
-						chunkMatrix[i][j]->isMeshBuilt = false;
-						chunkMatrix[i][j]->isMeshLoaded = false;
-						chunkMatrix[i][j]->shouldRebuild = true;
-					}
-				}
-				else {
+					if(chunkMatrix[i][j]->state > Chunk::ChunkState::SHOULDREBUILD)
+						chunkMatrix[i][j]->state = Chunk::ChunkState::SHOULDREBUILD;
+				} else if (i != chunkArrayWidth - 1) {
+					chunkMatrix[i][j] = chunkMatrix[i + 1][j];
+				} else {
 					chunkMatrix[i][j] = toMove[j];
-					chunkMatrix[i][j]->shouldRegenerate = true;
-					chunkMatrix[i][j]->isMatrixUpdated = false;
 				}
 			}
 		}
@@ -303,20 +297,16 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 		for (int i = chunkArrayWidth - 1; i >= 0; i--) {
 			for (int j = 0; j < chunkArrayDepth; j++) {
 				if (i == (chunkArrayWidth - 1)) {
+					chunkMatrix[i][j]->state = Chunk::ChunkState::SHOULDREGENERATE;
+					chunkMatrix[i][j]->canDraw = false;
 					toMove[j] = chunkMatrix[i][j];
-				}
-				if (i != 0) {
 					chunkMatrix[i][j] = chunkMatrix[i - 1][j];
-					if(i == (chunkArrayWidth - 1)) {
-						chunkMatrix[i][j]->shouldRebuild = true;
-						chunkMatrix[i][j]->isMeshBuilt = false;
-						chunkMatrix[i][j]->isMeshLoaded = false;
-					}
-				}
-				else {
+					if (chunkMatrix[i][j]->state > Chunk::ChunkState::SHOULDREBUILD)
+						chunkMatrix[i][j]->state = Chunk::ChunkState::SHOULDREBUILD;
+				} else if (i != 0) {
+					chunkMatrix[i][j] = chunkMatrix[i - 1][j];
+				} else {
 					chunkMatrix[i][j] = toMove[j];
-					chunkMatrix[i][j]->shouldRegenerate = true;
-					chunkMatrix[i][j]->isMatrixUpdated = false;
 				}
 			}
 		}
@@ -326,20 +316,16 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 		for (int j = 0; j < chunkArrayDepth; j++) {
 			for (int i = 0; i < chunkArrayWidth; i++) {
 				if (j == 0) {
+					chunkMatrix[i][j]->state = Chunk::ChunkState::SHOULDREGENERATE;
+					chunkMatrix[i][j]->canDraw = false;
 					toMove[i] = chunkMatrix[i][j];
-				}
-				if (j != chunkArrayDepth - 1) {
 					chunkMatrix[i][j] = chunkMatrix[i][j + 1];
-					if (j == 0) {
-						chunkMatrix[i][j]->isMeshBuilt = false;
-						chunkMatrix[i][j]->isMeshLoaded = false;
-						chunkMatrix[i][j]->shouldRebuild = true;
-					}
-				}
-				else {
+					if (chunkMatrix[i][j]->state > Chunk::ChunkState::SHOULDREBUILD)
+						chunkMatrix[i][j]->state = Chunk::ChunkState::SHOULDREBUILD;
+				} else if (j != chunkArrayDepth - 1) {
+					chunkMatrix[i][j] = chunkMatrix[i][j + 1];
+				} else {
 					chunkMatrix[i][j] = toMove[i];
-					chunkMatrix[i][j]->shouldRegenerate = true;
-					chunkMatrix[i][j]->isMatrixUpdated = false;
 				}
 			}
 		}
@@ -349,20 +335,16 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 		for (int j = chunkArrayDepth - 1; j >= 0; j--) {
 			for (int i = 0; i < chunkArrayWidth; i++) {
 				if (j == (chunkArrayDepth - 1)) {
+					chunkMatrix[i][j]->state = Chunk::ChunkState::SHOULDREGENERATE;
+					chunkMatrix[i][j]->canDraw = false;
 					toMove[i] = chunkMatrix[i][j];
-				}
-				if (j != 0) {
 					chunkMatrix[i][j] = chunkMatrix[i][j - 1];
-					if (j == chunkArrayDepth - 1) {
-						chunkMatrix[i][j]->isMeshBuilt = false;
-						chunkMatrix[i][j]->isMeshLoaded = false;
-						chunkMatrix[i][j]->shouldRebuild = true;
-					}
-				}
-				else {
+					if (chunkMatrix[i][j]->state > Chunk::ChunkState::SHOULDREBUILD)
+						chunkMatrix[i][j]->state = Chunk::ChunkState::SHOULDREBUILD;
+				} else if (j != 0) {
+					chunkMatrix[i][j] = chunkMatrix[i][j - 1];
+				} else {
 					chunkMatrix[i][j] = toMove[i];
-					chunkMatrix[i][j]->shouldRegenerate = true;
-					chunkMatrix[i][j]->isMatrixUpdated = false;
 				}
 			}
 		}
@@ -373,6 +355,8 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 ChunkManager::~ChunkManager() {
 	buildersShouldStop = true;
 	generatorsShouldStop = true;
+	updaterShouldStop = true;
 	builderThreads.join_all();
 	generatorThreads.join_all();
+	originUpdaterThreads.join_all();
 }

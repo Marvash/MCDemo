@@ -2,13 +2,20 @@
 
 float* Cube::grassBlockTexCoords;
 float* Cube::grassBlockTexColors;
+float* Cube::dirtBlockTexCoords;
+float* Cube::dirtBlockTexColors;
+float* Cube::stoneBlockTexCoords;
+float* Cube::stoneBlockTexColors;
 
-Cube::Cube() {
+Cube::Cube() : cubeId(CubeId::AIR_BLOCK), staticBody(nullptr), chunkRef(nullptr) {
 
 }
 
-Cube::Cube(CubeId cubeId) : cubeId(cubeId) {
+Cube::Cube(CubeId cubeId, Chunk* chunkRef) : cubeId(cubeId), staticBody(nullptr), chunkRef(chunkRef) {
 
+}
+
+Cube::~Cube() {
 }
 
 std::string Cube::getDisplayName(CubeId cubeId) {
@@ -28,12 +35,18 @@ float* Cube::getAtlasTexCoords(CubeId cubeId, FaceSide faceSide) {
 		case FaceSide::LEFT:
 		case FaceSide::FRONT:
 		case FaceSide::BACK:
-			return &grassBlockTexCoords[0];
+			return grassBlockTexCoords;
 		case FaceSide::TOP:
 			return &grassBlockTexCoords[16];
 		case FaceSide::BOTTOM:
 			return &grassBlockTexCoords[32];
 		}
+		break;
+	case CubeId::DIRT_BLOCK:
+		return dirtBlockTexCoords;
+		break;
+	case CubeId::STONE_BLOCK:
+		return stoneBlockTexCoords;
 		break;
 	}
 	return texCoords;
@@ -48,7 +61,7 @@ float* Cube::getTexColor(CubeId cubeId, FaceSide faceSide) {
 		case FaceSide::LEFT:
 		case FaceSide::FRONT:
 		case FaceSide::BACK:
-			colors = &grassBlockTexColors[0];
+			colors = grassBlockTexColors;
 			break;
 		case FaceSide::TOP:
 			colors = &grassBlockTexColors[6];
@@ -57,6 +70,12 @@ float* Cube::getTexColor(CubeId cubeId, FaceSide faceSide) {
 			colors = &grassBlockTexColors[12];
 			break;
 		}
+		break;
+	case CubeId::DIRT_BLOCK:
+		colors = dirtBlockTexColors;
+		break;
+	case CubeId::STONE_BLOCK:
+		colors = stoneBlockTexColors;
 		break;
 	}
 	
@@ -70,7 +89,6 @@ Cube::CubeId Cube::getCubeId() {
 void Cube::setCubeId(Cube::CubeId cubeId) {
 	this->cubeId = cubeId;
 }
-
 
 void Cube::init() {
 	AtlasManager* mainAltas = AtlasManager::instance();
@@ -127,7 +145,7 @@ void Cube::init() {
 	grassBlockTexCoords[46] = -1.0f;
 	grassBlockTexCoords[47] = -1.0f;
 
-	grassBlockTexColors = new float[27];
+	grassBlockTexColors = new float[18];
 	glm::vec3 grassColor = glm::pow(glm::vec3(0.474f, 0.752f, 0.352f), glm::vec3(2.2));
 
 	grassBlockTexColors[0] = 1.0f;
@@ -148,4 +166,63 @@ void Cube::init() {
 	grassBlockTexColors[15] = 1.0f;
 	grassBlockTexColors[16] = 1.0f;
 	grassBlockTexColors[17] = 1.0f;
+
+	dirtBlockTexCoords = new float[16];
+
+	// BOTTOM
+	dirtBlockTexCoords[0] = mainAltas->getCoordX(8) + mainAltas->textureOffset;
+	dirtBlockTexCoords[1] = mainAltas->getCoordY(6) - mainAltas->textureOffset;
+	dirtBlockTexCoords[2] = -1.0f;
+	dirtBlockTexCoords[3] = -1.0f;
+	dirtBlockTexCoords[4] = mainAltas->getCoordX(9) - mainAltas->textureOffset;
+	dirtBlockTexCoords[5] = dirtBlockTexCoords[1];
+	dirtBlockTexCoords[6] = -1.0f;
+	dirtBlockTexCoords[7] = -1.0f;
+	dirtBlockTexCoords[8] = dirtBlockTexCoords[4];
+	dirtBlockTexCoords[9] = mainAltas->getCoordY(7) + mainAltas->textureOffset;
+	dirtBlockTexCoords[10] = -1.0f;
+	dirtBlockTexCoords[11] = -1.0f;
+	dirtBlockTexCoords[12] = dirtBlockTexCoords[0];
+	dirtBlockTexCoords[13] = dirtBlockTexCoords[9];
+	dirtBlockTexCoords[14] = -1.0f;
+	dirtBlockTexCoords[15] = -1.0f;
+
+	dirtBlockTexColors = new float[6];
+
+	dirtBlockTexColors[0] = 1.0f;
+	dirtBlockTexColors[1] = 1.0f;
+	dirtBlockTexColors[2] = 1.0f;
+	dirtBlockTexColors[3] = 1.0f;
+	dirtBlockTexColors[4] = 1.0f;
+	dirtBlockTexColors[5] = 1.0f;
+
+	stoneBlockTexCoords = new float[16];
+
+	// BOTTOM
+	stoneBlockTexCoords[0] = mainAltas->getCoordX(20) + mainAltas->textureOffset;
+	stoneBlockTexCoords[1] = mainAltas->getCoordY(9) - mainAltas->textureOffset;
+	stoneBlockTexCoords[2] = -1.0f;
+	stoneBlockTexCoords[3] = -1.0f;
+	stoneBlockTexCoords[4] = mainAltas->getCoordX(21) - mainAltas->textureOffset;
+	stoneBlockTexCoords[5] = stoneBlockTexCoords[1];
+	stoneBlockTexCoords[6] = -1.0f;
+	stoneBlockTexCoords[7] = -1.0f;
+	stoneBlockTexCoords[8] = stoneBlockTexCoords[4];
+	stoneBlockTexCoords[9] = mainAltas->getCoordY(10) + mainAltas->textureOffset;
+	stoneBlockTexCoords[10] = -1.0f;
+	stoneBlockTexCoords[11] = -1.0f;
+	stoneBlockTexCoords[12] = stoneBlockTexCoords[0];
+	stoneBlockTexCoords[13] = stoneBlockTexCoords[9];
+	stoneBlockTexCoords[14] = -1.0f;
+	stoneBlockTexCoords[15] = -1.0f;
+
+	stoneBlockTexColors = new float[6];
+
+	stoneBlockTexColors[0] = 1.0f;
+	stoneBlockTexColors[1] = 1.0f;
+	stoneBlockTexColors[2] = 1.0f;
+	stoneBlockTexColors[3] = 1.0f;
+	stoneBlockTexColors[4] = 1.0f;
+	stoneBlockTexColors[5] = 1.0f;
+
 }

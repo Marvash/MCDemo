@@ -2,7 +2,7 @@
 
 AtlasManager* AtlasManager::singleton;
 
-AtlasManager::AtlasManager() : atlasWidth(0), atlasHeight(0), textureOffset(0.000001f) {
+AtlasManager::AtlasManager() : atlasWidth(0), atlasHeight(0), textureOffset(0.0001f) {
 	glGenTextures(1, &atlas);
 }
 

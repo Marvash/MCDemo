@@ -4,7 +4,6 @@
 
 #include "Shader.h"
 #include "Camera.h"
-#include "PhysxManager.h"
 #include "AtlasManager.h"
 #include "ChunkManager.h"
 #include "Cube.h"
@@ -128,9 +127,6 @@ int main() {
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float))); 
 
-	PhysxManager* physxManager = PhysxManager::instance();
-	physxManager->initPhysics();
-
 	Shader defaultShader("shaders/vDefaultShader.vs", "shaders/fDefaultShader.fs");
 	Shader screenShader("shaders/vScreenShader.vs", "shaders/fScreenShader.fs");
 	screenShader.setInt("screenTexture", 0);
@@ -150,7 +146,7 @@ int main() {
 	chunkManager.startGeneratorThreads();
 	chunkManager.startBuilderThreads();
 	chunkManager.startOriginUpdaterThreads();
-
+	float highestDelta = 0.0f;
 	while (!glfwWindowShouldClose(window)) {
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
@@ -178,7 +174,6 @@ int main() {
 		defaultShader.setInt("texAtlas", 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, mainAtlas->atlas);
-
 		chunkManager.reloadChunks();
 		chunkManager.drawChunks(defaultShader, projection, view);
 
