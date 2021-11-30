@@ -578,6 +578,19 @@ void Chunk::cleanVerticesArrays() {
 	indices = nullptr;
 }
 
+Cube* Chunk::getCubeByCoords(glm::vec3& coords) {
+	glm::vec3 originChunkPos = chunkPosition;
+	originChunkPos.x = originChunkPos.x - (chunkSideSize / 2.0f);
+	originChunkPos.z = originChunkPos.z - (chunkSideSize / 2.0f);
+	if (glm::abs(coords.x - originChunkPos.x) > chunkSideSize || glm::abs(coords.z - originChunkPos.z) > chunkSideSize || coords.y < originChunkPos.y || coords.y >= (chunkHeight + originChunkPos.y) || state < ChunkState::SHOULDREBUILD) {
+		return nullptr;
+	}
+	int cubeWidthIndex = glm::abs(glm::floor((coords.x - originChunkPos.x)));
+	int cubeDepthIndex = glm::abs(glm::floor((coords.z - originChunkPos.z)));
+	int cubeHeightIndex = glm::abs(glm::floor((coords.y - originChunkPos.y)));
+	return &blockMatrix[cubeHeightIndex][cubeWidthIndex][cubeDepthIndex];
+}
+
 Cube::CubeId Chunk::getBlockValue(int height, int width, int depth) {
 	return blockMatrix[height][width][depth].cubeId;
 }

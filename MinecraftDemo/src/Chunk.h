@@ -3,6 +3,7 @@
 #include "coreInclude.h"
 #include "Shader.h"
 #include "Cube.h"
+#include "ChunkManager.h"
 
 class Chunk {
 public:
@@ -38,6 +39,7 @@ public:
 	static void deleteChunkData(Cube*** chunkData, int height, int width);
 	void setBlockMatrix(Cube*** chunkData);
 	void setPosition(glm::vec3& position);
+	Cube* getCubeByCoords(glm::vec3& coords);
 private:
 
 	static const float blockSideSize;

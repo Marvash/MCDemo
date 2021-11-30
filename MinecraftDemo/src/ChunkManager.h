@@ -15,12 +15,14 @@ public:
 	~ChunkManager();
 	void generateChunks();
 	void drawChunks(Shader& shader, glm::mat4& projection, glm::mat4& view);
-	void updatePlayerPosition(glm::vec3& playerPos);
+	void updatePlayerData(glm::vec3& playerPos, glm::vec3& playerLookDir);
 	void rebuildChunks();
 	void reloadChunks();
 	void startBuilderThreads();
 	void startGeneratorThreads();
 	void startOriginUpdaterThreads();
+	void destroyBlock();
+	Cube* getCubeByCoords(glm::vec3& coords);
 
 private:
 	enum class ChunkSide {
@@ -39,6 +41,7 @@ private:
 	Chunk*** chunkMatrix;
 	glm::vec3 generationOrigin;
 	glm::vec3 playerPosition;
+	glm::vec3 playerLookDirection;
 	PerlinNoiseGenerator perlinGen;
 	boost::mutex internalLock;
 	bool buildersShouldStop;

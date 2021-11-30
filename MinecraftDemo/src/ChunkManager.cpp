@@ -119,6 +119,10 @@ void ChunkManager::generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, 
 	internalLock.unlock();
 }
 
+void destroyBlock() {
+
+}
+
 void ChunkManager::resetNeighbours() {
 	for (int i = 0; i < chunkArrayWidth; i++) {
 		for (int j = 0; j < chunkArrayDepth; j++) {
@@ -232,9 +236,54 @@ void ChunkManager::drawChunks(Shader& shader, glm::mat4& projection, glm::mat4& 
 	}
 }
 
-void ChunkManager::updatePlayerPosition(glm::vec3& playerPos) {
+void ChunkManager::destroyBlock() {
+	float rayLength = 6.0f;
+	glm::vec3 rayEnd = playerPosition;
+	float currentIncrement = 0.0f;
+	float incrementStep = 0.1f;
+	Cube* toDestroy = nullptr;
+	internalLock.lock();
+	while (toDestroy == nullptr && glm::length(rayEnd - playerPosition) < rayLength) {
+		rayEnd = playerPosition + (playerLookDirection * currentIncrement);
+		toDestroy = getCubeByCoords(rayEnd);
+		if (toDestroy != nullptr && toDestroy->cubeId == Cube::CubeId::AIR_BLOCK) {
+			toDestroy = nullptr;
+		}
+		currentIncrement += incrementStep;
+	}
+	if (toDestroy != nullptr) {
+		toDestroy->setCubeId(Cube::CubeId::AIR_BLOCK);
+		Chunk* ownerChunk = toDestroy->chunkRef;
+		ownerChunk->state = Chunk::ChunkState::SHOULDREBUILD;
+		if (ownerChunk->leftNeighbour != nullptr && ownerChunk->leftNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			ownerChunk->leftNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
+		}
+		if (ownerChunk->rightNeighbour != nullptr && ownerChunk->rightNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			ownerChunk->rightNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
+		}
+		if (ownerChunk->frontNeighbour != nullptr && ownerChunk->frontNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			ownerChunk->frontNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
+		}
+		if (ownerChunk->backNeighbour != nullptr && ownerChunk->backNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			ownerChunk->backNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
+		}
+	}
+	internalLock.unlock();
+}
+
+Cube* ChunkManager::getCubeByCoords(glm::vec3& coords) {
+	glm::vec3 originChunkPos = chunkMatrix[0][0]->chunkPosition;
+	originChunkPos.x = originChunkPos.x - (chunkSideSize / 2.0f);
+	originChunkPos.z = originChunkPos.z - (chunkSideSize / 2.0f);
+	int chunkWidthIndex = glm::abs(glm::floor((coords.x - originChunkPos.x) / chunkSideSize));
+	int chunkDepthIndex = glm::abs(glm::floor((coords.z - originChunkPos.z) / chunkSideSize));
+	return chunkMatrix[chunkWidthIndex][chunkDepthIndex]->getCubeByCoords(coords);
+}
+
+void ChunkManager::updatePlayerData(glm::vec3& playerPos, glm::vec3& playerLookDir) {
 	internalLock.lock();
 	playerPosition = playerPos;
+	playerLookDirection = playerLookDir;
 	internalLock.unlock();
 }
 

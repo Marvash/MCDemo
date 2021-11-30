@@ -15,6 +15,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 void processInput(GLFWwindow* window);
 
 Camera camera(glm::vec3(0.0f, 2.0f, 0.0f));
+ChunkManager chunkManager(glm::vec3(0.0f, 0.0f, 0.0f));
 
 float lastX = 0.0f;
 float lastY = 0.0f;
@@ -142,7 +143,7 @@ int main() {
 	mainAtlas->loadAtlas(atlasBasePath, atlasFilenames);
 
 	Cube::init();
-	ChunkManager chunkManager(glm::vec3(0.0f, 0.0f, 0.0f));
+	
 	chunkManager.startGeneratorThreads();
 	chunkManager.startBuilderThreads();
 	chunkManager.startOriginUpdaterThreads();
@@ -157,7 +158,7 @@ int main() {
 		int screenWidth, screenHeight;
 		glfwGetWindowSize(window, &screenWidth, &screenHeight);
 		
-		chunkManager.updatePlayerPosition(camera.Position);
+		chunkManager.updatePlayerData(camera.Position, camera.Front);
 
 		glViewport(0, 0, screenWidth, screenHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, msaaFramebuffer);
@@ -226,6 +227,10 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
 		exposure -= (1.0f * deltaTime);
 	}
+
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+		
+	}
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -248,6 +253,9 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		chunkManager.destroyBlock();
+	}
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
