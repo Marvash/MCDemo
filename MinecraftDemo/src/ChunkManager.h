@@ -4,6 +4,7 @@
 #include "Chunk.h"
 #include "Cube.h"
 #include "PerlinNoiseGenerator.h"
+#include "RayCast.h"
 
 class ChunkManager {
 public:
@@ -22,6 +23,7 @@ public:
 	void startGeneratorThreads();
 	void startOriginUpdaterThreads();
 	void destroyBlock();
+	void placeBlock(Cube::CubeId cubeId);
 	Cube* getCubeByCoords(glm::vec3& coords);
 
 private:

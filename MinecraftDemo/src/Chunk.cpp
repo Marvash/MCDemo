@@ -107,7 +107,8 @@ void Chunk::buildMesh() {
 				float* texCoords = Cube::getAtlasTexCoords(blockMatrix[i][j][w].cubeId, Cube::FaceSide::TOP);
 				float* colors = Cube::getTexColor(blockMatrix[i][j][w].cubeId, Cube::FaceSide::TOP);
 				// TOP
-				if (findNeighbourBlock(Cube::FaceSide::TOP, i, j, w) == Cube::CubeId::AIR_BLOCK) {
+				Cube* neighbourCube = findNeighbourBlock(Cube::FaceSide::TOP, i, j, w);
+				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
@@ -181,7 +182,8 @@ void Chunk::buildMesh() {
 				texCoords = Cube::getAtlasTexCoords(blockMatrix[i][j][w].cubeId, Cube::FaceSide::BOTTOM);
 				colors = Cube::getTexColor(blockMatrix[i][j][w].cubeId, Cube::FaceSide::BOTTOM);
 				// BOTTOM
-				if (findNeighbourBlock(Cube::FaceSide::BOTTOM, i, j, w) == Cube::CubeId::AIR_BLOCK) {
+				neighbourCube = findNeighbourBlock(Cube::FaceSide::BOTTOM, i, j, w);
+				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
@@ -255,7 +257,8 @@ void Chunk::buildMesh() {
 				texCoords = Cube::getAtlasTexCoords(blockMatrix[i][j][w].cubeId, Cube::FaceSide::RIGHT);
 				colors = Cube::getTexColor(blockMatrix[i][j][w].cubeId, Cube::FaceSide::RIGHT);
 				// RIGHT
-				if (findNeighbourBlock(Cube::FaceSide::RIGHT, i, j, w) == Cube::CubeId::AIR_BLOCK) {
+				neighbourCube = findNeighbourBlock(Cube::FaceSide::RIGHT, i, j, w);
+				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
@@ -329,7 +332,8 @@ void Chunk::buildMesh() {
 				texCoords = Cube::getAtlasTexCoords(blockMatrix[i][j][w].cubeId, Cube::FaceSide::LEFT);
 				colors = Cube::getTexColor(blockMatrix[i][j][w].cubeId, Cube::FaceSide::LEFT);
 				// LEFT
-				if (findNeighbourBlock(Cube::FaceSide::LEFT, i, j, w) == Cube::CubeId::AIR_BLOCK) {
+				neighbourCube = findNeighbourBlock(Cube::FaceSide::LEFT, i, j, w);
+				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
@@ -403,7 +407,8 @@ void Chunk::buildMesh() {
 				texCoords = Cube::getAtlasTexCoords(blockMatrix[i][j][w].cubeId, Cube::FaceSide::FRONT);
 				colors = Cube::getTexColor(blockMatrix[i][j][w].cubeId, Cube::FaceSide::FRONT);
 				// FRONT
-				if (findNeighbourBlock(Cube::FaceSide::FRONT, i, j, w) == Cube::CubeId::AIR_BLOCK) {
+				neighbourCube = findNeighbourBlock(Cube::FaceSide::FRONT, i, j, w);
+				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
 					vertices[vertexBaseIndex++] = vertexBaseWidth + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth + (blockSideSize / 2.0f);
@@ -477,7 +482,8 @@ void Chunk::buildMesh() {
 				texCoords = Cube::getAtlasTexCoords(blockMatrix[i][j][w].cubeId, Cube::FaceSide::BACK);
 				colors = Cube::getTexColor(blockMatrix[i][j][w].cubeId, Cube::FaceSide::BACK);
 				// BACK
-				if (findNeighbourBlock(Cube::FaceSide::BACK, i, j, w) == Cube::CubeId::AIR_BLOCK) {
+				neighbourCube = findNeighbourBlock(Cube::FaceSide::BACK, i, j, w);
+				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
 					vertices[vertexBaseIndex++] = vertexBaseWidth - (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseHeight + (blockSideSize / 2.0f);
 					vertices[vertexBaseIndex++] = vertexBaseDepth - (blockSideSize / 2.0f);
@@ -591,80 +597,94 @@ Cube* Chunk::getCubeByCoords(glm::vec3& coords) {
 	return &blockMatrix[cubeHeightIndex][cubeWidthIndex][cubeDepthIndex];
 }
 
-Cube::CubeId Chunk::getBlockValue(int height, int width, int depth) {
-	return blockMatrix[height][width][depth].cubeId;
+Cube* Chunk::getBlockValue(int height, int width, int depth) {
+	return &blockMatrix[height][width][depth];
 }
 
-Cube::CubeId Chunk::findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int width, int depth) {
-	Chunk* neighbour = nullptr;
-	Cube::CubeId neighbourCubeId = Cube::CubeId::AIR_BLOCK;
+Cube* Chunk::findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int width, int depth) {
+	Chunk* neighbourChunk = nullptr;
+	Cube* neighbourCube = nullptr;
 	switch (neighbourSide) {
 	case Cube::FaceSide::LEFT:
 		if (width == 0) {
-			neighbour = leftNeighbour;
+			neighbourChunk = leftNeighbour;
 			width = chunkSideSize - 1;
-			if (neighbour != nullptr && neighbour->state != ChunkState::ISREGENERATING && neighbour->state != ChunkState::SHOULDREGENERATE) {
-				neighbourCubeId = neighbour->getBlockValue(height, width, depth);
+			if (neighbourChunk != nullptr && neighbourChunk->state != ChunkState::ISREGENERATING && neighbourChunk->state != ChunkState::SHOULDREGENERATE) {
+				neighbourCube = neighbourChunk->getBlockValue(height, width, depth);
 			}
 		}
 		else {
 			width -= 1;
-			neighbourCubeId = blockMatrix[height][width][depth].cubeId;
+			neighbourCube = &blockMatrix[height][width][depth];
 		}
 		break;
 	case Cube::FaceSide::RIGHT:
 		if (width == (chunkSideSize - 1)) {
-			neighbour = rightNeighbour;
+			neighbourChunk = rightNeighbour;
 			width = 0;
-			if (neighbour != nullptr && neighbour->state != ChunkState::ISREGENERATING && neighbour->state != ChunkState::SHOULDREGENERATE) {
-				neighbourCubeId = neighbour->getBlockValue(height, width, depth);
+			if (neighbourChunk != nullptr && neighbourChunk->state != ChunkState::ISREGENERATING && neighbourChunk->state != ChunkState::SHOULDREGENERATE) {
+				neighbourCube = neighbourChunk->getBlockValue(height, width, depth);
 			}
 		}
 		else {
 			width += 1;
-			neighbourCubeId = blockMatrix[height][width][depth].cubeId;
+			neighbourCube = &blockMatrix[height][width][depth];
 		}
 		break;
 	case Cube::FaceSide::FRONT:
 		if (depth == (chunkSideSize - 1)) {
-			neighbour = frontNeighbour;
+			neighbourChunk = frontNeighbour;
 			depth = 0;
-			if (neighbour != nullptr && neighbour->state != ChunkState::ISREGENERATING && neighbour->state != ChunkState::SHOULDREGENERATE) {
-				neighbourCubeId = neighbour->getBlockValue(height, width, depth);
+			if (neighbourChunk != nullptr && neighbourChunk->state != ChunkState::ISREGENERATING && neighbourChunk->state != ChunkState::SHOULDREGENERATE) {
+				neighbourCube = neighbourChunk->getBlockValue(height, width, depth);
 			}
 		}
 		else {
 			depth += 1;
-			neighbourCubeId = blockMatrix[height][width][depth].cubeId;
+			neighbourCube = &blockMatrix[height][width][depth];
 		}
 		break;
 	case Cube::FaceSide::BACK:
 		if (depth == 0) {
-			neighbour = backNeighbour;
+			neighbourChunk = backNeighbour;
 			depth = chunkSideSize - 1;
-			if (neighbour != nullptr && neighbour->state != ChunkState::ISREGENERATING && neighbour->state != ChunkState::SHOULDREGENERATE) {
-				neighbourCubeId = neighbour->getBlockValue(height, width, depth);
+			if (neighbourChunk != nullptr && neighbourChunk->state != ChunkState::ISREGENERATING && neighbourChunk->state != ChunkState::SHOULDREGENERATE) {
+				neighbourCube = neighbourChunk->getBlockValue(height, width, depth);
 			}
 		}
 		else {
 			depth -= 1;
-			neighbourCubeId = blockMatrix[height][width][depth].cubeId;
+			neighbourCube = &blockMatrix[height][width][depth];
 		}
 		break;
 	case Cube::FaceSide::TOP:
 		if (height != (chunkHeight - 1)) {
 			height += 1;
-			neighbourCubeId = blockMatrix[height][width][depth].cubeId;
+			neighbourCube = &blockMatrix[height][width][depth];
 		}
 		break;
 	case Cube::FaceSide::BOTTOM:
 		if (height != 0) {
 			height -= 1;
-			neighbourCubeId = blockMatrix[height][width][depth].cubeId;
+			neighbourCube = &blockMatrix[height][width][depth];
 		}
 		break;
 	}
-	return neighbourCubeId;
+	return neighbourCube;
+}
+
+Cube* Chunk::findNeighbourBlock(Cube::FaceSide neighbourSide, Cube* cube) {
+	int height, width, depth;
+	for (height = 0; height < chunkHeight; height++) {
+		for (width = 0; width < chunkSideSize; width++) {
+			for (depth = 0; depth < chunkSideSize; depth++) {
+				if (&blockMatrix[height][width][depth] == cube) {
+					return findNeighbourBlock(neighbourSide, height, width, depth);
+				}
+			}
+		}
+	}
+	return nullptr;
 }
 
 Chunk::~Chunk() {

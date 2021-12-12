@@ -35,11 +35,13 @@ public:
 	void drawChunk();
 	void buildMesh();
 	void loadMesh();
-	Cube::CubeId getBlockValue(int x, int y, int z);
+	Cube* getBlockValue(int x, int y, int z);
 	static void deleteChunkData(Cube*** chunkData, int height, int width);
 	void setBlockMatrix(Cube*** chunkData);
 	void setPosition(glm::vec3& position);
 	Cube* getCubeByCoords(glm::vec3& coords);
+	Cube* findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int width, int depth);
+	Cube* findNeighbourBlock(Cube::FaceSide neighbourSide, Cube* cube);
 private:
 
 	static const float blockSideSize;
@@ -56,7 +58,6 @@ private:
 	int chunkHeight;
 	int chunkSideSize;
 
-	Cube::CubeId findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int width, int depth);
 	void renderingSetup();
 	void cleanVerticesArrays();
 };

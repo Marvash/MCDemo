@@ -151,6 +151,7 @@
     <ClCompile Include="src\Cube.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\RayCast.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\PerlinNoiseGenerator.cpp" />
   </ItemGroup>
@@ -161,6 +162,7 @@
     <ClInclude Include="src\ChunkManager.h" />
     <ClInclude Include="src\coreInclude.h" />
     <ClInclude Include="src\Cube.h" />
+    <ClInclude Include="src\RayCast.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\stb_image.h" />
     <ClInclude Include="src\PerlinNoiseGenerator.h" />

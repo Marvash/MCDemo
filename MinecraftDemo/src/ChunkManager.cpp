@@ -237,7 +237,36 @@ void ChunkManager::drawChunks(Shader& shader, glm::mat4& projection, glm::mat4& 
 }
 
 void ChunkManager::destroyBlock() {
-	float rayLength = 6.0f;
+	float rayLength = 10.0f;
+	internalLock.lock();
+	std::vector<Cube*> cubes = RayCast::castRay(this, playerPosition, playerLookDirection, rayLength);
+	Cube* toDestroy = nullptr;
+	for (int i = 0; i < cubes.size(); i++) {
+		if (cubes.at(i)->cubeId != Cube::CubeId::AIR_BLOCK) {
+			toDestroy = cubes.at(i);
+			i = cubes.size();
+		}
+	}
+	if (toDestroy != nullptr) {
+		toDestroy->setCubeId(Cube::CubeId::AIR_BLOCK);
+		Chunk* ownerChunk = toDestroy->chunkRef;
+		ownerChunk->state = Chunk::ChunkState::SHOULDREBUILD;
+		if (ownerChunk->leftNeighbour != nullptr && ownerChunk->leftNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			ownerChunk->leftNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
+		}
+		if (ownerChunk->rightNeighbour != nullptr && ownerChunk->rightNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			ownerChunk->rightNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
+		}
+		if (ownerChunk->frontNeighbour != nullptr && ownerChunk->frontNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			ownerChunk->frontNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
+		}
+		if (ownerChunk->backNeighbour != nullptr && ownerChunk->backNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			ownerChunk->backNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
+		}
+	}
+	internalLock.unlock();
+	//Naive solution (ray marching)
+	/*
 	glm::vec3 rayEnd = playerPosition;
 	float currentIncrement = 0.0f;
 	float incrementStep = 0.1f;
@@ -254,6 +283,38 @@ void ChunkManager::destroyBlock() {
 	if (toDestroy != nullptr) {
 		toDestroy->setCubeId(Cube::CubeId::AIR_BLOCK);
 		Chunk* ownerChunk = toDestroy->chunkRef;
+		ownerChunk->state = Chunk::ChunkState::SHOULDREBUILD;
+		if (ownerChunk->leftNeighbour != nullptr && ownerChunk->leftNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			ownerChunk->leftNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
+		}
+		if (ownerChunk->rightNeighbour != nullptr && ownerChunk->rightNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			ownerChunk->rightNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
+		}
+		if (ownerChunk->frontNeighbour != nullptr && ownerChunk->frontNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			ownerChunk->frontNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
+		}
+		if (ownerChunk->backNeighbour != nullptr && ownerChunk->backNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
+			ownerChunk->backNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
+		}
+	}
+	internalLock.unlock();
+	*/
+}
+
+void ChunkManager::placeBlock(Cube::CubeId cubeId) {
+	float rayLength = 10.0f;
+	internalLock.lock();
+	std::vector<Cube*> cubes = RayCast::castRay(this, playerPosition, playerLookDirection, rayLength);
+	Cube* toFill = nullptr;
+	for (int i = 0; i < cubes.size(); i++) {
+		if (i > 0 && cubes.at(i)->cubeId != Cube::CubeId::AIR_BLOCK) {
+			toFill = cubes.at(i - 1);
+			i = cubes.size();
+		}
+	}
+	if (toFill != nullptr) {
+		toFill->setCubeId(cubeId);
+		Chunk* ownerChunk = toFill->chunkRef;
 		ownerChunk->state = Chunk::ChunkState::SHOULDREBUILD;
 		if (ownerChunk->leftNeighbour != nullptr && ownerChunk->leftNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
 			ownerChunk->leftNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;

@@ -27,6 +27,8 @@ float lastFrame = 0.0f;
 
 float exposure = 1.0f;
 
+Cube::CubeId selectedCubeId(Cube::CubeId::DIRT_BLOCK);
+
 int main() {
 
 	glfwInit();
@@ -228,8 +230,14 @@ void processInput(GLFWwindow* window)
 		exposure -= (1.0f * deltaTime);
 	}
 
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-		
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+		selectedCubeId = Cube::CubeId::GRASS_BLOCK;
+	}
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
+		selectedCubeId = Cube::CubeId::DIRT_BLOCK;
+	}
+	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
+		selectedCubeId = Cube::CubeId::STONE_BLOCK;
 	}
 }
 
@@ -255,6 +263,9 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 		chunkManager.destroyBlock();
+	}
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+		chunkManager.placeBlock(selectedCubeId);
 	}
 }
 
