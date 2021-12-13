@@ -11,6 +11,7 @@ public:
 	static const int chunkSideSize;
 	static const int chunkHeight;
 	static const int seaLevelOffset;
+	boost::mutex internalLock;
 
 	ChunkManager(glm::vec3 origin);
 	~ChunkManager();
@@ -24,7 +25,7 @@ public:
 	void startOriginUpdaterThreads();
 	void destroyBlock();
 	void placeBlock(Cube::CubeId cubeId);
-	Cube* getCubeByCoords(glm::vec3& coords);
+	Cube* getCubeByCoords(glm::vec3 coords);
 
 private:
 	enum class ChunkSide {
@@ -45,7 +46,7 @@ private:
 	glm::vec3 playerPosition;
 	glm::vec3 playerLookDirection;
 	PerlinNoiseGenerator perlinGen;
-	boost::mutex internalLock;
+	
 	bool buildersShouldStop;
 	bool generatorsShouldStop;
 	bool updaterShouldStop;

@@ -6,7 +6,7 @@ RayCast::RayCast() {
 
 }
 
-std::vector<Cube*> RayCast::castRay(ChunkManager* manager, glm::vec3& rayOrigin, glm::vec3& rayDirection, float& rayLength) {
+std::vector<Cube*> RayCast::castRay(ChunkManager* manager, glm::vec3 rayOrigin, glm::vec3 rayDirection, float rayLength) {
 	glm::vec3 rayDirNorm = glm::normalize(rayDirection);
 	glm::vec3 xRayDirAux, yRayDirAux, zRayDirAux;
 	xRayDirAux.x = 1.0f;
@@ -23,7 +23,10 @@ std::vector<Cube*> RayCast::castRay(ChunkManager* manager, glm::vec3& rayOrigin,
 	float yDir = glm::sign(ray.y);
 	float zDir = glm::sign(ray.z);
 	std::vector<Cube*> cubes;
-	cubes.push_back(manager->getCubeByCoords(rayOrigin));
+	Cube* startingCube = manager->getCubeByCoords(rayOrigin);
+	if (startingCube != nullptr) {
+		cubes.push_back(startingCube);
+	}
 	glm::vec3 xRay(0.0f, 0.0f, 0.0f);
 	glm::vec3 yRay(0.0f, 0.0f, 0.0f);
 	glm::vec3 zRay(0.0f, 0.0f, 0.0f);
@@ -57,7 +60,7 @@ std::vector<Cube*> RayCast::castRay(ChunkManager* manager, glm::vec3& rayOrigin,
 	zRay.y += zRayDirAux.y * mainAxisDelta;
 	zRay.z += zRayDirAux.z * mainAxisDelta;
 
-	while (true) {
+	while (cubes.size() > 0) {
 		if (glm::length(xRay) >= rayLength && glm::length(yRay) >= rayLength && glm::length(zRay) >= rayLength) {
 			break;
 		}

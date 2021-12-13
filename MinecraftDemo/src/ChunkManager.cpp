@@ -241,10 +241,12 @@ void ChunkManager::destroyBlock() {
 	internalLock.lock();
 	std::vector<Cube*> cubes = RayCast::castRay(this, playerPosition, playerLookDirection, rayLength);
 	Cube* toDestroy = nullptr;
-	for (int i = 0; i < cubes.size(); i++) {
-		if (cubes.at(i)->cubeId != Cube::CubeId::AIR_BLOCK) {
-			toDestroy = cubes.at(i);
-			i = cubes.size();
+	if (cubes.size() > 0) {
+		for (int i = 0; i < cubes.size(); i++) {
+			if (cubes.at(i)->cubeId != Cube::CubeId::AIR_BLOCK) {
+				toDestroy = cubes.at(i);
+				i = cubes.size();
+			}
 		}
 	}
 	if (toDestroy != nullptr) {
@@ -306,10 +308,12 @@ void ChunkManager::placeBlock(Cube::CubeId cubeId) {
 	internalLock.lock();
 	std::vector<Cube*> cubes = RayCast::castRay(this, playerPosition, playerLookDirection, rayLength);
 	Cube* toFill = nullptr;
-	for (int i = 0; i < cubes.size(); i++) {
-		if (i > 0 && cubes.at(i)->cubeId != Cube::CubeId::AIR_BLOCK) {
-			toFill = cubes.at(i - 1);
-			i = cubes.size();
+	if (cubes.size() > 0) {
+		for (int i = 0; i < cubes.size(); i++) {
+			if (i > 0 && cubes.at(i)->cubeId != Cube::CubeId::AIR_BLOCK) {
+				toFill = cubes.at(i - 1);
+				i = cubes.size();
+			}
 		}
 	}
 	if (toFill != nullptr) {
@@ -332,12 +336,13 @@ void ChunkManager::placeBlock(Cube::CubeId cubeId) {
 	internalLock.unlock();
 }
 
-Cube* ChunkManager::getCubeByCoords(glm::vec3& coords) {
+Cube* ChunkManager::getCubeByCoords(glm::vec3 coords) {
 	glm::vec3 originChunkPos = chunkMatrix[0][0]->chunkPosition;
 	originChunkPos.x = originChunkPos.x - (chunkSideSize / 2.0f);
 	originChunkPos.z = originChunkPos.z - (chunkSideSize / 2.0f);
-	int chunkWidthIndex = glm::abs(glm::floor((coords.x - originChunkPos.x) / chunkSideSize));
-	int chunkDepthIndex = glm::abs(glm::floor((coords.z - originChunkPos.z) / chunkSideSize));
+	int chunkWidthIndex = glm::abs(int((coords.x - originChunkPos.x) / chunkSideSize));
+	int chunkDepthIndex = glm::abs(int((coords.z - originChunkPos.z) / chunkSideSize));
+	Chunk* tmp = chunkMatrix[chunkWidthIndex][chunkDepthIndex];
 	return chunkMatrix[chunkWidthIndex][chunkDepthIndex]->getCubeByCoords(coords);
 }
 
@@ -397,7 +402,9 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 				} else if (i != chunkArrayWidth - 1) {
 					chunkMatrix[i][j] = chunkMatrix[i + 1][j];
 				} else {
+					toMove[j]->chunkPosition = chunkMatrix[i][j]->chunkPosition;
 					chunkMatrix[i][j] = toMove[j];
+					chunkMatrix[i][j]->chunkPosition.x += chunkSideSize;
 				}
 			}
 		}
@@ -416,7 +423,9 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 				} else if (i != 0) {
 					chunkMatrix[i][j] = chunkMatrix[i - 1][j];
 				} else {
+					toMove[j]->chunkPosition = chunkMatrix[i][j]->chunkPosition;
 					chunkMatrix[i][j] = toMove[j];
+					chunkMatrix[i][j]->chunkPosition.x -= chunkSideSize;
 				}
 			}
 		}
@@ -435,7 +444,9 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 				} else if (j != chunkArrayDepth - 1) {
 					chunkMatrix[i][j] = chunkMatrix[i][j + 1];
 				} else {
+					toMove[i]->chunkPosition = chunkMatrix[i][j]->chunkPosition;
 					chunkMatrix[i][j] = toMove[i];
+					chunkMatrix[i][j]->chunkPosition.z += chunkSideSize;
 				}
 			}
 		}
@@ -454,7 +465,9 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 				} else if (j != 0) {
 					chunkMatrix[i][j] = chunkMatrix[i][j - 1];
 				} else {
+					toMove[i]->chunkPosition = chunkMatrix[i][j]->chunkPosition;
 					chunkMatrix[i][j] = toMove[i];
+					chunkMatrix[i][j]->chunkPosition.z -= chunkSideSize;
 				}
 			}
 		}

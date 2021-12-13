@@ -584,7 +584,7 @@ void Chunk::cleanVerticesArrays() {
 	indices = nullptr;
 }
 
-Cube* Chunk::getCubeByCoords(glm::vec3& coords) {
+Cube* Chunk::getCubeByCoords(glm::vec3 coords) {
 	glm::vec3 originChunkPos = chunkPosition;
 	originChunkPos.x = originChunkPos.x - (chunkSideSize / 2.0f);
 	originChunkPos.z = originChunkPos.z - (chunkSideSize / 2.0f);

@@ -39,7 +39,7 @@ public:
 	static void deleteChunkData(Cube*** chunkData, int height, int width);
 	void setBlockMatrix(Cube*** chunkData);
 	void setPosition(glm::vec3& position);
-	Cube* getCubeByCoords(glm::vec3& coords);
+	Cube* getCubeByCoords(glm::vec3 coords);
 	Cube* findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int width, int depth);
 	Cube* findNeighbourBlock(Cube::FaceSide neighbourSide, Cube* cube);
 private:
