@@ -46,18 +46,24 @@ private:
 
 	static const float blockSideSize;
 
-	unsigned int VAO, VBO, EBO;
+	GLuint VAO, VBOVCoords, VBOVTexIndexes, EBO;
 	Cube*** blockMatrix;
-	int meshIndexCount;
-	int newMeshIndexCount;
-	int meshVertexCount;
-	float* verticesCompact;
-	int* indicesCompact;
-	float* vertices;
-	int* indices;
+	size_t meshIndexesCount;
+	size_t newMeshIndexesCount;
+	size_t meshVertexesCount;
+	size_t newMeshVertexesCount;
+	GLfloat* vertexesCoordinatesCompact;
+	GLfloat* vertexesCoordinates;
+	GLuint* indexesCompact;
+	GLuint* indexes;
+	GLint* vertexesTexIndexesCompact;
+	GLint* vertexesTexIndexes;
 	int chunkHeight;
 	int chunkSideSize;
 
 	void renderingSetup();
+	void addFaceCoordinates(size_t& vertexCoordsBaseIndex, Cube::FaceSide faceSide, float vertexBaseHeight, float vertexBaseWidth, float vertexBaseDepth);
+	void addFaceTexIndexes(size_t& vertexIndexesBaseIndex, int textureCoordinatesIndex, int colorIndex);
+	void addFaceIndexes(GLuint vertexBaseIndex, size_t& indexCount);
 	void cleanVerticesArrays();
 };

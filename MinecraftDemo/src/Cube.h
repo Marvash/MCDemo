@@ -2,6 +2,7 @@
 
 #include "coreInclude.h"
 #include "AtlasManager.h"
+#include "Shader.h"
 
 class Chunk;
 
@@ -26,25 +27,18 @@ public:
 
 	CubeId cubeId;
 	Chunk* chunkRef;
-	physx::PxRigidStatic* staticBody;
 
 	Cube();
 	~Cube();
 	Cube(CubeId cubeId, Chunk* chunkRef);
-	static void init();
+	
 	static std::string getDisplayName(CubeId cubeId);
 	static int getNumericId(CubeId cubeId);
-	static float* getAtlasTexCoords(CubeId cubeId, FaceSide faceSide);
-	static float* getTexColor(CubeId cubeId, FaceSide faceSide);
+	static int getAtlasTexIndex(CubeId cubeId, FaceSide faceSide);
+	static int getTexColor(CubeId cubeId, FaceSide faceSide);
 
 	CubeId getCubeId();
 	void setCubeId(CubeId cubeId);
-private:
-	static float* grassBlockTexCoords;
-	static float* grassBlockTexColors;
-	static float* dirtBlockTexCoords;
-	static float* dirtBlockTexColors;
-	static float* stoneBlockTexCoords;
-	static float* stoneBlockTexColors;
+	
 };
 

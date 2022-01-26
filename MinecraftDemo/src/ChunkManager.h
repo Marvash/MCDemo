@@ -12,6 +12,7 @@ public:
 	static const int chunkHeight;
 	static const int seaLevelOffset;
 	boost::mutex internalLock;
+	int test = 0;
 
 	ChunkManager(glm::vec3 origin);
 	~ChunkManager();

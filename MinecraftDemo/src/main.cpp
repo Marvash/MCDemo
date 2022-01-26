@@ -13,6 +13,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void processInput(GLFWwindow* window);
+void testFunc();
 
 Camera camera(glm::vec3(0.0f, 2.0f, 0.0f));
 ChunkManager chunkManager(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -135,16 +136,8 @@ int main() {
 	screenShader.setInt("screenTexture", 0);
 
 	AtlasManager* mainAtlas = AtlasManager::instance();
-	std::string atlasBasePath("assets/");
-	std::vector<std::string> atlasFilenames;
-	atlasFilenames.push_back(std::string("atlas0.png"));
-	atlasFilenames.push_back(std::string("atlas1.png"));
-	atlasFilenames.push_back(std::string("atlas2.png"));
-	atlasFilenames.push_back(std::string("atlas3.png"));
-	atlasFilenames.push_back(std::string("atlas4.png"));
-	mainAtlas->loadAtlas(atlasBasePath, atlasFilenames);
-
-	Cube::init();
+	mainAtlas->init();
+	mainAtlas->setTextureShaderUniforms(defaultShader);
 	
 	chunkManager.startGeneratorThreads();
 	chunkManager.startBuilderThreads();
@@ -173,10 +166,8 @@ int main() {
 		glm::mat4 view = camera.GetViewMatrix();
 
 		defaultShader.use();
+		mainAtlas->bindTextures();
 
-		defaultShader.setInt("texAtlas", 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mainAtlas->atlas);
 		chunkManager.reloadChunks();
 		chunkManager.drawChunks(defaultShader, projection, view);
 
@@ -210,6 +201,11 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
+void testFunc() {
+	if(chunkManager.test == 0)
+		chunkManager.test = 1;
+}
+
 void processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -238,6 +234,10 @@ void processInput(GLFWwindow* window)
 	}
 	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
 		selectedCubeId = Cube::CubeId::STONE_BLOCK;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
+		testFunc();
 	}
 }
 

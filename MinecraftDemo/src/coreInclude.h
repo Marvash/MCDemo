@@ -19,7 +19,6 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <physx/PxPhysicsAPI.h>
 #include <boost/thread.hpp>
 #include <boost/chrono.hpp>
 #include "stb_image.h"

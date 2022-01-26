@@ -26,6 +26,7 @@ ChunkManager::ChunkManager(glm::vec3 origin) : generationOrigin(origin), builder
 }
 
 void ChunkManager::generateChunks() {
+	static int counter = 0;
 	for (int i = 0; i < chunkArrayWidth; i++) {
 		for (int j = 0; j < chunkArrayDepth; j++) {
 			if (generatorsShouldStop) {
@@ -50,6 +51,7 @@ void ChunkManager::generateChunks() {
 }
 
 void ChunkManager::generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, int depthIndex, Chunk* original) {
+	static int counter = 0;
 	Cube*** blockMatrix = new Cube** [chunkHeight];
 	for (int i = 0; i < chunkHeight; i++) {
 		blockMatrix[i] = new Cube* [chunkSideSize];
@@ -117,10 +119,6 @@ void ChunkManager::generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, 
 		Chunk::deleteChunkData(blockMatrix, chunkHeight, chunkSideSize);
 	}
 	internalLock.unlock();
-}
-
-void destroyBlock() {
-
 }
 
 void ChunkManager::resetNeighbours() {
@@ -213,7 +211,6 @@ void ChunkManager::rebuildChunks() {
 			if (chunkMatrix[i][j]->state == Chunk::ChunkState::SHOULDREBUILD) {
 				chunkMatrix[i][j]->buildMesh();
 				chunkMatrix[i][j]->state = Chunk::ChunkState::MESHBUILT;
-				
 			}
 			internalLock.unlock();
 		}
@@ -221,19 +218,25 @@ void ChunkManager::rebuildChunks() {
 }
 
 void ChunkManager::drawChunks(Shader& shader, glm::mat4& projection, glm::mat4& view) {
+	internalLock.lock();
 	for (int i = 0; i < chunkArrayWidth; i++) {
 		for (int j = 0; j < chunkArrayDepth; j++) {
-			internalLock.lock();
-			if (chunkMatrix[i][j]->state >= Chunk::ChunkState::MESHLOADED || chunkMatrix[i][j]->canDraw) {
+			if (chunkMatrix[i][j]->state == Chunk::ChunkState::MESHLOADED || chunkMatrix[i][j]->canDraw) {
 				glm::mat4 model = glm::mat4(1.0f);
 				model = glm::translate(model, chunkMatrix[i][j]->chunkPosition);
 				glm::mat4 mvp = projection * view * model * glm::mat4(1.0f);
 				shader.setMat4("mvp", mvp);
 				chunkMatrix[i][j]->drawChunk();
 			}
-			internalLock.unlock();
+			else if(test > 0) {
+				if ((int)chunkMatrix[i][j]->state > (int)Chunk::ChunkState::MESHLOADED) {
+					std::cout << (int)chunkMatrix[i][j]->state << " " << chunkMatrix[i][j]->canDraw << std::endl;
+				}
+			}
+			
 		}
 	}
+	internalLock.unlock();
 }
 
 void ChunkManager::destroyBlock() {
