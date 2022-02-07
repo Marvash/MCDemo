@@ -69,15 +69,28 @@ void AtlasManager::loadTextureBuffer() {
 	glGenBuffers(1, &texDataBuffer);
 	glBindBuffer(GL_TEXTURE_BUFFER, texDataBuffer);
 	glBufferData(GL_TEXTURE_BUFFER, sizeof(GLfloat) * texDataSize, texData, GL_STATIC_DRAW);
+	glBindBuffer(GL_TEXTURE_BUFFER, 0);
 	glGenTextures(1, &texDataImage);
 	glBindTexture(GL_TEXTURE_BUFFER, texDataImage);
 	glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, texDataBuffer);
+	glBindTexture(GL_TEXTURE_BUFFER, 0);
+}
+
+void AtlasManager::loadColorBuffer() {
+	glGenBuffers(1, &colorDataBuffer);
+	glBindBuffer(GL_TEXTURE_BUFFER, colorDataBuffer);
+	glBufferData(GL_TEXTURE_BUFFER, sizeof(GLfloat) * colorDataSize, colorData, GL_STATIC_DRAW);
 	glBindBuffer(GL_TEXTURE_BUFFER, 0);
+	glGenTextures(1, &colorDataImage);
+	glBindTexture(GL_TEXTURE_BUFFER, colorDataImage);
+	glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, colorDataBuffer);
+	glBindTexture(GL_TEXTURE_BUFFER, 0);
 }
 
 void AtlasManager::setTextureShaderUniforms(Shader& shader) {
 	shader.setInt("texAtlas", 0);
 	shader.setInt("vertexesTexData", 1);
+	shader.setInt("vertexesColorData", 2);
 }
 
 void AtlasManager::bindTextures() {
@@ -85,6 +98,8 @@ void AtlasManager::bindTextures() {
 	glBindTexture(GL_TEXTURE_2D, atlas);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_BUFFER, texDataImage);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_BUFFER, colorDataImage);
 }
 
 void AtlasManager::init() {
@@ -103,7 +118,7 @@ void AtlasManager::init() {
 
 	// GRASS
 
-	// SIDE 0 23
+	// SIDE
 	// Top left
 	texData[0] = getCoordX(12) + textureOffset;
 	texData[1] = getCoordX(13) + textureOffset;
@@ -133,7 +148,7 @@ void AtlasManager::init() {
 	texData[22] = getCoordY(11) + textureOffset;
 	texData[23] = -1.0f;
 
-	// TOP 24 47
+	// TOP
 	// Top left
 	texData[24] = getCoordX(15) + textureOffset;
 	texData[25] = -1.0f;
@@ -163,7 +178,7 @@ void AtlasManager::init() {
 	texData[46] = -1.0f;
 	texData[47] = -1.0f;
 
-	// BOTTOM 48 71
+	// BOTTOM
 	// Top left
 	texData[48] = getCoordX(8) + textureOffset;
 	texData[49] = -1.0f;
@@ -193,127 +208,502 @@ void AtlasManager::init() {
 	texData[70] = -1.0f;
 	texData[71] = -1.0f;
 
-	glm::vec3 grassColor = glm::pow(glm::vec3(0.474f, 0.752f, 0.352f), glm::vec3(2.2));
-
-	// 72 80
-	texData[72] = 1.0f;
-	texData[73] = 1.0f;
-	texData[74] = 1.0f;
-	texData[75] = grassColor.r;
-	texData[76] = grassColor.g;
-	texData[77] = grassColor.b;
-	texData[78] = 1.0f;
-	texData[79] = 1.0f;
-	texData[80] = 1.0f;
-	// 81 89
-	texData[81] = grassColor.r;
-	texData[82] = grassColor.g;
-	texData[83] = grassColor.b;
-	texData[84] = 1.0f;
-	texData[85] = 1.0f;
-	texData[86] = 1.0f;
-	texData[87] = 1.0f;
-	texData[88] = 1.0f;
-	texData[89] = 1.0f;
-	// 90 98 
-	texData[90] = 1.0f;
-	texData[91] = 1.0f;
-	texData[92] = 1.0f;
-	texData[93] = 1.0f;
-	texData[94] = 1.0f;
-	texData[95] = 1.0f;
-	texData[96] = 1.0f;
-	texData[97] = 1.0f;
-	texData[98] = 1.0f;
-
 	// DIRT
 
-	// BOTTOM 99 122
-	texData[99] = getCoordX(8) + textureOffset;
-	texData[100] = -1.0f;
-	texData[101] = -1.0f;
-	texData[102] = getCoordY(6) - textureOffset;
-	texData[103] = -1.0f;
-	texData[104] = -1.0f;
+	// BOTTOM
+	// Top left
+	texData[72] = getCoordX(8) + textureOffset;
+	texData[73] = -1.0f;
+	texData[74] = -1.0f;
+	texData[75] = getCoordY(6) - textureOffset;
+	texData[76] = -1.0f;
+	texData[77] = -1.0f;
 	// Top right
-	texData[105] = getCoordX(9) - textureOffset;
-	texData[106] = -1.0f;
-	texData[107] = -1.0f;
-	texData[108] = getCoordY(6) - textureOffset;
-	texData[109] = -1.0f;
-	texData[110] = -1.0f;
+	texData[78] = getCoordX(9) - textureOffset;
+	texData[79] = -1.0f;
+	texData[80] = -1.0f;
+	texData[81] = getCoordY(6) - textureOffset;
+	texData[82] = -1.0f;
+	texData[83] = -1.0f;
 	// Bottom right
-	texData[111] = getCoordX(9) - textureOffset;
-	texData[112] = -1.0f;
-	texData[113] = -1.0f;
-	texData[114] = getCoordY(7) + textureOffset;
-	texData[115] = -1.0f;
-	texData[116] = -1.0f;
+	texData[84] = getCoordX(9) - textureOffset;
+	texData[85] = -1.0f;
+	texData[86] = -1.0f;
+	texData[87] = getCoordY(7) + textureOffset;
+	texData[88] = -1.0f;
+	texData[89] = -1.0f;
 	// Bottom left
-	texData[117] = getCoordX(8) + textureOffset;
-	texData[118] = -1.0f;
-	texData[119] = -1.0f;
-	texData[120] = getCoordY(7) + textureOffset;
-	texData[121] = -1.0f;
-	texData[122] = -1.0f;
-
-	// 123 131
-	texData[123] = 1.0f;
-	texData[124] = 1.0f;
-	texData[125] = 1.0f;
-	texData[126] = 1.0f;
-	texData[127] = 1.0f;
-	texData[128] = 1.0f;
-	texData[129] = 1.0f;
-	texData[130] = 1.0f;
-	texData[131] = 1.0f;
+	texData[90] = getCoordX(8) + textureOffset;
+	texData[91] = -1.0f;
+	texData[92] = -1.0f;
+	texData[93] = getCoordY(7) + textureOffset;
+	texData[94] = -1.0f;
+	texData[95] = -1.0f;
 
 	// STONE
 
-	// BOTTOM 132 155
+	// BOTTOM
 	// Top left
-	texData[132] = getCoordX(20) + textureOffset;
+	texData[96] = getCoordX(20) + textureOffset;
+	texData[97] = -1.0f;
+	texData[98] = -1.0f;
+	texData[99] = getCoordY(9) - textureOffset;
+	texData[100] = -1.0f;
+	texData[101] = -1.0f;
+	// Top right
+	texData[102] = getCoordX(21) - textureOffset;
+	texData[103] = -1.0f;
+	texData[104] = -1.0f;
+	texData[105] = getCoordY(9) - textureOffset;
+	texData[106] = -1.0f;
+	texData[107] = -1.0f;
+	// Bottom right
+	texData[108] = getCoordX(21) - textureOffset;
+	texData[109] = -1.0f;
+	texData[110] = -1.0f;
+	texData[111] = getCoordY(10) + textureOffset;
+	texData[112] = -1.0f;
+	texData[113] = -1.0f;
+	// Bottom left
+	texData[114] = getCoordX(20) + textureOffset;
+	texData[115] = -1.0f;
+	texData[116] = -1.0f;
+	texData[117] = getCoordY(10) + textureOffset;
+	texData[118] = -1.0f;
+	texData[119] = -1.0f;
+
+	// SAND
+
+	// BOTTOM
+	// Top left
+	texData[120] = getCoordX(19) + textureOffset;
+	texData[121] = -1.0f;
+	texData[122] = -1.0f;
+	texData[123] = getCoordY(7) - textureOffset;
+	texData[124] = -1.0f;
+	texData[125] = -1.0f;
+	// Top right
+	texData[126] = getCoordX(20) - textureOffset;
+	texData[127] = -1.0f;
+	texData[128] = -1.0f;
+	texData[129] = getCoordY(7) - textureOffset;
+	texData[130] = -1.0f;
+	texData[131] = -1.0f;
+	// Bottom right
+	texData[132] = getCoordX(20) - textureOffset;
 	texData[133] = -1.0f;
 	texData[134] = -1.0f;
-	texData[135] = getCoordY(9) - textureOffset;
+	texData[135] = getCoordY(8) + textureOffset;
 	texData[136] = -1.0f;
 	texData[137] = -1.0f;
-	// Top right
-	texData[138] = getCoordX(21) - textureOffset;
+	// Bottom left
+	texData[138] = getCoordX(19) + textureOffset;
 	texData[139] = -1.0f;
 	texData[140] = -1.0f;
-	texData[141] = getCoordY(9) - textureOffset;
+	texData[141] = getCoordY(8) + textureOffset;
 	texData[142] = -1.0f;
 	texData[143] = -1.0f;
-	// Bottom right
-	texData[144] = getCoordX(21) - textureOffset;
+
+	// SNOWY GRASS
+
+	// SIDE
+	// Top left
+	texData[144] = getCoordX(14) + textureOffset;
 	texData[145] = -1.0f;
 	texData[146] = -1.0f;
-	texData[147] = getCoordY(10) + textureOffset;
+	texData[147] = getCoordY(10) - textureOffset;
 	texData[148] = -1.0f;
 	texData[149] = -1.0f;
-	// Bottom left
-	texData[150] = getCoordX(20) + textureOffset;
+	// Top right
+	texData[150] = getCoordX(15) - textureOffset;
 	texData[151] = -1.0f;
 	texData[152] = -1.0f;
-	texData[153] = getCoordY(10) + textureOffset;
+	texData[153] = getCoordY(10) - textureOffset;
 	texData[154] = -1.0f;
 	texData[155] = -1.0f;
+	// Bottom right
+	texData[156] = getCoordX(15) - textureOffset;
+	texData[157] = -1.0f;
+	texData[158] = -1.0f;
+	texData[159] = getCoordY(11) + textureOffset;
+	texData[160] = -1.0f;
+	texData[161] = -1.0f;
+	// Bottom left
+	texData[162] = getCoordX(14) + textureOffset;
+	texData[163] = -1.0f;
+	texData[164] = -1.0f;
+	texData[165] = getCoordY(11) + textureOffset;
+	texData[166] = -1.0f;
+	texData[167] = -1.0f;
 
-	// BOTTOM 156 164
-	texData[156] = 1.0f;
-	texData[157] = 1.0f;
-	texData[158] = 1.0f;
-	texData[159] = 1.0f;
-	texData[160] = 1.0f;
-	texData[161] = 1.0f;
-	texData[162] = 1.0f;
-	texData[163] = 1.0f;
-	texData[164] = 1.0f;
+	// TOP
+	// Top left
+	texData[168] = getCoordX(15) + textureOffset;
+	texData[169] = -1.0f;
+	texData[170] = -1.0f;
+	texData[171] = getCoordY(10) - textureOffset;
+	texData[172] = -1.0f;
+	texData[173] = -1.0f;
+	// Top right
+	texData[174] = getCoordX(16) - textureOffset;
+	texData[175] = -1.0f;
+	texData[176] = -1.0f;
+	texData[177] = getCoordY(10) - textureOffset;
+	texData[178] = -1.0f;
+	texData[179] = -1.0f;
+	// Bottom right
+	texData[180] = getCoordX(16) - textureOffset;
+	texData[181] = -1.0f;
+	texData[182] = -1.0f;
+	texData[183] = getCoordY(11) + textureOffset;
+	texData[184] = -1.0f;
+	texData[185] = -1.0f;
+	// Bottom left
+	texData[186] = getCoordX(15) + textureOffset;
+	texData[187] = -1.0f;
+	texData[188] = -1.0f;
+	texData[189] = getCoordY(11) + textureOffset;
+	texData[190] = -1.0f;
+	texData[191] = -1.0f;
+
+	// BOTTOM
+	// Top left
+	texData[192] = getCoordX(8) + textureOffset;
+	texData[193] = -1.0f;
+	texData[194] = -1.0f;
+	texData[195] = getCoordY(6) - textureOffset;
+	texData[196] = -1.0f;
+	texData[197] = -1.0f;
+	// Top right
+	texData[198] = getCoordX(9) - textureOffset;
+	texData[199] = -1.0f;
+	texData[200] = -1.0f;
+	texData[201] = getCoordY(6) - textureOffset;
+	texData[202] = -1.0f;
+	texData[203] = -1.0f;
+	// Bottom right
+	texData[204] = getCoordX(9) - textureOffset;
+	texData[205] = -1.0f;
+	texData[206] = -1.0f;
+	texData[207] = getCoordY(7) + textureOffset;
+	texData[208] = -1.0f;
+	texData[209] = -1.0f;
+	// Bottom left
+	texData[210] = getCoordX(8) + textureOffset;
+	texData[211] = -1.0f;
+	texData[212] = -1.0f;
+	texData[213] = getCoordY(7) + textureOffset;
+	texData[214] = -1.0f;
+	texData[215] = -1.0f;
 
 	std::cout << "Loading texture buffer... " << std::endl;
 	loadTextureBuffer();
 	std::cout << "Texture buffer loaded" << std::endl;
+
+	colorData = new GLfloat[colorDataSize];
+
+	// DEFAULT
+
+	colorData[0] = 1.0f;
+	colorData[1] = 1.0f;
+	colorData[2] = 1.0f;
+	colorData[3] = 1.0f;
+	colorData[4] = 1.0f;
+	colorData[5] = 1.0f;
+	colorData[6] = 1.0f;
+	colorData[7] = 1.0f;
+	colorData[8] = 1.0f;
+
+	// GRASS CUBE
+
+	glm::vec3 plainsGrassColor = glm::pow(glm::vec3(0.568f, 0.741f, 0.349f), glm::vec3(2.2));
+	glm::vec3 taigaGrassColor = glm::pow(glm::vec3(0.525f, 0.717f, 0.513f), glm::vec3(2.2));
+	glm::vec3 forestGrassColor = glm::pow(glm::vec3(0.474f, 0.752f, 0.352f), glm::vec3(2.2));
+	glm::vec3 savanaGrassColor = glm::pow(glm::vec3(0.749f, 0.717f, 0.333f), glm::vec3(2.2));
+	glm::vec3 mountainsGrassColor = glm::pow(glm::vec3(0.603f, 0.745f, 0.294f), glm::vec3(2.2));
+	glm::vec3 hillsGrassColor = glm::pow(glm::vec3(0.541f, 0.713f, 0.537f), glm::vec3(2.2));
+	glm::vec3 jungleGrassColor = glm::pow(glm::vec3(0.349f, 0.788f, 0.235f), glm::vec3(2.2));
+
+	//---
+	colorData[9] = 1.0f;
+	colorData[10] = 1.0f;
+	colorData[11] = 1.0f;
+	colorData[12] = plainsGrassColor.r;
+	colorData[13] = plainsGrassColor.g;
+	colorData[14] = plainsGrassColor.b;
+	colorData[15] = 1.0f;
+	colorData[16] = 1.0f;
+	colorData[17] = 1.0f;
+
+	colorData[18] = plainsGrassColor.r;
+	colorData[19] = plainsGrassColor.g;
+	colorData[20] = plainsGrassColor.b;
+	colorData[21] = 1.0f;
+	colorData[22] = 1.0f;
+	colorData[23] = 1.0f;
+	colorData[24] = 1.0f;
+	colorData[25] = 1.0f;
+	colorData[26] = 1.0f;
+
+	colorData[27] = 1.0f;
+	colorData[28] = 1.0f;
+	colorData[29] = 1.0f;
+	colorData[30] = 1.0f;
+	colorData[31] = 1.0f;
+	colorData[32] = 1.0f;
+	colorData[33] = 1.0f;
+	colorData[34] = 1.0f;
+	colorData[35] = 1.0f;
+	//---
+	colorData[36] = 1.0f;
+	colorData[37] = 1.0f;
+	colorData[38] = 1.0f;
+	colorData[39] = taigaGrassColor.r;
+	colorData[40] = taigaGrassColor.g;
+	colorData[41] = taigaGrassColor.b;
+	colorData[42] = 1.0f;
+	colorData[43] = 1.0f;
+	colorData[44] = 1.0f;
+
+	colorData[45] = taigaGrassColor.r;
+	colorData[46] = taigaGrassColor.g;
+	colorData[47] = taigaGrassColor.b;
+	colorData[48] = 1.0f;
+	colorData[49] = 1.0f;
+	colorData[50] = 1.0f;
+	colorData[51] = 1.0f;
+	colorData[52] = 1.0f;
+	colorData[53] = 1.0f;
+
+	colorData[54] = 1.0f;
+	colorData[55] = 1.0f;
+	colorData[56] = 1.0f;
+	colorData[57] = 1.0f;
+	colorData[58] = 1.0f;
+	colorData[59] = 1.0f;
+	colorData[60] = 1.0f;
+	colorData[61] = 1.0f;
+	colorData[62] = 1.0f;
+	//---
+	colorData[63] = 1.0f;
+	colorData[64] = 1.0f;
+	colorData[65] = 1.0f;
+	colorData[66] = forestGrassColor.r;
+	colorData[67] = forestGrassColor.g;
+	colorData[68] = forestGrassColor.b;
+	colorData[69] = 1.0f;
+	colorData[70] = 1.0f;
+	colorData[71] = 1.0f;
+
+	colorData[72] = forestGrassColor.r;
+	colorData[73] = forestGrassColor.g;
+	colorData[74] = forestGrassColor.b;
+	colorData[75] = 1.0f;
+	colorData[76] = 1.0f;
+	colorData[77] = 1.0f;
+	colorData[78] = 1.0f;
+	colorData[79] = 1.0f;
+	colorData[80] = 1.0f;
+
+	colorData[81] = 1.0f;
+	colorData[82] = 1.0f;
+	colorData[83] = 1.0f;
+	colorData[84] = 1.0f;
+	colorData[85] = 1.0f;
+	colorData[86] = 1.0f;
+	colorData[87] = 1.0f;
+	colorData[88] = 1.0f;
+	colorData[89] = 1.0f;
+	//---
+	colorData[90] = 1.0f;
+	colorData[91] = 1.0f;
+	colorData[92] = 1.0f;
+	colorData[93] = savanaGrassColor.r;
+	colorData[94] = savanaGrassColor.g;
+	colorData[95] = savanaGrassColor.b;
+	colorData[96] = 1.0f;
+	colorData[97] = 1.0f;
+	colorData[98] = 1.0f;
+
+	colorData[99] = savanaGrassColor.r;
+	colorData[100] = savanaGrassColor.g;
+	colorData[101] = savanaGrassColor.b;
+	colorData[102] = 1.0f;
+	colorData[103] = 1.0f;
+	colorData[104] = 1.0f;
+	colorData[105] = 1.0f;
+	colorData[106] = 1.0f;
+	colorData[107] = 1.0f;
+
+	colorData[108] = 1.0f;
+	colorData[109] = 1.0f;
+	colorData[110] = 1.0f;
+	colorData[111] = 1.0f;
+	colorData[112] = 1.0f;
+	colorData[113] = 1.0f;
+	colorData[114] = 1.0f;
+	colorData[115] = 1.0f;
+	colorData[116] = 1.0f;
+	//---
+	colorData[117] = 1.0f;
+	colorData[118] = 1.0f;
+	colorData[119] = 1.0f;
+	colorData[120] = mountainsGrassColor.r;
+	colorData[121] = mountainsGrassColor.g;
+	colorData[122] = mountainsGrassColor.b;
+	colorData[123] = 1.0f;
+	colorData[124] = 1.0f;
+	colorData[125] = 1.0f;
+
+	colorData[126] = mountainsGrassColor.r;
+	colorData[127] = mountainsGrassColor.g;
+	colorData[128] = mountainsGrassColor.b;
+	colorData[129] = 1.0f;
+	colorData[130] = 1.0f;
+	colorData[131] = 1.0f;
+	colorData[132] = 1.0f;
+	colorData[133] = 1.0f;
+	colorData[134] = 1.0f;
+
+	colorData[135] = 1.0f;
+	colorData[136] = 1.0f;
+	colorData[137] = 1.0f;
+	colorData[138] = 1.0f;
+	colorData[139] = 1.0f;
+	colorData[140] = 1.0f;
+	colorData[141] = 1.0f;
+	colorData[142] = 1.0f;
+	colorData[143] = 1.0f;
+	//---
+	colorData[144] = 1.0f;
+	colorData[145] = 1.0f;
+	colorData[146] = 1.0f;
+	colorData[147] = hillsGrassColor.r;
+	colorData[148] = hillsGrassColor.g;
+	colorData[149] = hillsGrassColor.b;
+	colorData[150] = 1.0f;
+	colorData[151] = 1.0f;
+	colorData[152] = 1.0f;
+
+	colorData[153] = hillsGrassColor.r;
+	colorData[154] = hillsGrassColor.g;
+	colorData[155] = hillsGrassColor.b;
+	colorData[156] = 1.0f;
+	colorData[157] = 1.0f;
+	colorData[158] = 1.0f;
+	colorData[159] = 1.0f;
+	colorData[160] = 1.0f;
+	colorData[161] = 1.0f;
+
+	colorData[162] = 1.0f;
+	colorData[163] = 1.0f;
+	colorData[164] = 1.0f;
+	colorData[165] = 1.0f;
+	colorData[166] = 1.0f;
+	colorData[167] = 1.0f;
+	colorData[168] = 1.0f;
+	colorData[169] = 1.0f;
+	colorData[170] = 1.0f;
+	//---
+	colorData[171] = 1.0f;
+	colorData[172] = 1.0f;
+	colorData[173] = 1.0f;
+	colorData[174] = jungleGrassColor.r;
+	colorData[175] = jungleGrassColor.g;
+	colorData[176] = jungleGrassColor.b;
+	colorData[177] = 1.0f;
+	colorData[178] = 1.0f;
+	colorData[179] = 1.0f;
+
+	colorData[180] = jungleGrassColor.r;
+	colorData[181] = jungleGrassColor.g;
+	colorData[182] = jungleGrassColor.b;
+	colorData[183] = 1.0f;
+	colorData[184] = 1.0f;
+	colorData[185] = 1.0f;
+	colorData[186] = 1.0f;
+	colorData[187] = 1.0f;
+	colorData[188] = 1.0f;
+
+	colorData[189] = 1.0f;
+	colorData[190] = 1.0f;
+	colorData[191] = 1.0f;
+	colorData[192] = 1.0f;
+	colorData[193] = 1.0f;
+	colorData[194] = 1.0f;
+	colorData[195] = 1.0f;
+	colorData[196] = 1.0f;
+	colorData[197] = 1.0f;
+
+	// SNOWY GRASS CUBE
+
+	glm::vec3 taigaSnowyGrassColor = glm::pow(glm::vec3(0.525f, 0.717f, 0.513f), glm::vec3(2.2));
+	glm::vec3 tundraSnowyGrassColor = glm::pow(glm::vec3(0.501f, 0.705f, 0.592f), glm::vec3(2.2));
+	//--- TUNDRA
+	colorData[198] = 1.0f;
+	colorData[199] = 1.0f;
+	colorData[200] = 1.0f;
+	colorData[201] = 1.0f;
+	colorData[202] = 1.0f;
+	colorData[203] = 1.0f;
+	colorData[204] = 1.0f;
+	colorData[205] = 1.0f;
+	colorData[206] = 1.0f;
+
+	colorData[207] = tundraSnowyGrassColor.r;
+	colorData[208] = tundraSnowyGrassColor.g;
+	colorData[209] = tundraSnowyGrassColor.b;
+	colorData[210] = 1.0f;
+	colorData[211] = 1.0f;
+	colorData[212] = 1.0f;
+	colorData[213] = 1.0f;
+	colorData[214] = 1.0f;
+	colorData[215] = 1.0f;
+
+	colorData[216] = 1.0f;
+	colorData[217] = 1.0f;
+	colorData[218] = 1.0f;
+	colorData[219] = 1.0f;
+	colorData[220] = 1.0f;
+	colorData[221] = 1.0f;
+	colorData[222] = 1.0f;
+	colorData[223] = 1.0f;
+	colorData[224] = 1.0f;
+	//--- TAIGA
+	colorData[225] = 1.0f;
+	colorData[226] = 1.0f;
+	colorData[227] = 1.0f;
+	colorData[228] = 1.0f;
+	colorData[229] = 1.0f;
+	colorData[230] = 1.0f;
+	colorData[231] = 1.0f;
+	colorData[232] = 1.0f;
+	colorData[233] = 1.0f;
+
+	colorData[234] = taigaSnowyGrassColor.r;
+	colorData[235] = taigaSnowyGrassColor.g;
+	colorData[236] = taigaSnowyGrassColor.b;
+	colorData[237] = 1.0f;
+	colorData[238] = 1.0f;
+	colorData[239] = 1.0f;
+	colorData[240] = 1.0f;
+	colorData[241] = 1.0f;
+	colorData[242] = 1.0f;
+
+	colorData[243] = 1.0f;
+	colorData[244] = 1.0f;
+	colorData[245] = 1.0f;
+	colorData[246] = 1.0f;
+	colorData[247] = 1.0f;
+	colorData[248] = 1.0f;
+	colorData[249] = 1.0f;
+	colorData[250] = 1.0f;
+	colorData[251] = 1.0f;
+	//---
+
+	std::cout << "Loading color buffer... " << std::endl;
+	loadColorBuffer();
+	std::cout << "Color buffer loaded" << std::endl;
 }
 
 AtlasManager* AtlasManager::instance() {

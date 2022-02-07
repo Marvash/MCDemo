@@ -6,10 +6,9 @@ const int ChunkManager::seaLevelOffset = 128;
 const int ChunkManager::chunkSideSize = 16;
 const int ChunkManager::chunkHeight = 256;
 const int ChunkManager::nWorkersRebuild = 1;
-const int ChunkManager::nWorkersRegen = 1;
-const int ChunkManager::nWorkersUpdate = 1;
+const int ChunkManager::nWorkersRegen = 4;
 
-ChunkManager::ChunkManager(glm::vec3 origin) : generationOrigin(origin), buildersShouldStop(false), generatorsShouldStop(false), updaterShouldStop(false) {
+ChunkManager::ChunkManager(glm::vec3 origin) : generationOrigin(origin), buildersShouldStop(false), generatorsShouldStop(false), terrainGen(chunkSideSize, chunkHeight) {
 	chunkMatrix = new Chunk ** [chunkArrayWidth];
 	generationOrigin.y = 0.0f;
 	playerPosition = generationOrigin;
@@ -32,19 +31,19 @@ void ChunkManager::generateChunks() {
 			if (generatorsShouldStop) {
 				return;
 			}
-			internalLock.lock();
+			lockLP();
 			if (chunkMatrix[i][j]->state == Chunk::ChunkState::SHOULDREGENERATE) {
 				chunkMatrix[i][j]->state = Chunk::ChunkState::ISREGENERATING;
 				float xPos = generationOrigin.x + ((i - (chunkArrayWidth / 2)) * chunkSideSize) + (chunkSideSize / 2);
 				float yPos = generationOrigin.y + (-seaLevelOffset);
 				float zPos = generationOrigin.z + ((j - (chunkArrayDepth / 2)) * chunkSideSize) + (chunkSideSize / 2);
 				Chunk* original = chunkMatrix[i][j];
-				internalLock.unlock();
+				unlockLP();
 				glm::vec3 chunkPosition = glm::vec3(xPos, yPos, zPos);
 				generateSingleChunk(chunkPosition, i, j, original);
 			}
 			else {
-				internalLock.unlock();
+				unlockLP();
 			}
 		}
 	}
@@ -59,39 +58,9 @@ void ChunkManager::generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, 
 			blockMatrix[i][j] = new Cube[chunkSideSize];
 		}
 	}
-	for (int j = 0; j < chunkSideSize; j++) {
-		for (int w = 0; w < chunkSideSize; w++) {
-			float baseWidth = chunkPosition.x + ((j - (chunkSideSize / 2)) - 0.5f);
-			float baseDepth = chunkPosition.z + ((w - (chunkSideSize / 2)) - 0.5f);
-			int height = 100;
-			int terrainHeight = 90;
-			float amplitude = 50.0f;
-			int perlinFrequency = 256;
-			for (int i = 0; i < 4; i++) {
-				height += (int)perlinGen.getValue(baseWidth, baseDepth, perlinFrequency, amplitude);
-				amplitude = amplitude / 2.0f;
-				perlinFrequency = perlinFrequency / 2;
-			}
-			int dirtHeight = 70;
-			for (int i = 0; i < chunkHeight; i++) {
-				if (i <= height) {
-					if (i < dirtHeight) {
-						blockMatrix[i][j][w] = Cube(Cube::CubeId::STONE_BLOCK, original);
-					}
-					else if (i >= dirtHeight && i < height) {
-						blockMatrix[i][j][w] = Cube(Cube::CubeId::DIRT_BLOCK, original);
-					}
-					else if (i == height) {
-						blockMatrix[i][j][w] = Cube(Cube::CubeId::GRASS_BLOCK, original);
-					}
-				}
-				else {
-					blockMatrix[i][j][w] = Cube(Cube::CubeId::AIR_BLOCK, original);
-				}
-			}
-		}
-	}
-	internalLock.lock();
+	terrainGen.generateChunk(blockMatrix, chunkPosition, original);
+
+	lockLP();
 	float xPos = generationOrigin.x + ((widthIndex - (chunkArrayWidth / 2)) * chunkSideSize) + (chunkSideSize / 2);
 	float yPos = generationOrigin.y + (-seaLevelOffset);
 	float zPos = generationOrigin.z + ((depthIndex - (chunkArrayDepth / 2)) * chunkSideSize) + (chunkSideSize / 2);
@@ -118,7 +87,7 @@ void ChunkManager::generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, 
 		original->state = Chunk::ChunkState::SHOULDREGENERATE;
 		Chunk::deleteChunkData(blockMatrix, chunkHeight, chunkSideSize);
 	}
-	internalLock.unlock();
+	unlockLP();
 }
 
 void ChunkManager::resetNeighbours() {
@@ -158,12 +127,6 @@ void ChunkManager::startGeneratorThreads() {
 	}
 }
 
-void ChunkManager::startOriginUpdaterThreads() {
-	for (int i = 0; i < nWorkersUpdate; i++) {
-		originUpdaterThreads.create_thread(boost::bind(&ChunkManager::originUpdaterThreadFunction, this));
-	}
-}
-
 void ChunkManager::generatorThreadFunction() {
 	while (!generatorsShouldStop) {
 		generateChunks();
@@ -176,12 +139,6 @@ void ChunkManager::builderThreadFunction() {
 	}
 }
 
-void ChunkManager::originUpdaterThreadFunction() {
-	while (!updaterShouldStop) {
-		updateGenerationOrigin();
-	}
-}
-
 void ChunkManager::reloadChunks() {
 	int rebuiltChunks = 0;
 	for (int i = 0; i < chunkArrayWidth; i++) {
@@ -189,14 +146,14 @@ void ChunkManager::reloadChunks() {
 			if (rebuiltChunks > 0) {
 				return;
 			}
-			internalLock.lock();
+			lockLP();
 			if (chunkMatrix[i][j]->state == Chunk::ChunkState::MESHBUILT) {
 				chunkMatrix[i][j]->loadMesh();
 				chunkMatrix[i][j]->state = Chunk::ChunkState::MESHLOADED;
 				chunkMatrix[i][j]->canDraw = true;
 				rebuiltChunks++;
 			}
-			internalLock.unlock();
+			unlockLP();
 		}
 	}
 }
@@ -207,18 +164,18 @@ void ChunkManager::rebuildChunks() {
 			if (buildersShouldStop) {
 				return;
 			}
-			internalLock.lock();
+			lockLP();
 			if (chunkMatrix[i][j]->state == Chunk::ChunkState::SHOULDREBUILD) {
 				chunkMatrix[i][j]->buildMesh();
 				chunkMatrix[i][j]->state = Chunk::ChunkState::MESHBUILT;
 			}
-			internalLock.unlock();
+			unlockLP();
 		}
 	}
 }
 
 void ChunkManager::drawChunks(Shader& shader, glm::mat4& projection, glm::mat4& view) {
-	internalLock.lock();
+	lockHP();
 	for (int i = 0; i < chunkArrayWidth; i++) {
 		for (int j = 0; j < chunkArrayDepth; j++) {
 			if (chunkMatrix[i][j]->state == Chunk::ChunkState::MESHLOADED || chunkMatrix[i][j]->canDraw) {
@@ -236,12 +193,12 @@ void ChunkManager::drawChunks(Shader& shader, glm::mat4& projection, glm::mat4& 
 			
 		}
 	}
-	internalLock.unlock();
+	unlockHP();
 }
 
 void ChunkManager::destroyBlock() {
 	float rayLength = 10.0f;
-	internalLock.lock();
+	lockLP();
 	std::vector<Cube*> cubes = RayCast::castRay(this, playerPosition, playerLookDirection, rayLength);
 	Cube* toDestroy = nullptr;
 	if (cubes.size() > 0) {
@@ -269,7 +226,7 @@ void ChunkManager::destroyBlock() {
 			ownerChunk->backNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
 		}
 	}
-	internalLock.unlock();
+	unlockLP();
 	//Naive solution (ray marching)
 	/*
 	glm::vec3 rayEnd = playerPosition;
@@ -308,7 +265,7 @@ void ChunkManager::destroyBlock() {
 
 void ChunkManager::placeBlock(Cube::CubeId cubeId) {
 	float rayLength = 10.0f;
-	internalLock.lock();
+	lockLP();
 	std::vector<Cube*> cubes = RayCast::castRay(this, playerPosition, playerLookDirection, rayLength);
 	Cube* toFill = nullptr;
 	if (cubes.size() > 0) {
@@ -336,7 +293,7 @@ void ChunkManager::placeBlock(Cube::CubeId cubeId) {
 			ownerChunk->backNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
 		}
 	}
-	internalLock.unlock();
+	unlockLP();
 }
 
 Cube* ChunkManager::getCubeByCoords(glm::vec3 coords) {
@@ -349,15 +306,10 @@ Cube* ChunkManager::getCubeByCoords(glm::vec3 coords) {
 	return chunkMatrix[chunkWidthIndex][chunkDepthIndex]->getCubeByCoords(coords);
 }
 
-void ChunkManager::updatePlayerData(glm::vec3& playerPos, glm::vec3& playerLookDir) {
-	internalLock.lock();
+void ChunkManager::updateGenerationOrigin(glm::vec3& playerPos, glm::vec3& playerLookDir) {
+	lockHP();
 	playerPosition = playerPos;
 	playerLookDirection = playerLookDir;
-	internalLock.unlock();
-}
-
-void ChunkManager::updateGenerationOrigin() {
-	internalLock.lock();
 	glm::vec3 quantizedPlayerPos = glm::vec3(((int(playerPosition.x)) / chunkSideSize) * chunkSideSize, 0.0f, ((int(playerPosition.z)) / chunkSideSize) * chunkSideSize);
 	glm::vec3 diffVec = quantizedPlayerPos - generationOrigin;
 	generationOrigin = quantizedPlayerPos;
@@ -384,8 +336,7 @@ void ChunkManager::updateGenerationOrigin() {
 		}
 	}
 	resetNeighbours();
-	internalLock.unlock();
-	boost::this_thread::sleep_for(boost::chrono::milliseconds(33));
+	unlockHP();
 }
 
 void ChunkManager::moveChunkMatrix(ChunkSide side) {
@@ -478,11 +429,28 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 	}
 }
 
+void ChunkManager::lockHP() {
+	internalLockNext.lock();
+	internalLockData.lock();
+	internalLockNext.unlock();
+}
+void ChunkManager::unlockHP() {
+	internalLockData.unlock();
+}
+void ChunkManager::lockLP() {
+	internalLockLP.lock();
+	internalLockNext.lock();
+	internalLockData.lock();
+	internalLockNext.unlock();
+}
+void ChunkManager::unlockLP() {
+	internalLockData.unlock();
+	internalLockLP.unlock();
+}
+
 ChunkManager::~ChunkManager() {
 	buildersShouldStop = true;
 	generatorsShouldStop = true;
-	updaterShouldStop = true;
 	builderThreads.join_all();
 	generatorThreads.join_all();
-	originUpdaterThreads.join_all();
 }

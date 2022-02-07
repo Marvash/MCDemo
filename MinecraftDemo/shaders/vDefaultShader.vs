@@ -13,6 +13,7 @@ out vec3 texColor3;
 
 uniform mat4 mvp;
 uniform samplerBuffer vertexesTexData;
+uniform samplerBuffer vertexesColorData;
 
 void populateTexData();
 
@@ -40,15 +41,15 @@ void populateTexData() {
         texCoords3.y = -1.0;
     }
     if(aVertexTexColorIndex >= 0) {
-        texColor1.r = texelFetch(vertexesTexData, aVertexTexColorIndex).r;
-        texColor1.g = texelFetch(vertexesTexData, aVertexTexColorIndex + 1).r;
-        texColor1.b = texelFetch(vertexesTexData, aVertexTexColorIndex + 2).r;
-        texColor2.r = texelFetch(vertexesTexData, aVertexTexColorIndex + 3).r;
-        texColor2.g = texelFetch(vertexesTexData, aVertexTexColorIndex + 4).r;
-        texColor2.b = texelFetch(vertexesTexData, aVertexTexColorIndex + 5).r;
-        texColor3.r = texelFetch(vertexesTexData, aVertexTexColorIndex + 6).r;
-        texColor3.g = texelFetch(vertexesTexData, aVertexTexColorIndex + 7).r;
-        texColor3.b = texelFetch(vertexesTexData, aVertexTexColorIndex + 8).r;
+        texColor1.r = texelFetch(vertexesColorData, aVertexTexColorIndex).r;
+        texColor1.g = texelFetch(vertexesColorData, aVertexTexColorIndex + 1).r;
+        texColor1.b = texelFetch(vertexesColorData, aVertexTexColorIndex + 2).r;
+        texColor2.r = texelFetch(vertexesColorData, aVertexTexColorIndex + 3).r;
+        texColor2.g = texelFetch(vertexesColorData, aVertexTexColorIndex + 4).r;
+        texColor2.b = texelFetch(vertexesColorData, aVertexTexColorIndex + 5).r;
+        texColor3.r = texelFetch(vertexesColorData, aVertexTexColorIndex + 6).r;
+        texColor3.g = texelFetch(vertexesColorData, aVertexTexColorIndex + 7).r;
+        texColor3.b = texelFetch(vertexesColorData, aVertexTexColorIndex + 8).r;
     } else {
         texColor1.r = -1.0;
         texColor1.g = -1.0;

@@ -13,7 +13,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void processInput(GLFWwindow* window);
-void testFunc();
+void toggleSpeedBoost(bool on);
+void testFunc(bool on);
 
 Camera camera(glm::vec3(0.0f, 2.0f, 0.0f));
 ChunkManager chunkManager(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -137,11 +138,12 @@ int main() {
 
 	AtlasManager* mainAtlas = AtlasManager::instance();
 	mainAtlas->init();
+	defaultShader.use();
 	mainAtlas->setTextureShaderUniforms(defaultShader);
-	
+
 	chunkManager.startGeneratorThreads();
 	chunkManager.startBuilderThreads();
-	chunkManager.startOriginUpdaterThreads();
+
 	float highestDelta = 0.0f;
 	while (!glfwWindowShouldClose(window)) {
 		float currentFrame = glfwGetTime();
@@ -153,7 +155,7 @@ int main() {
 		int screenWidth, screenHeight;
 		glfwGetWindowSize(window, &screenWidth, &screenHeight);
 		
-		chunkManager.updatePlayerData(camera.Position, camera.Front);
+		chunkManager.updateGenerationOrigin(camera.Position, camera.Front);
 
 		glViewport(0, 0, screenWidth, screenHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, msaaFramebuffer);
@@ -201,9 +203,27 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-void testFunc() {
-	if(chunkManager.test == 0)
-		chunkManager.test = 1;
+void testFunc(bool on) {
+	static bool wasOn = false;
+	if (!wasOn && on) {
+		float height = chunkManager.terrainGen.getHeight(camera.Position.x, camera.Position.z);
+		std::cout << "Final height is: " << height << std::endl;
+		wasOn = true;
+	} else if (wasOn && !on) {
+		wasOn = false;
+	}
+}
+
+void toggleSpeedBoost(bool on) {
+	static bool wasOn = false;
+	if (!wasOn && on) {
+		camera.MovementSpeed = camera.MovementSpeed * 2.0f;
+		wasOn = true;
+	}
+	else if(wasOn && !on) {
+		camera.MovementSpeed = camera.MovementSpeed / 2.0f;
+		wasOn = false;
+	}
 }
 
 void processInput(GLFWwindow* window)
@@ -236,8 +256,18 @@ void processInput(GLFWwindow* window)
 		selectedCubeId = Cube::CubeId::STONE_BLOCK;
 	}
 
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+		toggleSpeedBoost(true);
+	}
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+		toggleSpeedBoost(false);
+	}
+
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
-		testFunc();
+		testFunc(true);
+	}
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_RELEASE) {
+		testFunc(false);
 	}
 }
 

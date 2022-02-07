@@ -1,0 +1,320 @@
+	// DEFAULT
+
+	//---
+	colorData[0] = 1.0f;
+	colorData[1] = 1.0f;
+	colorData[2] = 1.0f;
+	colorData[3] = 1.0f;
+	colorData[4] = 1.0f;
+	colorData[5] = 1.0f;
+	colorData[6] = 1.0f;
+	colorData[7] = 1.0f;
+	colorData[8] = 1.0f;
+
+	colorData[9] = 1.0f;
+	colorData[10] = 1.0f;
+	colorData[11] = 1.0f;
+	colorData[12] = 1.0f;
+	colorData[13] = 1.0f;
+	colorData[14] = 1.0f;
+	colorData[15] = 1.0f;
+	colorData[16] = 1.0f;
+	colorData[17] = 1.0f;
+
+	colorData[18] = 1.0f;
+	colorData[19] = 1.0f;
+	colorData[20] = 1.0f;
+	colorData[21] = 1.0f;
+	colorData[22] = 1.0f;
+	colorData[23] = 1.0f;
+	colorData[24] = 1.0f;
+	colorData[25] = 1.0f;
+	colorData[26] = 1.0f;
+	//---
+
+	// GRASS CUBE
+
+	glm::vec3 plainsGrassColor = glm::pow(glm::vec3(0.568f, 0.741f, 0.349f), glm::vec3(2.2));
+	glm::vec3 taigaGrassColor = glm::pow(glm::vec3(0.525f, 0.717f, 0.513f), glm::vec3(2.2));
+	glm::vec3 forestGrassColor = glm::pow(glm::vec3(0.474f, 0.752f, 0.352f), glm::vec3(2.2));
+	glm::vec3 savanaGrassColor = glm::pow(glm::vec3(0.749f, 0.717f, 0.333f), glm::vec3(2.2));
+	glm::vec3 mountainsGrassColor = glm::pow(glm::vec3(0.603f, 0.745f, 0.294f), glm::vec3(2.2));
+	glm::vec3 hillsGrassColor = glm::pow(glm::vec3(0.541f, 0.713f, 0.537f), glm::vec3(2.2));
+	glm::vec3 jungleGrassColor = glm::pow(glm::vec3(0.349f, 0.788f, 0.235f), glm::vec3(2.2));
+
+	//---
+	colorData[27] = 1.0f;
+	colorData[28] = 1.0f;
+	colorData[29] = 1.0f;
+	colorData[30] = plainsGrassColor.r;
+	colorData[31] = plainsGrassColor.g;
+	colorData[32] = plainsGrassColor.b;
+	colorData[33] = 1.0f;
+	colorData[34] = 1.0f;
+	colorData[35] = 1.0f;
+
+	colorData[36] = plainsGrassColor.r;
+	colorData[37] = plainsGrassColor.g;
+	colorData[38] = plainsGrassColor.b;
+	colorData[39] = 1.0f;
+	colorData[40] = 1.0f;
+	colorData[41] = 1.0f;
+	colorData[42] = 1.0f;
+	colorData[43] = 1.0f;
+	colorData[44] = 1.0f;
+
+	colorData[45] = 1.0f;
+	colorData[46] = 1.0f;
+	colorData[47] = 1.0f;
+	colorData[48] = 1.0f;
+	colorData[49] = 1.0f;
+	colorData[50] = 1.0f;
+	colorData[51] = 1.0f;
+	colorData[52] = 1.0f;
+	colorData[53] = 1.0f;
+	//---
+	colorData[54] = 1.0f;
+	colorData[55] = 1.0f;
+	colorData[56] = 1.0f;
+	colorData[57] = taigaGrassColor.r;
+	colorData[58] = taigaGrassColor.g;
+	colorData[59] = taigaGrassColor.b;
+	colorData[60] = 1.0f;
+	colorData[61] = 1.0f;
+	colorData[62] = 1.0f;
+
+	colorData[63] = taigaGrassColor.r;
+	colorData[64] = taigaGrassColor.g;
+	colorData[65] = taigaGrassColor.b;
+	colorData[66] = 1.0f;
+	colorData[67] = 1.0f;
+	colorData[68] = 1.0f;
+	colorData[69] = 1.0f;
+	colorData[70] = 1.0f;
+	colorData[71] = 1.0f;
+
+	colorData[72] = 1.0f;
+	colorData[73] = 1.0f;
+	colorData[74] = 1.0f;
+	colorData[75] = 1.0f;
+	colorData[76] = 1.0f;
+	colorData[77] = 1.0f;
+	colorData[78] = 1.0f;
+	colorData[79] = 1.0f;
+	colorData[80] = 1.0f;
+	//---
+	colorData[81] = 1.0f;
+	colorData[82] = 1.0f;
+	colorData[83] = 1.0f;
+	colorData[84] = forestGrassColor.r;
+	colorData[85] = forestGrassColor.g;
+	colorData[86] = forestGrassColor.b;
+	colorData[87] = 1.0f;
+	colorData[88] = 1.0f;
+	colorData[89] = 1.0f;
+
+	colorData[90] = forestGrassColor.r;
+	colorData[91] = forestGrassColor.g;
+	colorData[92] = forestGrassColor.b;
+	colorData[93] = 1.0f;
+	colorData[94] = 1.0f;
+	colorData[95] = 1.0f;
+	colorData[96] = 1.0f;
+	colorData[97] = 1.0f;
+	colorData[98] = 1.0f;
+
+	colorData[99] = 1.0f;
+	colorData[100] = 1.0f;
+	colorData[101] = 1.0f;
+	colorData[102] = 1.0f;
+	colorData[103] = 1.0f;
+	colorData[104] = 1.0f;
+	colorData[105] = 1.0f;
+	colorData[106] = 1.0f;
+	colorData[107] = 1.0f;
+	//---
+	colorData[108] = 1.0f;
+	colorData[109] = 1.0f;
+	colorData[110] = 1.0f;
+	colorData[111] = savanaGrassColor.r;
+	colorData[112] = savanaGrassColor.g;
+	colorData[113] = savanaGrassColor.b;
+	colorData[114] = 1.0f;
+	colorData[115] = 1.0f;
+	colorData[116] = 1.0f;
+
+	colorData[117] = savanaGrassColor.r;
+	colorData[118] = savanaGrassColor.g;
+	colorData[119] = savanaGrassColor.b;
+	colorData[120] = 1.0f;
+	colorData[121] = 1.0f;
+	colorData[122] = 1.0f;
+	colorData[123] = 1.0f;
+	colorData[124] = 1.0f;
+	colorData[125] = 1.0f;
+
+	colorData[126] = 1.0f;
+	colorData[127] = 1.0f;
+	colorData[128] = 1.0f;
+	colorData[129] = 1.0f;
+	colorData[130] = 1.0f;
+	colorData[131] = 1.0f;
+	colorData[132] = 1.0f;
+	colorData[133] = 1.0f;
+	colorData[134] = 1.0f;
+	//---
+	colorData[135] = 1.0f;
+	colorData[136] = 1.0f;
+	colorData[137] = 1.0f;
+	colorData[138] = mountainsGrassColor.r;
+	colorData[139] = mountainsGrassColor.g;
+	colorData[140] = mountainsGrassColor.b;
+	colorData[141] = 1.0f;
+	colorData[142] = 1.0f;
+	colorData[143] = 1.0f;
+
+	colorData[144] = mountainsGrassColor.r;
+	colorData[145] = mountainsGrassColor.g;
+	colorData[146] = mountainsGrassColor.b;
+	colorData[147] = 1.0f;
+	colorData[148] = 1.0f;
+	colorData[149] = 1.0f;
+	colorData[150] = 1.0f;
+	colorData[151] = 1.0f;
+	colorData[152] = 1.0f;
+
+	colorData[153] = 1.0f;
+	colorData[154] = 1.0f;
+	colorData[155] = 1.0f;
+	colorData[156] = 1.0f;
+	colorData[157] = 1.0f;
+	colorData[158] = 1.0f;
+	colorData[159] = 1.0f;
+	colorData[160] = 1.0f;
+	colorData[161] = 1.0f;
+	//---
+	colorData[162] = 1.0f;
+	colorData[163] = 1.0f;
+	colorData[164] = 1.0f;
+	colorData[165] = hillsGrassColor.r;
+	colorData[166] = hillsGrassColor.g;
+	colorData[167] = hillsGrassColor.b;
+	colorData[168] = 1.0f;
+	colorData[169] = 1.0f;
+	colorData[170] = 1.0f;
+
+	colorData[171] = hillsGrassColor.r;
+	colorData[172] = hillsGrassColor.g;
+	colorData[173] = hillsGrassColor.b;
+	colorData[174] = 1.0f;
+	colorData[175] = 1.0f;
+	colorData[176] = 1.0f;
+	colorData[177] = 1.0f;
+	colorData[178] = 1.0f;
+	colorData[179] = 1.0f;
+
+	colorData[180] = 1.0f;
+	colorData[181] = 1.0f;
+	colorData[182] = 1.0f;
+	colorData[183] = 1.0f;
+	colorData[184] = 1.0f;
+	colorData[185] = 1.0f;
+	colorData[186] = 1.0f;
+	colorData[187] = 1.0f;
+	colorData[188] = 1.0f;
+	//---
+	colorData[189] = 1.0f;
+	colorData[190] = 1.0f;
+	colorData[191] = 1.0f;
+	colorData[192] = jungleGrassColor.r;
+	colorData[193] = jungleGrassColor.g;
+	colorData[194] = jungleGrassColor.b;
+	colorData[195] = 1.0f;
+	colorData[196] = 1.0f;
+	colorData[197] = 1.0f;
+
+	colorData[198] = jungleGrassColor.r;
+	colorData[199] = jungleGrassColor.g;
+	colorData[200] = jungleGrassColor.b;
+	colorData[201] = 1.0f;
+	colorData[202] = 1.0f;
+	colorData[203] = 1.0f;
+	colorData[204] = 1.0f;
+	colorData[205] = 1.0f;
+	colorData[206] = 1.0f;
+
+	colorData[207] = 1.0f;
+	colorData[208] = 1.0f;
+	colorData[209] = 1.0f;
+	colorData[210] = 1.0f;
+	colorData[211] = 1.0f;
+	colorData[212] = 1.0f;
+	colorData[213] = 1.0f;
+	colorData[214] = 1.0f;
+	colorData[215] = 1.0f;
+
+	// SNOWY GRASS CUBE
+
+	glm::vec3 taigaSnowyGrassColor = glm::pow(glm::vec3(0.525f, 0.717f, 0.513f), glm::vec3(2.2));
+	glm::vec3 tundraSnowyGrassColor = glm::pow(glm::vec3(0.501f, 0.705f, 0.592f), glm::vec3(2.2));
+	//--- TUNDRA
+	colorData[216] = 1.0f;
+	colorData[217] = 1.0f;
+	colorData[218] = 1.0f;
+	colorData[219] = 1.0f;
+	colorData[220] = 1.0f;
+	colorData[221] = 1.0f;
+	colorData[222] = 1.0f;
+	colorData[223] = 1.0f;
+	colorData[224] = 1.0f;
+
+	colorData[225] = tundraSnowyGrassColor.r;
+	colorData[226] = tundraSnowyGrassColor.g;
+	colorData[227] = tundraSnowyGrassColor.b;
+	colorData[228] = 1.0f;
+	colorData[229] = 1.0f;
+	colorData[230] = 1.0f;
+	colorData[231] = 1.0f;
+	colorData[232] = 1.0f;
+	colorData[233] = 1.0f;
+
+	colorData[234] = 1.0f;
+	colorData[235] = 1.0f;
+	colorData[236] = 1.0f;
+	colorData[237] = 1.0f;
+	colorData[238] = 1.0f;
+	colorData[239] = 1.0f;
+	colorData[240] = 1.0f;
+	colorData[241] = 1.0f;
+	colorData[242] = 1.0f;
+	//--- TAIGA
+	colorData[243] = 1.0f;
+	colorData[244] = 1.0f;
+	colorData[245] = 1.0f;
+	colorData[246] = 1.0f;
+	colorData[247] = 1.0f;
+	colorData[248] = 1.0f;
+	colorData[249] = 1.0f;
+	colorData[250] = 1.0f;
+	colorData[251] = 1.0f;
+
+	colorData[252] = taigaSnowyGrassColor.r;
+	colorData[253] = taigaSnowyGrassColor.g;
+	colorData[254] = taigaSnowyGrassColor.b;
+	colorData[255] = 1.0f;
+	colorData[256] = 1.0f;
+	colorData[257] = 1.0f;
+	colorData[258] = 1.0f;
+	colorData[259] = 1.0f;
+	colorData[260] = 1.0f;
+
+	colorData[261] = 1.0f;
+	colorData[262] = 1.0f;
+	colorData[263] = 1.0f;
+	colorData[264] = 1.0f;
+	colorData[265] = 1.0f;
+	colorData[266] = 1.0f;
+	colorData[267] = 1.0f;
+	colorData[268] = 1.0f;
+	colorData[269] = 1.0f;
+	//---

@@ -3,7 +3,6 @@
 #include "coreInclude.h"
 #include "Shader.h"
 #include "Cube.h"
-#include "ChunkManager.h"
 
 class Chunk {
 public:

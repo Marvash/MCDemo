@@ -245,7 +245,7 @@ void Chunk::buildMesh() {
 				size_t vertexCoordsBaseIndex = correctVertexCount * 3;
 				size_t texCoordsBaseIndex = correctVertexCount * 2;
 				int texCoordsIndex = Cube::getAtlasTexIndex(blockMatrix[i][j][w].cubeId, Cube::FaceSide::TOP);
-				int colorsIndex = Cube::getTexColor(blockMatrix[i][j][w].cubeId, Cube::FaceSide::TOP);
+				int colorsIndex = Cube::getBiomeCubeColors(blockMatrix[i][j][w].biomeId, blockMatrix[i][j][w].cubeId, Cube::FaceSide::TOP);
 				// TOP
 				Cube* neighbourCube = findNeighbourBlock(Cube::FaceSide::TOP, i, j, w);
 				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
@@ -261,7 +261,7 @@ void Chunk::buildMesh() {
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
 				texCoordsIndex = Cube::getAtlasTexIndex(blockMatrix[i][j][w].cubeId, Cube::FaceSide::BOTTOM);
-				colorsIndex = Cube::getTexColor(blockMatrix[i][j][w].cubeId, Cube::FaceSide::BOTTOM);
+				colorsIndex = Cube::getBiomeCubeColors(blockMatrix[i][j][w].biomeId, blockMatrix[i][j][w].cubeId, Cube::FaceSide::BOTTOM);
 				// BOTTOM
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::BOTTOM, i, j, w);
 				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
@@ -277,7 +277,7 @@ void Chunk::buildMesh() {
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
 				texCoordsIndex = Cube::getAtlasTexIndex(blockMatrix[i][j][w].cubeId, Cube::FaceSide::RIGHT);
-				colorsIndex = Cube::getTexColor(blockMatrix[i][j][w].cubeId, Cube::FaceSide::RIGHT);
+				colorsIndex = Cube::getBiomeCubeColors(blockMatrix[i][j][w].biomeId, blockMatrix[i][j][w].cubeId, Cube::FaceSide::RIGHT);
 				// RIGHT
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::RIGHT, i, j, w);
 				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
@@ -293,7 +293,7 @@ void Chunk::buildMesh() {
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
 				texCoordsIndex = Cube::getAtlasTexIndex(blockMatrix[i][j][w].cubeId, Cube::FaceSide::LEFT);
-				colorsIndex = Cube::getTexColor(blockMatrix[i][j][w].cubeId, Cube::FaceSide::LEFT);
+				colorsIndex = Cube::getBiomeCubeColors(blockMatrix[i][j][w].biomeId, blockMatrix[i][j][w].cubeId, Cube::FaceSide::LEFT);
 				// LEFT
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::LEFT, i, j, w);
 				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
@@ -309,7 +309,7 @@ void Chunk::buildMesh() {
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
 				texCoordsIndex = Cube::getAtlasTexIndex(blockMatrix[i][j][w].cubeId, Cube::FaceSide::FRONT);
-				colorsIndex = Cube::getTexColor(blockMatrix[i][j][w].cubeId, Cube::FaceSide::FRONT);
+				colorsIndex = Cube::getBiomeCubeColors(blockMatrix[i][j][w].biomeId, blockMatrix[i][j][w].cubeId, Cube::FaceSide::FRONT);
 				// FRONT
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::FRONT, i, j, w);
 				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
@@ -325,7 +325,7 @@ void Chunk::buildMesh() {
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
 				texCoordsIndex = Cube::getAtlasTexIndex(blockMatrix[i][j][w].cubeId, Cube::FaceSide::BACK);
-				colorsIndex = Cube::getTexColor(blockMatrix[i][j][w].cubeId, Cube::FaceSide::BACK);
+				colorsIndex = Cube::getBiomeCubeColors(blockMatrix[i][j][w].biomeId, blockMatrix[i][j][w].cubeId, Cube::FaceSide::BACK);
 				// BACK
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::BACK, i, j, w);
 				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
