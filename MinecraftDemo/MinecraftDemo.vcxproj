@@ -83,7 +83,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)/3rdparty/include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)/MinecraftDemo/include;$(SolutionDir)/3rdparty/include</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)/3rdparty/libs</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -145,7 +145,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\AtlasManager.cpp" />
-    <ClCompile Include="src\Biome.cpp" />
+    <ClCompile Include="src\Biomes\Biome.cpp" />
+    <ClCompile Include="src\Biomes\DesertBiome.cpp" />
+    <ClCompile Include="src\Biomes\ForestBiome.cpp" />
+    <ClCompile Include="src\Biomes\HillsBiome.cpp" />
+    <ClCompile Include="src\Biomes\JungleBiome.cpp" />
+    <ClCompile Include="src\Biomes\MountainsBiome.cpp" />
+    <ClCompile Include="src\Biomes\PlainsBiome.cpp" />
+    <ClCompile Include="src\Biomes\SavanaBiome.cpp" />
+    <ClCompile Include="src\Biomes\TaigaBiome.cpp" />
+    <ClCompile Include="src\Biomes\TundraBiome.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Chunk.cpp" />
     <ClCompile Include="src\ChunkManager.cpp" />
@@ -156,26 +165,37 @@
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\PerlinNoiseGenerator.cpp" />
     <ClCompile Include="src\TerrainGenerator.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\AtlasManager.h" />
-    <ClInclude Include="src\Biome.h" />
-    <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\Chunk.h" />
-    <ClInclude Include="src\ChunkManager.h" />
-    <ClInclude Include="src\coreInclude.h" />
-    <ClInclude Include="src\Cube.h" />
-    <ClInclude Include="src\RayCast.h" />
-    <ClInclude Include="src\Shader.h" />
-    <ClInclude Include="src\stb_image.h" />
-    <ClInclude Include="src\PerlinNoiseGenerator.h" />
-    <ClInclude Include="src\TerrainGenerator.h" />
+    <ClCompile Include="src\TreeBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fDefaultShader.fs" />
     <None Include="shaders\fScreenShader.fs" />
     <None Include="shaders\vDefaultShader.vs" />
     <None Include="shaders\vScreenShader.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\AtlasManager.h" />
+    <ClInclude Include="include\Biomes\Biome.h" />
+    <ClInclude Include="include\Biomes\DesertBiome.h" />
+    <ClInclude Include="include\Biomes\ForestBiome.h" />
+    <ClInclude Include="include\Biomes\HillsBiome.h" />
+    <ClInclude Include="include\Biomes\JungleBiome.h" />
+    <ClInclude Include="include\Biomes\MountainsBiome.h" />
+    <ClInclude Include="include\Biomes\PlainsBiome.h" />
+    <ClInclude Include="include\Biomes\SavanaBiome.h" />
+    <ClInclude Include="include\Biomes\TaigaBiome.h" />
+    <ClInclude Include="include\Biomes\TundraBiome.h" />
+    <ClInclude Include="include\Camera.h" />
+    <ClInclude Include="include\Chunk.h" />
+    <ClInclude Include="include\ChunkManager.h" />
+    <ClInclude Include="include\coreInclude.h" />
+    <ClInclude Include="include\Cube.h" />
+    <ClInclude Include="include\PerlinNoiseGenerator.h" />
+    <ClInclude Include="include\RayCast.h" />
+    <ClInclude Include="include\Shader.h" />
+    <ClInclude Include="include\stb_image.h" />
+    <ClInclude Include="include\TerrainGenerator.h" />
+    <ClInclude Include="include\TreeBuilder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

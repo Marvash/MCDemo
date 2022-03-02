@@ -1,6 +1,7 @@
 #pragma once
 
 #include "coreInclude.h"
+#include <boost/random/ranlux.hpp>
 
 class PerlinNoiseGenerator {
 public:
@@ -8,15 +9,21 @@ public:
 	bool generatorsShouldStop;
 
 	PerlinNoiseGenerator();
-	PerlinNoiseGenerator(const unsigned long long seed);
 	PerlinNoiseGenerator(const PerlinNoiseGenerator& other);
-	float getValue(float x, float y, int period);
-	float getValue(unsigned long long seed, float x, float y, int period);
+	float getValue(float x, float y);
 	void startGeneratorThreads();
 	void updatePlayerOffset(float newOffsetX, float newOffsetY);
 
 	PerlinNoiseGenerator& operator=(PerlinNoiseGenerator other);
+
+	void setSeed(unsigned long long newSeed);
+	unsigned long long getSeed();
+	void setPeriod(unsigned long newPeriod);
+	unsigned long getPeriod();
 private:
+
+	unsigned long long seed;
+	unsigned long period;
 
 	unsigned long long northSeed;
 	unsigned long long eastSeed;

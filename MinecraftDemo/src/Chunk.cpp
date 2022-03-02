@@ -13,7 +13,7 @@ Chunk::Chunk(int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
 	init(false),
 	state(ChunkState::SHOULDREGENERATE),
 	canDraw(false) {
-	blockMatrix = nullptr;
+	initEmptyBlockMatrix();
 }
 
 Chunk::Chunk(Cube*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
@@ -36,11 +36,22 @@ Chunk::Chunk(Cube*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 
 	this->blockMatrix = blockMatrix;
 }
 
-void Chunk::setBlockMatrix(Cube*** chunkData) {
-	if (blockMatrix != nullptr) {
-		deleteChunkData(blockMatrix, chunkHeight, chunkSideSize);
+void Chunk::initEmptyBlockMatrix() {
+	Cube*** blockMatrix = new Cube * *[chunkHeight];
+	for (int i = 0; i < chunkHeight; i++) {
+		blockMatrix[i] = new Cube * [chunkSideSize];
+		for (int j = 0; j < chunkSideSize; j++) {
+			blockMatrix[i][j] = new Cube[chunkSideSize];
+			for (int k = 0; k < chunkSideSize; k++) {
+				blockMatrix[i][j][k] = Cube(Cube::CubeId::AIR_BLOCK, this, nullptr);
+			}
+		}
 	}
-	blockMatrix = chunkData;
+	this->blockMatrix = blockMatrix;
+}
+
+Cube*** Chunk::getBlockMatrix() {
+	return blockMatrix;
 }
 
 void Chunk::setPosition(glm::vec3& position) {
@@ -236,7 +247,7 @@ void Chunk::buildMesh() {
 	for (int i = 0; i < chunkHeight; i++) {
 		for (int j = 0; j < chunkSideSize; j++) {
 			for (int w = 0; w < chunkSideSize; w++) {
-				if (blockMatrix[i][j][w].cubeId == Cube::CubeId::AIR_BLOCK) {
+				if (blockMatrix[i][j][w].getCubeId() == Cube::CubeId::AIR_BLOCK) {
 					continue;
 				}
 				float vertexBaseHeight = i + (blockSideSize / 2.0f);
@@ -244,11 +255,11 @@ void Chunk::buildMesh() {
 				float vertexBaseDepth = w - ((chunkSideSize / 2.0f) - (blockSideSize / 2.0f));
 				size_t vertexCoordsBaseIndex = correctVertexCount * 3;
 				size_t texCoordsBaseIndex = correctVertexCount * 2;
-				int texCoordsIndex = Cube::getAtlasTexIndex(blockMatrix[i][j][w].cubeId, Cube::FaceSide::TOP);
-				int colorsIndex = Cube::getBiomeCubeColors(blockMatrix[i][j][w].biomeId, blockMatrix[i][j][w].cubeId, Cube::FaceSide::TOP);
+				int texCoordsIndex = AtlasManager::getAtlasTexIndex(blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::TOP);
+				int colorsIndex = AtlasManager::getBiomeCubeColors(blockMatrix[i][j][w].getBiomeRef()->biomeId, blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::TOP);
 				// TOP
 				Cube* neighbourCube = findNeighbourBlock(Cube::FaceSide::TOP, i, j, w);
-				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
+				if (neighbourCube != nullptr && neighbourCube->isTransparent()) {
 					
 					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::TOP, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
@@ -260,11 +271,11 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = Cube::getAtlasTexIndex(blockMatrix[i][j][w].cubeId, Cube::FaceSide::BOTTOM);
-				colorsIndex = Cube::getBiomeCubeColors(blockMatrix[i][j][w].biomeId, blockMatrix[i][j][w].cubeId, Cube::FaceSide::BOTTOM);
+				texCoordsIndex = AtlasManager::getAtlasTexIndex(blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BOTTOM);
+				colorsIndex = AtlasManager::getBiomeCubeColors(blockMatrix[i][j][w].getBiomeRef()->biomeId, blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BOTTOM);
 				// BOTTOM
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::BOTTOM, i, j, w);
-				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
+				if (neighbourCube != nullptr && neighbourCube->isTransparent()) {
 
 					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::BOTTOM, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
@@ -276,11 +287,11 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = Cube::getAtlasTexIndex(blockMatrix[i][j][w].cubeId, Cube::FaceSide::RIGHT);
-				colorsIndex = Cube::getBiomeCubeColors(blockMatrix[i][j][w].biomeId, blockMatrix[i][j][w].cubeId, Cube::FaceSide::RIGHT);
+				texCoordsIndex = AtlasManager::getAtlasTexIndex(blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::RIGHT);
+				colorsIndex = AtlasManager::getBiomeCubeColors(blockMatrix[i][j][w].getBiomeRef()->biomeId, blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::RIGHT);
 				// RIGHT
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::RIGHT, i, j, w);
-				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
+				if (neighbourCube != nullptr && neighbourCube->isTransparent()) {
 
 					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::RIGHT, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
@@ -292,11 +303,11 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = Cube::getAtlasTexIndex(blockMatrix[i][j][w].cubeId, Cube::FaceSide::LEFT);
-				colorsIndex = Cube::getBiomeCubeColors(blockMatrix[i][j][w].biomeId, blockMatrix[i][j][w].cubeId, Cube::FaceSide::LEFT);
+				texCoordsIndex = AtlasManager::getAtlasTexIndex(blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::LEFT);
+				colorsIndex = AtlasManager::getBiomeCubeColors(blockMatrix[i][j][w].getBiomeRef()->biomeId, blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::LEFT);
 				// LEFT
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::LEFT, i, j, w);
-				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
+				if (neighbourCube != nullptr && neighbourCube->isTransparent()) {
 
 					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::LEFT, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
@@ -308,11 +319,11 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = Cube::getAtlasTexIndex(blockMatrix[i][j][w].cubeId, Cube::FaceSide::FRONT);
-				colorsIndex = Cube::getBiomeCubeColors(blockMatrix[i][j][w].biomeId, blockMatrix[i][j][w].cubeId, Cube::FaceSide::FRONT);
+				texCoordsIndex = AtlasManager::getAtlasTexIndex(blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::FRONT);
+				colorsIndex = AtlasManager::getBiomeCubeColors(blockMatrix[i][j][w].getBiomeRef()->biomeId, blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::FRONT);
 				// FRONT
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::FRONT, i, j, w);
-				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
+				if (neighbourCube != nullptr && neighbourCube->isTransparent()) {
 
 					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::FRONT, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
@@ -324,11 +335,11 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = Cube::getAtlasTexIndex(blockMatrix[i][j][w].cubeId, Cube::FaceSide::BACK);
-				colorsIndex = Cube::getBiomeCubeColors(blockMatrix[i][j][w].biomeId, blockMatrix[i][j][w].cubeId, Cube::FaceSide::BACK);
+				texCoordsIndex = AtlasManager::getAtlasTexIndex(blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BACK);
+				colorsIndex = AtlasManager::getBiomeCubeColors(blockMatrix[i][j][w].getBiomeRef()->biomeId, blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BACK);
 				// BACK
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::BACK, i, j, w);
-				if (neighbourCube != nullptr && neighbourCube->cubeId == Cube::CubeId::AIR_BLOCK) {
+				if (neighbourCube != nullptr && neighbourCube->isTransparent()) {
 
 					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::BACK, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);

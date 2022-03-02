@@ -49,24 +49,19 @@ void ChunkManager::generateChunks() {
 	}
 }
 
-void ChunkManager::generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, int depthIndex, Chunk* original) {
-	static int counter = 0;
-	Cube*** blockMatrix = new Cube** [chunkHeight];
-	for (int i = 0; i < chunkHeight; i++) {
-		blockMatrix[i] = new Cube* [chunkSideSize];
-		for (int j = 0; j < chunkSideSize; j++) {
-			blockMatrix[i][j] = new Cube[chunkSideSize];
-		}
-	}
-	terrainGen.generateChunk(blockMatrix, chunkPosition, original);
+void ChunkManager::generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, int depthIndex, Chunk* chunk) {
+
+	// Async terrain generation happens here
+	Cube*** chunkBlockMatrix = chunk->getBlockMatrix();
+	terrainGen.generateChunk(chunkBlockMatrix, chunkPosition);
+	terrainGen.decorateChunk(chunkBlockMatrix, chunkPosition);
 
 	lockLP();
 	float xPos = generationOrigin.x + ((widthIndex - (chunkArrayWidth / 2)) * chunkSideSize) + (chunkSideSize / 2);
 	float yPos = generationOrigin.y + (-seaLevelOffset);
 	float zPos = generationOrigin.z + ((depthIndex - (chunkArrayDepth / 2)) * chunkSideSize) + (chunkSideSize / 2);
-	Chunk* chunk = chunkMatrix[widthIndex][depthIndex];
-	if (original == chunk && xPos == chunkPosition.x && yPos == chunkPosition.y && zPos == chunkPosition.z) {
-		chunk->setBlockMatrix(blockMatrix);
+	Chunk* currentChunk = chunkMatrix[widthIndex][depthIndex];
+	if (currentChunk == chunk && xPos == chunkPosition.x && yPos == chunkPosition.y && zPos == chunkPosition.z) {
 		chunk->setPosition(chunkPosition);
 		resetNeighbours();
 		chunk->state = Chunk::ChunkState::SHOULDREBUILD;
@@ -84,8 +79,7 @@ void ChunkManager::generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, 
 		}
 	}
 	else {
-		original->state = Chunk::ChunkState::SHOULDREGENERATE;
-		Chunk::deleteChunkData(blockMatrix, chunkHeight, chunkSideSize);
+		chunk->state = Chunk::ChunkState::SHOULDREGENERATE;
 	}
 	unlockLP();
 }
@@ -146,14 +140,15 @@ void ChunkManager::reloadChunks() {
 			if (rebuiltChunks > 0) {
 				return;
 			}
-			lockLP();
+			lockHP();
 			if (chunkMatrix[i][j]->state == Chunk::ChunkState::MESHBUILT) {
 				chunkMatrix[i][j]->loadMesh();
 				chunkMatrix[i][j]->state = Chunk::ChunkState::MESHLOADED;
 				chunkMatrix[i][j]->canDraw = true;
 				rebuiltChunks++;
 			}
-			unlockLP();
+			//std::cout << chunkMatrix[i][j]->chunkPosition.x << " " << chunkMatrix[i][j]->chunkPosition.z << std::endl;
+			unlockHP();
 		}
 	}
 }
@@ -203,7 +198,7 @@ void ChunkManager::destroyBlock() {
 	Cube* toDestroy = nullptr;
 	if (cubes.size() > 0) {
 		for (int i = 0; i < cubes.size(); i++) {
-			if (cubes.at(i)->cubeId != Cube::CubeId::AIR_BLOCK) {
+			if (cubes.at(i)->getCubeId() != Cube::CubeId::AIR_BLOCK) {
 				toDestroy = cubes.at(i);
 				i = cubes.size();
 			}
@@ -211,7 +206,7 @@ void ChunkManager::destroyBlock() {
 	}
 	if (toDestroy != nullptr) {
 		toDestroy->setCubeId(Cube::CubeId::AIR_BLOCK);
-		Chunk* ownerChunk = toDestroy->chunkRef;
+		Chunk* ownerChunk = toDestroy->getChunkRef();
 		ownerChunk->state = Chunk::ChunkState::SHOULDREBUILD;
 		if (ownerChunk->leftNeighbour != nullptr && ownerChunk->leftNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
 			ownerChunk->leftNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
@@ -270,7 +265,7 @@ void ChunkManager::placeBlock(Cube::CubeId cubeId) {
 	Cube* toFill = nullptr;
 	if (cubes.size() > 0) {
 		for (int i = 0; i < cubes.size(); i++) {
-			if (i > 0 && cubes.at(i)->cubeId != Cube::CubeId::AIR_BLOCK) {
+			if (i > 0 && cubes.at(i)->getCubeId() != Cube::CubeId::AIR_BLOCK) {
 				toFill = cubes.at(i - 1);
 				i = cubes.size();
 			}
@@ -278,7 +273,7 @@ void ChunkManager::placeBlock(Cube::CubeId cubeId) {
 	}
 	if (toFill != nullptr) {
 		toFill->setCubeId(cubeId);
-		Chunk* ownerChunk = toFill->chunkRef;
+		Chunk* ownerChunk = toFill->getChunkRef();
 		ownerChunk->state = Chunk::ChunkState::SHOULDREBUILD;
 		if (ownerChunk->leftNeighbour != nullptr && ownerChunk->leftNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
 			ownerChunk->leftNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;

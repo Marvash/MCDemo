@@ -3,6 +3,7 @@
 #include "coreInclude.h"
 #include "Shader.h"
 #include "Cube.h"
+#include "AtlasManager.h"
 
 class Chunk {
 public:
@@ -36,7 +37,7 @@ public:
 	void loadMesh();
 	Cube* getBlockValue(int x, int y, int z);
 	static void deleteChunkData(Cube*** chunkData, int height, int width);
-	void setBlockMatrix(Cube*** chunkData);
+	Cube*** getBlockMatrix();
 	void setPosition(glm::vec3& position);
 	Cube* getCubeByCoords(glm::vec3 coords);
 	Cube* findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int width, int depth);
@@ -65,4 +66,5 @@ private:
 	void addFaceTexIndexes(size_t& vertexIndexesBaseIndex, int textureCoordinatesIndex, int colorIndex);
 	void addFaceIndexes(GLuint vertexBaseIndex, size_t& indexCount);
 	void cleanVerticesArrays();
+	void initEmptyBlockMatrix();
 };

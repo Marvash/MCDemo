@@ -162,7 +162,7 @@ int main() {
 		glClearColor(0.08f, 0.9f, 0.95f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
-		glCullFace(GL_BACK);
+		glEnable(GL_CULL_FACE);
 
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)screenWidth / (float)screenHeight, 0.1f, 10000.0f);
 		glm::mat4 view = camera.GetViewMatrix();
@@ -247,13 +247,19 @@ void processInput(GLFWwindow* window)
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-		selectedCubeId = Cube::CubeId::GRASS_BLOCK;
+		selectedCubeId = Cube::CubeId::SAND_BLOCK;
 	}
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
 		selectedCubeId = Cube::CubeId::DIRT_BLOCK;
 	}
 	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
 		selectedCubeId = Cube::CubeId::STONE_BLOCK;
+	}
+	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
+		selectedCubeId = Cube::CubeId::OAK_LOG;
+	}
+	if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS) {
+		selectedCubeId = Cube::CubeId::LEAVES;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {

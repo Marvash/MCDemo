@@ -3,16 +3,10 @@
 const int PerlinNoiseGenerator::nWorkersGens = 2;
 const int PerlinNoiseGenerator::cacheSize = 1024;
 
-PerlinNoiseGenerator::PerlinNoiseGenerator() {
-	srand(time(NULL));
-	northSeed = rand() * 1000000000;
-	eastSeed = northSeed + 1;
-	southSeed = northSeed + 2;
-	westSeed = northSeed + 3;
-}
-
-PerlinNoiseGenerator::PerlinNoiseGenerator(const unsigned long long seed) {
-	northSeed = seed;
+PerlinNoiseGenerator::PerlinNoiseGenerator() : period(1) {
+	boost::ranlux3 randomEngine;
+	randomEngine.seed(std::time(0));
+	northSeed = randomEngine();
 	eastSeed = northSeed + 1;
 	southSeed = northSeed + 2;
 	westSeed = northSeed + 3;
@@ -31,6 +25,26 @@ PerlinNoiseGenerator& PerlinNoiseGenerator::operator=(PerlinNoiseGenerator other
 	southSeed = other.southSeed;
 	westSeed = other.westSeed;
 	return *this;
+}
+
+void PerlinNoiseGenerator::setSeed(unsigned long long newSeed) {
+	seed = newSeed;
+	northSeed = seed;
+	eastSeed = northSeed + 1;
+	southSeed = northSeed + 2;
+	westSeed = northSeed + 3;
+}
+
+unsigned long long PerlinNoiseGenerator::getSeed() {
+	return seed;
+}
+
+void PerlinNoiseGenerator::setPeriod(unsigned long newPeriod) {
+	period = newPeriod;
+}
+
+unsigned long PerlinNoiseGenerator::getPeriod() {
+	return period;
 }
 
 void PerlinNoiseGenerator::updatePlayerOffset(float newOffsetX, float newOffsetY) {
@@ -214,12 +228,12 @@ void PerlinNoiseGenerator::cacheValue() {
 	*/
 }
 
-float PerlinNoiseGenerator::getValue(float x, float y, int period) {
+float PerlinNoiseGenerator::getValue(float x, float y) {
 
-	std::ranlux48_base northRandomEngine;
-	std::ranlux48_base eastRandomEngine;
-	std::ranlux48_base southRandomEngine;
-	std::ranlux48_base westRandomEngine;
+	boost::ranlux3 northRandomEngine;
+	boost::ranlux3 eastRandomEngine;
+	boost::ranlux3 southRandomEngine;
+	boost::ranlux3 westRandomEngine;
 
 	northRandomEngine.seed(northSeed);
 	eastRandomEngine.seed(eastSeed);
@@ -232,155 +246,25 @@ float PerlinNoiseGenerator::getValue(float x, float y, int period) {
 	unsigned long long bottomRightValue = 0;
 	unsigned long long tmpVal = 0;
 
-	int xOffset = (((int)x) / period) * period;
-	int yOffset = (((int)y) / period) * period;
-	int xJumps = glm::abs((((int)x) / period));
-	int yJumps = glm::abs((((int)y) / period));
+	long castPeriod = (long)period;
+
+	long xOffset = (((long)x) / castPeriod) * castPeriod;
+	long yOffset = (((long)y) / castPeriod) * castPeriod;
+	long xJumps = glm::abs((((long)x) / castPeriod));
+	long yJumps = glm::abs((((long)y) / castPeriod));
 	float xf, yf;
 	if (x <= 0.0f) {
-		xf = glm::abs((float)(xOffset - period) - x) / (float)period;
+		xf = glm::abs((float)(xOffset - castPeriod) - x) / (float)castPeriod;
 	}
 	else {
-		xf = glm::abs(x - (float)xOffset) / (float)period;
+		xf = glm::abs(x - (float)xOffset) / (float)castPeriod;
 	}
 
 	if (y <= 0.0f) {
-		yf = glm::abs(y - (float)yOffset) / (float)period;
+		yf = glm::abs(y - (float)yOffset) / (float)castPeriod;
 	}
 	else {
-		yf = glm::abs((float)(yOffset + period) - y) / (float)period;
-	}
-
-	if (yOffset == 0) {
-		if (y > 0.0f) {
-			tmpVal = southRandomEngine();
-			topLeftValue += tmpVal;
-			topRightValue += tmpVal;
-			tmpVal = southRandomEngine();
-			bottomLeftValue += tmpVal;
-			bottomRightValue += tmpVal;
-		}
-		else {
-			tmpVal = southRandomEngine();
-			bottomLeftValue += tmpVal;
-			bottomRightValue += tmpVal;
-			tmpVal = northRandomEngine();
-			topLeftValue += tmpVal;
-			topRightValue += tmpVal;
-		}
-	}
-	else {
-		if (y > 0.0f) {
-			southRandomEngine.discard(yJumps);
-			tmpVal = southRandomEngine();
-			topLeftValue += tmpVal;
-			topRightValue += tmpVal;
-			tmpVal = southRandomEngine();
-			bottomLeftValue += tmpVal;
-			bottomRightValue += tmpVal;
-		}
-		else {
-			northRandomEngine.discard(yJumps - 1);
-			tmpVal = northRandomEngine();
-			bottomLeftValue += tmpVal;
-			bottomRightValue += tmpVal;
-			tmpVal = northRandomEngine();
-			topLeftValue += tmpVal;
-			topRightValue += tmpVal;
-		}
-	}
-	if (xOffset == 0) {
-		if (x > 0.0f) {
-			tmpVal = eastRandomEngine();
-			bottomLeftValue += tmpVal;
-			topLeftValue += tmpVal;
-			tmpVal = eastRandomEngine();
-			bottomRightValue += tmpVal;
-			topRightValue += tmpVal;
-		}
-		else {
-			tmpVal = eastRandomEngine();
-			bottomRightValue += tmpVal;
-			topRightValue += tmpVal;
-			tmpVal = westRandomEngine();
-			bottomLeftValue += tmpVal;
-			topLeftValue += tmpVal;
-		}
-	}
-	else {
-		if (x > 0.0f) {
-			eastRandomEngine.discard(xJumps);
-			tmpVal = eastRandomEngine();
-			bottomLeftValue += tmpVal;
-			topLeftValue += tmpVal;
-			tmpVal = eastRandomEngine();
-			bottomRightValue += tmpVal;
-			topRightValue += tmpVal;
-		}
-		else {
-			westRandomEngine.discard(xJumps - 1);
-			tmpVal = westRandomEngine();
-			bottomRightValue += tmpVal;
-			topRightValue += tmpVal;
-			tmpVal = westRandomEngine();
-			bottomLeftValue += tmpVal;
-			topLeftValue += tmpVal;
-		}
-	}
-
-	glm::vec2 topLeftVector = glm::vec2(xf, yf - 1.0f);
-	glm::vec2 topRightVector = glm::vec2(xf - 1.0f, yf - 1.0f);
-	glm::vec2 bottomLeftVector = glm::vec2(xf, yf);
-	glm::vec2 bottomRightVector = glm::vec2(xf - 1.0f, yf);
-
-	float dotTopLeft = glm::dot(topLeftVector, getConstantVector(topLeftValue));
-	float dotTopRight = glm::dot(topRightVector, getConstantVector(topRightValue));
-	float dotBottomLeft = glm::dot(bottomLeftVector, getConstantVector(bottomLeftValue));
-	float dotBottomRight = glm::dot(bottomRightVector, getConstantVector(bottomRightValue));
-
-	float u = fadeFunc(xf);
-	float v = fadeFunc(yf);
-
-	float result = scalarLerp(scalarLerp(dotBottomLeft, dotTopLeft, v), scalarLerp(dotBottomRight, dotTopRight, v), u);
-
-	return result;
-}
-
-float PerlinNoiseGenerator::getValue(unsigned long long seed, float x, float y, int period) {
-
-	std::ranlux48_base northRandomEngine;
-	std::ranlux48_base eastRandomEngine;
-	std::ranlux48_base southRandomEngine;
-	std::ranlux48_base westRandomEngine;
-
-	northRandomEngine.seed(seed);
-	eastRandomEngine.seed(seed + 1);
-	southRandomEngine.seed(seed + 2);
-	westRandomEngine.seed(seed + 3);
-
-	unsigned long long topLeftValue = 0;
-	unsigned long long topRightValue = 0;
-	unsigned long long bottomLeftValue = 0;
-	unsigned long long bottomRightValue = 0;
-	unsigned long long tmpVal = 0;
-
-	int xOffset = (((int)x) / period) * period;
-	int yOffset = (((int)y) / period) * period;
-	int xJumps = glm::abs((((int)x) / period));
-	int yJumps = glm::abs((((int)y) / period));
-	float xf, yf;
-	if (x <= 0.0f) {
-		xf = glm::abs((float)(xOffset - period) - x) / (float)period;
-	}
-	else {
-		xf = glm::abs(x - (float)xOffset) / (float)period;
-	}
-
-	if (y <= 0.0f) {
-		yf = glm::abs(y - (float)yOffset) / (float)period;
-	}
-	else {
-		yf = glm::abs((float)(yOffset + period) - y) / (float)period;
+		yf = glm::abs((float)(yOffset + castPeriod) - y) / (float)castPeriod;
 	}
 
 	if (yOffset == 0) {

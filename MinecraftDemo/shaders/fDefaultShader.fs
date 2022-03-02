@@ -4,9 +4,10 @@ out vec4 FragColor;
 
 uniform sampler2D texAtlas;
 
-in vec2 texCoords1;
-in vec2 texCoords2;
-in vec2 texCoords3;
+// Centroid is needed to not cause texture bleed with multisampling enabled
+centroid in vec2 texCoords1;
+centroid in vec2 texCoords2;
+centroid in vec2 texCoords3;
 in vec3 texColor1;
 in vec3 texColor2;
 in vec3 texColor3;
@@ -16,6 +17,8 @@ void main()
     vec3 color = vec3(0.956, 0, 0.631);
     
     if(texCoords1.x >= 0.0) {
+        if(texture(texAtlas, texCoords1).a < 0.1)
+            discard;
         color = texColor1 * texture(texAtlas, texCoords1).rgb;
     }
     

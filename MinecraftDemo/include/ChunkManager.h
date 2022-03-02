@@ -55,7 +55,7 @@ private:
 	boost::thread_group generatorThreads;
 	boost::thread_group builderThreads;
 
-	void generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, int depthIndex, Chunk* original);
+	void generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, int depthIndex, Chunk* chunk);
 	void resetNeighbours();
 	void moveChunkMatrix(ChunkSide side);
 	void generatorThreadFunction();

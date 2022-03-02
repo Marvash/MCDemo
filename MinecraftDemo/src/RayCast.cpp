@@ -73,7 +73,7 @@ std::vector<Cube*> RayCast::castRay(ChunkManager* manager, glm::vec3 rayOrigin, 
 			if (xDir < 0.0f) {
 				side = Cube::FaceSide::LEFT;
 			}
-			cubes.push_back(cubes.at(cubes.size() - 1)->chunkRef->findNeighbourBlock(side, cubes.at(cubes.size() - 1)));
+			cubes.push_back(cubes.at(cubes.size() - 1)->getChunkRef()->findNeighbourBlock(side, cubes.at(cubes.size() - 1)));
 		}
 		else if (minRayLength == glm::length(yRay)) {
 			yRay.x += yRayDirAux.x;
@@ -83,7 +83,7 @@ std::vector<Cube*> RayCast::castRay(ChunkManager* manager, glm::vec3 rayOrigin, 
 			if (yDir < 0.0f) {
 				side = Cube::FaceSide::BOTTOM;
 			}
-			cubes.push_back(cubes.at(cubes.size() - 1)->chunkRef->findNeighbourBlock(side, cubes.at(cubes.size() - 1)));
+			cubes.push_back(cubes.at(cubes.size() - 1)->getChunkRef()->findNeighbourBlock(side, cubes.at(cubes.size() - 1)));
 		}
 		else {
 			zRay.x += zRayDirAux.x;
@@ -93,7 +93,7 @@ std::vector<Cube*> RayCast::castRay(ChunkManager* manager, glm::vec3 rayOrigin, 
 			if (zDir < 0.0f) {
 				side = Cube::FaceSide::BACK;
 			}
-			cubes.push_back(cubes.at(cubes.size() - 1)->chunkRef->findNeighbourBlock(side, cubes.at(cubes.size() - 1)));
+			cubes.push_back(cubes.at(cubes.size() - 1)->getChunkRef()->findNeighbourBlock(side, cubes.at(cubes.size() - 1)));
 		}
 	}
 	return cubes;

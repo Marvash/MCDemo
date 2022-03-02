@@ -1,11 +1,10 @@
 #pragma once
 
 #include "coreInclude.h"
-#include "AtlasManager.h"
 #include "Shader.h"
-#include "Biome.h"
 
 class Chunk;
+class Biome;
 
 class Cube {
 public:
@@ -25,24 +24,31 @@ public:
 		GRASS_BLOCK,
 		STONE_BLOCK,
 		SAND_BLOCK,
-		SNOWY_GRASS_BLOCK
+		SNOWY_GRASS_BLOCK,
+		OAK_LOG,
+		LEAVES
 	};
 
-	CubeId cubeId;
-	Chunk* chunkRef;
-	Biome::BiomeID biomeId;
+	
 
 	Cube();
 	~Cube();
-	Cube(CubeId cubeId, Chunk* chunkRef, Biome::BiomeID biomeId);
+	Cube(CubeId cubeId, Chunk* chunkRef, Biome* biomeRef);
 	
 	static std::string getDisplayName(CubeId cubeId);
 	static int getNumericId(CubeId cubeId);
-	static int getAtlasTexIndex(CubeId cubeId, FaceSide faceSide);
-	static int getBiomeCubeColors(Biome::BiomeID biomeId, Cube::CubeId cubeId, Cube::FaceSide faceSide);
 
 	CubeId getCubeId();
 	void setCubeId(CubeId cubeId);
-	
+	Chunk* getChunkRef();
+	void setChunkRef(Chunk* chunk);
+	Biome* getBiomeRef();
+	void setBiomeRef(Biome* biome);
+	bool isTransparent();
+
+private:
+	CubeId cubeId;
+	Chunk* chunkRef;
+	Biome* biomeRef;
 };
 

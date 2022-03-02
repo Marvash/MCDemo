@@ -2,7 +2,7 @@
 
 AtlasManager* AtlasManager::singleton;
 
-AtlasManager::AtlasManager() : atlasWidth(0), atlasHeight(0), textureOffset(0.0001f) {
+AtlasManager::AtlasManager() : atlasWidth(0), atlasHeight(0), textureOffset(0.0f) {
 	glGenTextures(1, &atlas);
 }
 
@@ -63,6 +63,232 @@ float AtlasManager::getCoordX(int spriteNum) {
 float AtlasManager::getCoordY(int spriteNum) {
 	float spriteHeight = (atlasHeight / numSpritesY);
 	return 1.0f - ((spriteHeight * spriteNum) / atlasHeight);
+}
+
+int AtlasManager::getAtlasTexIndex(Cube::CubeId cubeId, Cube::FaceSide faceSide) {
+	switch (cubeId) {
+	case Cube::CubeId::GRASS_BLOCK:
+		switch (faceSide) {
+		case Cube::FaceSide::RIGHT:
+		case Cube::FaceSide::LEFT:
+		case Cube::FaceSide::FRONT:
+		case Cube::FaceSide::BACK:
+			return 0;
+		case Cube::FaceSide::TOP:
+			return 24;
+		case Cube::FaceSide::BOTTOM:
+			return 48;
+		}
+		break;
+	case Cube::CubeId::DIRT_BLOCK:
+		return 72;
+	case Cube::CubeId::STONE_BLOCK:
+		return 96;
+	case Cube::CubeId::SAND_BLOCK:
+		return 120;
+	case Cube::CubeId::SNOWY_GRASS_BLOCK:
+		switch (faceSide) {
+		case Cube::FaceSide::RIGHT:
+		case Cube::FaceSide::LEFT:
+		case Cube::FaceSide::FRONT:
+		case Cube::FaceSide::BACK:
+			return 144;
+		case Cube::FaceSide::TOP:
+			return 168;
+		case Cube::FaceSide::BOTTOM:
+			return 192;
+		}
+		break;
+	case Cube::CubeId::OAK_LOG:
+		switch (faceSide) {
+		case Cube::FaceSide::RIGHT:
+		case Cube::FaceSide::LEFT:
+		case Cube::FaceSide::FRONT:
+		case Cube::FaceSide::BACK:
+			return 216;
+		case Cube::FaceSide::TOP:
+		case Cube::FaceSide::BOTTOM:
+			return 240;
+		}
+		break;
+	case Cube::CubeId::LEAVES:
+		return 264;
+		break;
+	}
+	return -1;
+}
+
+int AtlasManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId, Cube::FaceSide faceSide) {
+	switch (biomeId) {
+	case Biome::BiomeId::TUNDRA:
+		switch (cubeId) {
+		case Cube::CubeId::SNOWY_GRASS_BLOCK:
+			switch (faceSide) {
+			case Cube::FaceSide::RIGHT:
+			case Cube::FaceSide::LEFT:
+			case Cube::FaceSide::FRONT:
+			case Cube::FaceSide::BACK:
+				return 198;
+			case Cube::FaceSide::TOP:
+				return 207;
+			case Cube::FaceSide::BOTTOM:
+				return 216;
+			}
+			break;
+		case Cube::CubeId::LEAVES:
+			return 252;
+		}
+		break;
+	case Biome::BiomeId::TAIGA:
+		switch (cubeId) {
+		case Cube::CubeId::SNOWY_GRASS_BLOCK:
+			switch (faceSide) {
+			case Cube::FaceSide::RIGHT:
+			case Cube::FaceSide::LEFT:
+			case Cube::FaceSide::FRONT:
+			case Cube::FaceSide::BACK:
+				return 225;
+			case Cube::FaceSide::TOP:
+				return 234;
+			case Cube::FaceSide::BOTTOM:
+				return 243;
+			}
+			break;
+		case Cube::CubeId::GRASS_BLOCK:
+			switch (faceSide) {
+			case Cube::FaceSide::RIGHT:
+			case Cube::FaceSide::LEFT:
+			case Cube::FaceSide::FRONT:
+			case Cube::FaceSide::BACK:
+				return 36;
+			case Cube::FaceSide::TOP:
+				return 45;
+			case Cube::FaceSide::BOTTOM:
+				return 54;
+			}
+			break;
+		case Cube::CubeId::LEAVES:
+			return 252;
+		}
+		break;
+	case Biome::BiomeId::SAVANA:
+		switch (cubeId) {
+		case Cube::CubeId::GRASS_BLOCK:
+			switch (faceSide) {
+			case Cube::FaceSide::RIGHT:
+			case Cube::FaceSide::LEFT:
+			case Cube::FaceSide::FRONT:
+			case Cube::FaceSide::BACK:
+				return 90;
+			case Cube::FaceSide::TOP:
+				return 99;
+			case Cube::FaceSide::BOTTOM:
+				return 108;
+			}
+			break;
+		case Cube::CubeId::LEAVES:
+			return 252;
+		}
+		break;
+	case Biome::BiomeId::DESERT:
+		break;
+	case Biome::BiomeId::MOUNTAINS:
+		switch (cubeId) {
+		case Cube::CubeId::GRASS_BLOCK:
+			switch (faceSide) {
+			case Cube::FaceSide::RIGHT:
+			case Cube::FaceSide::LEFT:
+			case Cube::FaceSide::FRONT:
+			case Cube::FaceSide::BACK:
+				return 117;
+			case Cube::FaceSide::TOP:
+				return 126;
+			case Cube::FaceSide::BOTTOM:
+				return 135;
+			}
+			break;
+		case Cube::CubeId::LEAVES:
+			return 252;
+		}
+		break;
+	case Biome::BiomeId::HILLS:
+		switch (cubeId) {
+		case Cube::CubeId::GRASS_BLOCK:
+			switch (faceSide) {
+			case Cube::FaceSide::RIGHT:
+			case Cube::FaceSide::LEFT:
+			case Cube::FaceSide::FRONT:
+			case Cube::FaceSide::BACK:
+				return 144;
+			case Cube::FaceSide::TOP:
+				return 153;
+			case Cube::FaceSide::BOTTOM:
+				return 162;
+			}
+			break;
+		case Cube::CubeId::LEAVES:
+			return 252;
+		}
+		break;
+	case Biome::BiomeId::PLAINS:
+		switch (cubeId) {
+		case Cube::CubeId::GRASS_BLOCK:
+			switch (faceSide) {
+			case Cube::FaceSide::RIGHT:
+			case Cube::FaceSide::LEFT:
+			case Cube::FaceSide::FRONT:
+			case Cube::FaceSide::BACK:
+				return 9;
+			case Cube::FaceSide::TOP:
+				return 18;
+			case Cube::FaceSide::BOTTOM:
+				return 27;
+			}
+			break;
+		case Cube::CubeId::LEAVES:
+			return 252;
+		}
+		break;
+	case Biome::BiomeId::FOREST:
+		switch (cubeId) {
+		case Cube::CubeId::GRASS_BLOCK:
+			switch (faceSide) {
+			case Cube::FaceSide::RIGHT:
+			case Cube::FaceSide::LEFT:
+			case Cube::FaceSide::FRONT:
+			case Cube::FaceSide::BACK:
+				return 63;
+			case Cube::FaceSide::TOP:
+				return 72;
+			case Cube::FaceSide::BOTTOM:
+				return 81;
+			}
+			break;
+		case Cube::CubeId::LEAVES:
+			return 252;
+		}
+		break;
+	case Biome::BiomeId::JUNGLE:
+		switch (cubeId) {
+		case Cube::CubeId::GRASS_BLOCK:
+			switch (faceSide) {
+			case Cube::FaceSide::RIGHT:
+			case Cube::FaceSide::LEFT:
+			case Cube::FaceSide::FRONT:
+			case Cube::FaceSide::BACK:
+				return 171;
+			case Cube::FaceSide::TOP:
+				return 180;
+			case Cube::FaceSide::BOTTOM:
+				return 189;
+			}
+			break;
+		case Cube::CubeId::LEAVES:
+			return 252;
+		}
+		break;
+	}
+	return 0;
 }
 
 void AtlasManager::loadTextureBuffer() {
@@ -396,6 +622,100 @@ void AtlasManager::init() {
 	texData[214] = -1.0f;
 	texData[215] = -1.0f;
 
+	// OAK LOG
+
+	// SIDE
+	// Top left
+	texData[216] = getCoordX(3) + textureOffset;
+	texData[217] = -1.0f;
+	texData[218] = -1.0f;
+	texData[219] = getCoordY(14) - textureOffset;
+	texData[220] = -1.0f;
+	texData[221] = -1.0f;
+	// Top right
+	texData[222] = getCoordX(4) - textureOffset;
+	texData[223] = -1.0f;
+	texData[224] = -1.0f;
+	texData[225] = getCoordY(14) - textureOffset;
+	texData[226] = -1.0f;
+	texData[227] = -1.0f;
+	// Bottom right
+	texData[228] = getCoordX(4) - textureOffset;
+	texData[229] = -1.0f;
+	texData[230] = -1.0f;
+	texData[231] = getCoordY(15) + textureOffset;
+	texData[232] = -1.0f;
+	texData[233] = -1.0f;
+	// Bottom left
+	texData[234] = getCoordX(3) + textureOffset;
+	texData[235] = -1.0f;
+	texData[236] = -1.0f;
+	texData[237] = getCoordY(15) + textureOffset;
+	texData[238] = -1.0f;
+	texData[239] = -1.0f;
+
+	// BOTTOM
+	// Top left
+	texData[240] = getCoordX(4) + textureOffset;
+	texData[241] = -1.0f;
+	texData[242] = -1.0f;
+	texData[243] = getCoordY(14) - textureOffset;
+	texData[244] = -1.0f;
+	texData[245] = -1.0f;
+	// Top right
+	texData[246] = getCoordX(5) - textureOffset;
+	texData[247] = -1.0f;
+	texData[248] = -1.0f;
+	texData[249] = getCoordY(14) - textureOffset;
+	texData[250] = -1.0f;
+	texData[251] = -1.0f;
+	// Bottom right
+	texData[252] = getCoordX(5) - textureOffset;
+	texData[253] = -1.0f;
+	texData[254] = -1.0f;
+	texData[255] = getCoordY(15) + textureOffset;
+	texData[256] = -1.0f;
+	texData[257] = -1.0f;
+	// Bottom left
+	texData[258] = getCoordX(4) + textureOffset;
+	texData[259] = -1.0f;
+	texData[260] = -1.0f;
+	texData[261] = getCoordY(15) + textureOffset;
+	texData[262] = -1.0f;
+	texData[263] = -1.0f;
+
+	// LEAVES
+
+	// BOTTOM
+	// Top left
+	texData[264] = getCoordX(4) + textureOffset;
+	texData[265] = -1.0f;
+	texData[266] = -1.0f;
+	texData[267] = getCoordY(13) - textureOffset;
+	texData[268] = -1.0f;
+	texData[269] = -1.0f;
+	// Top right
+	texData[270] = getCoordX(5) - textureOffset;
+	texData[271] = -1.0f;
+	texData[272] = -1.0f;
+	texData[273] = getCoordY(13) - textureOffset;
+	texData[274] = -1.0f;
+	texData[275] = -1.0f;
+	// Bottom right
+	texData[276] = getCoordX(5) - textureOffset;
+	texData[277] = -1.0f;
+	texData[278] = -1.0f;
+	texData[279] = getCoordY(14) + textureOffset;
+	texData[280] = -1.0f;
+	texData[281] = -1.0f;
+	// Bottom left
+	texData[282] = getCoordX(4) + textureOffset;
+	texData[283] = -1.0f;
+	texData[284] = -1.0f;
+	texData[285] = getCoordY(14) + textureOffset;
+	texData[286] = -1.0f;
+	texData[287] = -1.0f;
+
 	std::cout << "Loading texture buffer... " << std::endl;
 	loadTextureBuffer();
 	std::cout << "Texture buffer loaded" << std::endl;
@@ -699,6 +1019,22 @@ void AtlasManager::init() {
 	colorData[249] = 1.0f;
 	colorData[250] = 1.0f;
 	colorData[251] = 1.0f;
+	//---
+
+	// LEAVES
+
+	glm::vec3 forestLeavesColor = glm::pow(glm::vec3(0.349f, 0.682f, 0.188f), glm::vec3(2.2));
+
+	//--- FOREST
+	colorData[252] = forestLeavesColor.r;
+	colorData[253] = forestLeavesColor.g;
+	colorData[254] = forestLeavesColor.b;
+	colorData[255] = 1.0f;
+	colorData[256] = 1.0f;
+	colorData[257] = 1.0f;
+	colorData[258] = 1.0f;
+	colorData[259] = 1.0f;
+	colorData[260] = 1.0f;
 	//---
 
 	std::cout << "Loading color buffer... " << std::endl;
