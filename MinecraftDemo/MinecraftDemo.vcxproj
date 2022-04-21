@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -83,7 +83,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)/MinecraftDemo/include;$(SolutionDir)/3rdparty/include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)/3rdparty/include;$(SolutionDir)/MinecraftDemo/src</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)/3rdparty/libs</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -144,58 +144,159 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\AtlasManager.cpp" />
-    <ClCompile Include="src\Biomes\Biome.cpp" />
-    <ClCompile Include="src\Biomes\DesertBiome.cpp" />
-    <ClCompile Include="src\Biomes\ForestBiome.cpp" />
-    <ClCompile Include="src\Biomes\HillsBiome.cpp" />
-    <ClCompile Include="src\Biomes\JungleBiome.cpp" />
-    <ClCompile Include="src\Biomes\MountainsBiome.cpp" />
-    <ClCompile Include="src\Biomes\PlainsBiome.cpp" />
-    <ClCompile Include="src\Biomes\SavanaBiome.cpp" />
-    <ClCompile Include="src\Biomes\TaigaBiome.cpp" />
-    <ClCompile Include="src\Biomes\TundraBiome.cpp" />
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\Chunk.cpp" />
-    <ClCompile Include="src\ChunkManager.cpp" />
-    <ClCompile Include="src\Cube.cpp" />
-    <ClCompile Include="src\glad.c" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\RayCast.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\PerlinNoiseGenerator.cpp" />
-    <ClCompile Include="src\TerrainGenerator.cpp" />
-    <ClCompile Include="src\TreeBuilder.cpp" />
+    <ClCompile Include="src\Core\Application\Application.cpp" />
+    <ClCompile Include="src\Core\Events\KeyEvent.cpp" />
+    <ClCompile Include="src\Core\Game\Biomes\BiomeBuilder.cpp" />
+    <ClCompile Include="src\Core\Game\Biomes\BiomeColors.cpp" />
+    <ClCompile Include="src\Core\Game\Biomes\BiomeManager.cpp" />
+    <ClCompile Include="src\Core\Game\GameServiceLocator\GameServiceLocator.cpp" />
+    <ClCompile Include="src\Core\Game\Layers\GameLayer.cpp" />
+    <ClCompile Include="src\Core\Game\Layers\PauseMenuLayer.cpp" />
+    <ClCompile Include="src\Core\LayerStack.cpp" />
+    <ClCompile Include="src\Core\Layer\Layer.cpp" />
+    <ClCompile Include="src\Core\Game\Atlas\AtlasTexCoordinates.cpp" />
+    <ClCompile Include="src\Core\Services\Application\ApplicationManager.cpp" />
+    <ClCompile Include="src\Core\States\ApplicationCoreState.cpp" />
+    <ClCompile Include="src\Core\States\GameCoreState.cpp" />
+    <ClCompile Include="src\Core\Textures\AtlasTexture.cpp" />
+    <ClCompile Include="src\Core\Game\Atlas\Atlas.cpp" />
+    <ClCompile Include="src\Core\Game\Player\Player.cpp" />
+    <ClCompile Include="src\Core\Game\InputHandler\InputHandler.cpp" />
+    <ClCompile Include="src\Core\GameObject\GameObject.cpp" />
+    <ClCompile Include="src\Core\Textures\ImageTexture2D.cpp" />
+    <ClCompile Include="src\Core\Textures\MultisampleTexture2D.cpp" />
+    <ClCompile Include="src\MinecraftApplication.cpp" />
+    <ClCompile Include="src\Core\Services\CoreServiceLocator.cpp" />
+    <ClCompile Include="src\Core\Events\MouseButtonEvent.cpp" />
+    <ClCompile Include="src\Core\Events\MouseScrollEvent.cpp" />
+    <ClCompile Include="src\Core\Events\MouseMoveEvent.cpp" />
+    <ClCompile Include="src\Core\Services\CoreService.cpp" />
+    <ClCompile Include="src\Core\Exceptions\RendererException.cpp" />
+    <ClCompile Include="src\Core\Events\WindowResizeEvent.cpp" />
+    <ClCompile Include="src\Core\Events\Event.cpp" />
+    <ClCompile Include="src\Core\CoreEventDispatcher.cpp" />
+    <ClCompile Include="src\Core\States\MainMenuCoreState.cpp" />
+    <ClCompile Include="src\Core\States\QuitCoreState.cpp" />
+    <ClCompile Include="src\Core\Exceptions\Exception.cpp" />
+    <ClCompile Include="src\Core\Services\Input\InputManager.cpp" />
+    <ClCompile Include="src\Core\Services\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Core\Game\Biomes\Biome.cpp" />
+    <ClCompile Include="src\Core\Game\Biomes\DesertBiome.cpp" />
+    <ClCompile Include="src\Core\Game\Biomes\ForestBiome.cpp" />
+    <ClCompile Include="src\Core\Game\Biomes\HillsBiome.cpp" />
+    <ClCompile Include="src\Core\Game\Biomes\JungleBiome.cpp" />
+    <ClCompile Include="src\Core\Game\Biomes\MountainsBiome.cpp" />
+    <ClCompile Include="src\Core\Game\Biomes\PlainsBiome.cpp" />
+    <ClCompile Include="src\Core\Game\Biomes\SavanaBiome.cpp" />
+    <ClCompile Include="src\Core\Game\Biomes\TaigaBiome.cpp" />
+    <ClCompile Include="src\Core\Game\Biomes\TundraBiome.cpp" />
+    <ClCompile Include="src\Core\Game\Camera\Camera.cpp" />
+    <ClCompile Include="src\Core\Game\Chunk\Chunk.cpp" />
+    <ClCompile Include="src\Core\Game\Chunk\ChunkManager.cpp" />
+    <ClCompile Include="src\Core\Core.cpp" />
+    <ClCompile Include="src\Core\States\InitCoreState.cpp" />
+    <ClCompile Include="src\Core\Game\Cube\Cube.cpp" />
+    <ClCompile Include="src\glad\glad.c" />
+    <ClCompile Include="src\main_old.cpp" />
+    <ClCompile Include="src\Core\Game\RayCast\RayCast.cpp" />
+    <ClCompile Include="src\Core\Shaders\Shader.cpp" />
+    <ClCompile Include="src\Utils\Random\PerlinGenerator\PerlinNoiseGenerator.cpp" />
+    <ClCompile Include="src\Core\Game\TerrainGenerator\TerrainGenerator.cpp" />
+    <ClCompile Include="src\Core\Game\TerrainGenerator\TreeBuilder.cpp" />
+    <ClCompile Include="src\Utils\Mediator\Mediator.cpp" />
+    <ClCompile Include="src\Core\Services\Window\Window.cpp" />
+    <ClCompile Include="src\Core\Exceptions\WindowException.cpp" />
+    <ClCompile Include="src\Core\Seed\WorldSeeds.cpp" />
+    <ClCompile Include="src\Core\Seed\WorldSeedsBuilder.cpp" />
+    <ClCompile Include="src\Core\Events\WindowInitEvent.cpp" />
+    <ClCompile Include="src\Core\Textures\Texture.cpp" />
+    <ClCompile Include="src\Core\Textures\TextureBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fDefaultShader.fs" />
     <None Include="shaders\fScreenShader.fs" />
+    <None Include="shaders\fShader.fs" />
     <None Include="shaders\vDefaultShader.vs" />
     <None Include="shaders\vScreenShader.vs" />
+    <None Include="shaders\vShader.vs" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\AtlasManager.h" />
-    <ClInclude Include="include\Biomes\Biome.h" />
-    <ClInclude Include="include\Biomes\DesertBiome.h" />
-    <ClInclude Include="include\Biomes\ForestBiome.h" />
-    <ClInclude Include="include\Biomes\HillsBiome.h" />
-    <ClInclude Include="include\Biomes\JungleBiome.h" />
-    <ClInclude Include="include\Biomes\MountainsBiome.h" />
-    <ClInclude Include="include\Biomes\PlainsBiome.h" />
-    <ClInclude Include="include\Biomes\SavanaBiome.h" />
-    <ClInclude Include="include\Biomes\TaigaBiome.h" />
-    <ClInclude Include="include\Biomes\TundraBiome.h" />
-    <ClInclude Include="include\Camera.h" />
-    <ClInclude Include="include\Chunk.h" />
-    <ClInclude Include="include\ChunkManager.h" />
-    <ClInclude Include="include\coreInclude.h" />
-    <ClInclude Include="include\Cube.h" />
-    <ClInclude Include="include\PerlinNoiseGenerator.h" />
-    <ClInclude Include="include\RayCast.h" />
-    <ClInclude Include="include\Shader.h" />
-    <ClInclude Include="include\stb_image.h" />
-    <ClInclude Include="include\TerrainGenerator.h" />
-    <ClInclude Include="include\TreeBuilder.h" />
+    <ClInclude Include="src\Core\Application\Application.h" />
+    <ClInclude Include="src\Core\Events\KeyEvent.h" />
+    <ClInclude Include="src\Core\Game\Biomes\BiomeBuilder.h" />
+    <ClInclude Include="src\Core\Game\Biomes\BiomeColors.h" />
+    <ClInclude Include="src\Core\Game\Biomes\BiomeManager.h" />
+    <ClInclude Include="src\Core\Game\GameServiceLocator\GameServiceLocator.h" />
+    <ClInclude Include="src\Core\Game\Layers\GameLayer.h" />
+    <ClInclude Include="src\Core\Game\Layers\PauseMenuLayer.h" />
+    <ClInclude Include="src\Core\LayerStack.h" />
+    <ClInclude Include="src\Core\Layer\Layer.h" />
+    <ClInclude Include="src\Core\Game\Atlas\AtlasTexCoordinates.h" />
+    <ClInclude Include="src\Core\Services\Application\ApplicationManager.h" />
+    <ClInclude Include="src\Core\States\ApplicationCoreState.h" />
+    <ClInclude Include="src\Core\Textures\AtlasTexture.h" />
+    <ClInclude Include="src\Core\Game\Atlas\Atlas.h" />
+    <ClInclude Include="src\Core\Game\Player\Player.h" />
+    <ClInclude Include="src\Core\Game\InputHandler\InputHandler.h" />
+    <ClInclude Include="src\Core\GameObject\GameObject.h" />
+    <ClInclude Include="src\Core\Textures\ImageTexture2D.h" />
+    <ClInclude Include="src\Core\Textures\MultisampleTexture2D.h" />
+    <ClInclude Include="src\MinecraftApplication.h" />
+    <ClInclude Include="src\Utils\Builder\Builder.h" />
+    <ClInclude Include="src\Core\States\GameCoreState.h" />
+    <ClInclude Include="src\Core\Services\CoreServiceLocator.h" />
+    <ClInclude Include="src\Core\Events\MouseButtonEvent.h" />
+    <ClInclude Include="src\Core\Events\MouseScrollEvent.h" />
+    <ClInclude Include="src\Core\Events\MouseMoveEvent.h" />
+    <ClInclude Include="src\Core\Services\CoreService.h" />
+    <ClInclude Include="src\Core\Services\Input\InputEnums.h" />
+    <ClInclude Include="src\Core\Exceptions\RendererException.h" />
+    <ClInclude Include="src\Core\Events\WindowResizeEvent.h" />
+    <ClInclude Include="src\Core\Events\Event.h" />
+    <ClInclude Include="src\Core\Events\EventTypeEnum.h" />
+    <ClInclude Include="src\Core\QuitCoreState.h" />
+    <ClInclude Include="src\Core\CoreEventDispatcher.h" />
+    <ClInclude Include="src\Core\States\InitCoreState.h" />
+    <ClInclude Include="src\Core\States\MainMenuCoreState.h" />
+    <ClInclude Include="src\Core\States\QuitCoreState.h" />
+    <ClInclude Include="src\Core\Exceptions\Exception.h" />
+    <ClInclude Include="src\Core\Services\Input\InputManager.h" />
+    <ClInclude Include="src\Core\Services\Renderer\Renderer.h" />
+    <ClInclude Include="src\Core\Game\Biomes\Biome.h" />
+    <ClInclude Include="src\Core\Game\Biomes\DesertBiome.h" />
+    <ClInclude Include="src\Core\Game\Biomes\ForestBiome.h" />
+    <ClInclude Include="src\Core\Game\Biomes\HillsBiome.h" />
+    <ClInclude Include="src\Core\Game\Biomes\JungleBiome.h" />
+    <ClInclude Include="src\Core\Game\Biomes\MountainsBiome.h" />
+    <ClInclude Include="src\Core\Game\Biomes\PlainsBiome.h" />
+    <ClInclude Include="src\Core\Game\Biomes\SavanaBiome.h" />
+    <ClInclude Include="src\Core\Game\Biomes\TaigaBiome.h" />
+    <ClInclude Include="src\Core\Game\Biomes\TundraBiome.h" />
+    <ClInclude Include="src\Core\Game\Camera\Camera.h" />
+    <ClInclude Include="src\Core\Game\Chunk\Chunk.h" />
+    <ClInclude Include="src\Core\Game\Chunk\ChunkManager.h" />
+    <ClInclude Include="src\Core\Core.h" />
+    <ClInclude Include="src\Core\InitCoreState.h" />
+    <ClInclude Include="src\Core\MainMenuCoreState.h" />
+    <ClInclude Include="src\Core\Game\Cube\Cube.h" />
+    <ClInclude Include="src\Utils\Builder\SpecializedBuilder.h" />
+    <ClInclude Include="src\Utils\Random\PerlinGenerator\PerlinNoiseGenerator.h" />
+    <ClInclude Include="src\Core\Game\RayCast\RayCast.h" />
+    <ClInclude Include="src\Core\Shaders\Shader.h" />
+    <ClInclude Include="src\stb_image.h" />
+    <ClInclude Include="src\Core\Game\TerrainGenerator\TerrainGenerator.h" />
+    <ClInclude Include="src\Core\Game\TerrainGenerator\TreeBuilder.h" />
+    <ClInclude Include="src\Core\States\CoreStateEnum.h" />
+    <ClInclude Include="src\Utils\Mediator\Mediator.h" />
+    <ClInclude Include="src\Utils\StateMachine\StateMachine.h" />
+    <ClInclude Include="src\Utils\StateMachine\State.h" />
+    <ClInclude Include="src\Core\Services\Window\Window.h" />
+    <ClInclude Include="src\Core\Exceptions\WindowException.h" />
+    <ClInclude Include="src\Core\Seed\WorldSeeds.h" />
+    <ClInclude Include="src\Core\Seed\WorldSeedsBuilder.h" />
+    <ClInclude Include="src\Core\Events\WindowInitEvent.h" />
+    <ClInclude Include="src\Core\Textures\Texture.h" />
+    <ClInclude Include="src\Core\Textures\TextureBuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
