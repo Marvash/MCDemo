@@ -26,6 +26,7 @@ public:
 private:
 	void setNextState(ApplicationCoreState* state);
 	void initializeCoreServices();
+	void shutdownCoreServices();
 	void setCurrentLayerStack(LayerStack* layerStack);
 	void transitionToNextState();
 	void update(double& dt);

@@ -2,7 +2,7 @@
 
 Window::Window(CoreEventDispatcher* eventDispatcher) :
 	CoreService(eventDispatcher), 
-	glfwWindow(nullptr) {
+	m_glfwWindow(nullptr) {
 }
 
 void Window::init() {
@@ -14,33 +14,37 @@ void Window::init() {
 
 	GLFWmonitor* mainMonitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* glfwMode = glfwGetVideoMode(mainMonitor);
-	windowWidth = glfwMode->width;
-	windowHeight = glfwMode->height;
+	m_windowWidth = glfwMode->width;
+	m_windowHeight = glfwMode->height;
 	glfwWindowHint(GLFW_RED_BITS, glfwMode->redBits);
 	glfwWindowHint(GLFW_GREEN_BITS, glfwMode->greenBits);
 	glfwWindowHint(GLFW_BLUE_BITS, glfwMode->blueBits);
 	glfwWindowHint(GLFW_REFRESH_RATE, glfwMode->refreshRate);
-	glfwWindow = glfwCreateWindow(windowWidth, windowHeight, windowName.c_str(), nullptr, nullptr);
-	if (glfwWindow == nullptr)
+	m_glfwWindow = glfwCreateWindow(m_windowWidth, m_windowHeight, m_windowName.c_str(), nullptr, nullptr);
+	if (m_glfwWindow == nullptr)
 	{
 		std::string errorMessage = "Failed to create GLFW window";
 		throw WindowException(errorMessage);
 		glfwTerminate();
 	}
-	glfwSetWindowPos(glfwWindow, 0, 0);
+	glfwSetWindowPos(m_glfwWindow, 0, 0);
 
-	glfwMakeContextCurrent(glfwWindow);
+	glfwMakeContextCurrent(m_glfwWindow);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::string errorMessage = "Failed to initialize GLAD";
 		throw WindowException(errorMessage);
 	}
-	WindowInitEvent event{ glfwWindow, windowWidth, windowHeight };
+	WindowInitEvent event{ m_glfwWindow, m_windowWidth, m_windowHeight };
 	notify(event);
 	// tell GLFW to capture our mouse
-	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	BOOST_LOG_TRIVIAL(trace) << "Window intialized! Sending window init event...";
+}
+
+void Window::deinit() {
+	glfwTerminate();
 }
 
 void Window::onNotify(Event& event) {
@@ -48,13 +52,13 @@ void Window::onNotify(Event& event) {
 }
 
 GLFWwindow* Window::getGlfwWindow() {
-	if (glfwWindow == nullptr) {
+	if (m_glfwWindow == nullptr) {
 		BOOST_LOG_TRIVIAL(warning) << "Accessing uninitialized glfw window";
 	}
-	return glfwWindow;
+	return m_glfwWindow;
 }
 
 void Window::updateWindow() {
-	glfwSwapBuffers(glfwWindow);
+	glfwSwapBuffers(m_glfwWindow);
 	glfwPollEvents();
 }

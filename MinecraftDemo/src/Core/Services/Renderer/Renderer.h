@@ -10,6 +10,10 @@
 #include "Core/Game/Chunk/Chunk.h"
 #include "Core/Textures/ImageTexture2D.h"
 #include "Core/Textures/MultisampleTexture2D.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "Core/Game/GUI/GUIElement.h"
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -30,16 +34,21 @@ public:
 	void setAtlas(Atlas* atlas);
 	void setBiomeManager(BiomeManager* biomeManager);
 	void drawChunks(Camera* camera);
+	void drawGUI();
 	void clearSubmittedChunks();
+	void clearSubmittedGUIElements();
 	void setClearColor(const glm::vec3& color);
 	void clear();
 	void submitChunk(ChunkRenderData& data);
+	void submitGUIElement(GUIElement* element);
 	void draw(Camera* camera);
 	void init();
+	void deinit();
 private:
 	void setViewport(int posX, int posY, unsigned int width, unsigned int height);
 	void msaaResize();
 
+	GLFWwindow* m_glfwWindow;
 	Shader* m_chunkShader;
 	Shader* m_screenShader;
 	Shader* m_testCubeShader;
@@ -106,6 +115,7 @@ private:
 	unsigned int m_screenWidth, m_screenHeight;
 	std::map<GLuint, Texture*> m_loadedTextures;
 	std::map<GLuint, ChunkRenderData> m_submittedChunks;
+	std::vector<GUIElement*> m_submittedGUIElements;
 
 	unsigned int m_msaaSamples;
 	bool m_msaaEnabled;

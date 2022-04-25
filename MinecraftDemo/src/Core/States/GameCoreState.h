@@ -3,6 +3,7 @@
 #include "CoreStateEnum.h"
 #include "Core/Services/CoreServiceLocator.h"
 #include "Core/Game/Layers/GameLayer.h"
+#include "Core/Game/Layers/GUILayer.h"
 #include <boost/log/trivial.hpp>
 
 class Core;
@@ -16,4 +17,5 @@ public:
 	
 private:
 	GameLayer* m_gameLayer;
+	GUILayer* m_GUILayer;
 };

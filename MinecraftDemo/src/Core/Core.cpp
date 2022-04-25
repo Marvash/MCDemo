@@ -47,6 +47,11 @@ void Core::initializeCoreServices() {
 	m_serviceLocator->getRenderer()->init();
 }
 
+void Core::shutdownCoreServices() {
+	m_serviceLocator->getRenderer()->deinit();
+	m_serviceLocator->getWindow()->deinit();
+}
+
 Core::~Core() {
 	delete m_coreSM;
 	delete m_eventDispatcher;
@@ -84,6 +89,7 @@ void Core::run() {
 		}
 		// The following line is necessary to call exit function for last state
 		m_coreSM->setCurrentState(nullptr);
+		shutdownCoreServices();
 	}
 	catch (Exception& e) {
 		BOOST_LOG_TRIVIAL(fatal) << e.getError();

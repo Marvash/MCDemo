@@ -12,6 +12,7 @@ public:
 	Window(CoreEventDispatcher* eventDispatcher = nullptr);
 
 	void init();
+	void deinit();
 
 	GLFWwindow* getGlfwWindow();
 	void updateWindow();
@@ -21,11 +22,11 @@ private:
 	const unsigned int openglVMajor = 4;
 	const unsigned int openglVMinor = 2;
 
-	const std::string windowName = "MinecraftDemo";
+	const std::string m_windowName = "MinecraftDemo";
 
-	unsigned int windowWidth;
-	unsigned int windowHeight;
+	unsigned int m_windowWidth;
+	unsigned int m_windowHeight;
 
-	GLFWwindow* glfwWindow;
+	GLFWwindow* m_glfwWindow;
 };
 

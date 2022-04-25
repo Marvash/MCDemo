@@ -7,7 +7,8 @@ Renderer::Renderer(CoreEventDispatcher* eventDispatcher) :
 	m_msaaEnabled(true),
 	m_msaaSamples(4),
 	m_atlas(nullptr),
-	m_biomeManager(nullptr) {
+	m_biomeManager(nullptr),
+	m_glfwWindow(nullptr) {
 }
 
 void Renderer::init() {
@@ -54,6 +55,26 @@ void Renderer::init() {
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+	ImGui::StyleColorsClassic();
+
+	// Setup Platform/Renderer backends
+	ImGui_ImplGlfw_InitForOpenGL(m_glfwWindow, true);
+	ImGui_ImplOpenGL3_Init("#version 410 core");
+}
+
+void Renderer::deinit() {
+	// Cleanup
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void Renderer::setViewport(int posX, int posY, unsigned int width, unsigned int height) {
@@ -91,6 +112,7 @@ void Renderer::onNotify(Event& newEvent) {
 	switch (newEvent.getEventType()) {
 		case EventType::WINDOW_INIT: {
 			WindowInitEvent* windowInitEvent = static_cast<WindowInitEvent*>(&newEvent);
+			m_glfwWindow = windowInitEvent->m_window;
 			m_screenWidth = windowInitEvent->m_width;
 			m_screenHeight = windowInitEvent->m_height;
 			setViewport(0, 0, m_screenWidth, m_screenHeight);
@@ -170,6 +192,20 @@ void Renderer::clearSubmittedChunks() {
 	m_submittedChunks.clear();
 }
 
+void Renderer::submitGUIElement(GUIElement* element) {
+	m_submittedGUIElements.push_back(element);
+}
+
+void Renderer::clearSubmittedGUIElements() {
+	m_submittedGUIElements.clear();
+}
+
+void Renderer::drawGUI() {
+	for (auto& element : m_submittedGUIElements) {
+		element->draw();
+	}
+}
+
 void Renderer::drawChunks(Camera* camera) {
 	m_chunkShader->use();
 	glm::mat4 projection = glm::perspective(glm::radians(camera->m_zoom), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 10000.0f);
@@ -194,6 +230,10 @@ void Renderer::draw(Camera* camera) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
 	/*
 	m_testCubeShader->use();
 	glm::mat4 projection = glm::perspective(glm::radians(camera->m_zoom), (float)m_screenWidth / (float)m_screenHeight, 0.1f, 10000.0f);
@@ -206,9 +246,12 @@ void Renderer::draw(Camera* camera) {
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 	*/
+
 	bindGameTextures();
 	drawChunks(camera);
 	clearSubmittedChunks();
+	drawGUI();
+	clearSubmittedGUIElements();
 
 	if (m_msaaEnabled) {
 		glDisable(GL_DEPTH_TEST);
@@ -225,4 +268,7 @@ void Renderer::draw(Camera* camera) {
 		bindScreenTexture();
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
+
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

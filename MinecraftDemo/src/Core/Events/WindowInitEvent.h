@@ -7,7 +7,7 @@ class WindowInitEvent : public Event
 public:
 	WindowInitEvent(GLFWwindow* window, unsigned int width, unsigned int height);
 
-	GLFWwindow* window;
+	GLFWwindow* m_window;
 	unsigned int m_width;
 	unsigned int m_height;
 };

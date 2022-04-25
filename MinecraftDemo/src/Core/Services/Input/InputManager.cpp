@@ -28,7 +28,7 @@ void InputManager::onNotify(Event& newEvent) {
 	switch (newEvent.getEventType()) {
 	case EventType::WINDOW_INIT:
 		WindowInitEvent* windowInitEvent = static_cast<WindowInitEvent*>(&newEvent);
-		window = windowInitEvent->window;
+		window = windowInitEvent->m_window;
 		setupGlfwCallbacks(window);
 		break;
 	}

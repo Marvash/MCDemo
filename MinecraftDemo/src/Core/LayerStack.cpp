@@ -28,7 +28,7 @@ void LayerStack::removeLayer(Layer* layer) {
 }
 
 void LayerStack::removeOverlay(Layer* layer) {
-	std::vector<Layer*>::iterator toRemoveIt = std::find(m_layerInsertIt, m_layers.end(), layer);
+	std::vector<Layer*>::iterator toRemoveIt = std::find(m_layers.begin(), m_layers.end(), layer);
 	if (toRemoveIt != m_layers.end()) {
 		m_layers.erase(toRemoveIt);
 		layer->onRemove();
