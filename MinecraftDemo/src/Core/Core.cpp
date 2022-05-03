@@ -4,18 +4,26 @@ Core::Core() :
 	m_stateChangeRequested(false), 
 	m_shouldExitApplication(false), 
 	m_nextState(nullptr),
-	m_currentLayerStack(nullptr) {
-	m_coreSM = new StateMachine<CoreState>();
-	m_serviceLocator = new CoreServiceLocator();
-	m_eventDispatcher = new CoreEventDispatcher();
+	m_currentLayerStack(nullptr),
+	m_coreSM(new StateMachine<CoreState>()),
+	m_serviceLocator(new CoreServiceLocator()),
+	m_eventDispatcher(new CoreEventDispatcher()), 
+	m_biomeManager(new BiomeManager(m_eventDispatcher)),
+	m_atlas(new Atlas(m_eventDispatcher)),
+	m_renderer(new Renderer(m_eventDispatcher)),
+	m_chunkManager(new ChunkManager(m_eventDispatcher)) {
 	m_serviceLocator->provide(new Window(m_eventDispatcher));
 	m_serviceLocator->provide(new InputManager(m_eventDispatcher));
-	m_serviceLocator->provide(new Renderer(m_eventDispatcher));
 	m_serviceLocator->provide(new ApplicationManager(this, m_eventDispatcher));
-	m_eventDispatcher->addSubService(m_serviceLocator->getRenderer());
+	m_serviceLocator->provide(new MovementSystem(m_eventDispatcher));
+	m_serviceLocator->provide(new World(m_eventDispatcher));
+	m_serviceLocator->provide(new Graphics(m_eventDispatcher));
+	m_serviceLocator->provide(new CameraSystem(m_eventDispatcher));
 	m_eventDispatcher->addSubService(m_serviceLocator->getWindow());
+	m_eventDispatcher->addSubService(m_renderer);
 	m_eventDispatcher->addSubService(m_serviceLocator->getInput());
 	m_eventDispatcher->addSubService(m_serviceLocator->getApplicationManager());
+	m_eventDispatcher->addSubService(m_serviceLocator->getWorld());
 }
 
 CoreServiceLocator* Core::getServiceLocator() {
@@ -44,11 +52,21 @@ void Core::setNextState(ApplicationCoreState* state) {
 
 void Core::initializeCoreServices() {
 	m_serviceLocator->getWindow()->init();
-	m_serviceLocator->getRenderer()->init();
+	m_biomeManager->init();
+	m_atlas->init();
+	m_renderer->init();
+	m_chunkManager->init(m_biomeManager, m_atlas);
+	m_serviceLocator->getMovementSystem()->init(m_chunkManager);
+	m_serviceLocator->getWorld()->init(m_chunkManager);
+	m_serviceLocator->getGraphics()->init(m_renderer);
+	m_serviceLocator->getGraphics()->setCameraRenderingData(m_serviceLocator->getCameraSystem()->getCameraRenderingData());
+
+	m_renderer->setAtlas(m_atlas);
+	m_renderer->setBiomeManager(m_biomeManager);
 }
 
 void Core::shutdownCoreServices() {
-	m_serviceLocator->getRenderer()->deinit();
+	m_renderer->deinit();
 	m_serviceLocator->getWindow()->deinit();
 }
 
@@ -57,12 +75,16 @@ Core::~Core() {
 	delete m_eventDispatcher;
 	if (m_serviceLocator->getInput() != nullptr)
 		delete m_serviceLocator->getInput();
-	if (m_serviceLocator->getRenderer() != nullptr)
-		delete m_serviceLocator->getRenderer();
+	if (m_renderer != nullptr)
+		delete m_renderer;
 	if (m_serviceLocator->getWindow() != nullptr)
 		delete m_serviceLocator->getWindow();
 	if (m_serviceLocator->getApplicationManager() != nullptr)
 		delete m_serviceLocator->getApplicationManager();
+	if (m_serviceLocator->getMovementSystem() != nullptr)
+		delete m_serviceLocator->getMovementSystem();
+	if (m_serviceLocator->getWorld() != nullptr)
+		delete m_serviceLocator->getWorld();
 	delete m_serviceLocator;
 }
 
@@ -97,12 +119,13 @@ void Core::run() {
 }
 
 void Core::update(double& dt) {
-	//BOOST_LOG_TRIVIAL(trace) << dt;
 	m_serviceLocator->getApplicationManager()->m_deltaTime = dt;
 
 	m_serviceLocator->getInput()->dispatchInputEvents();
-
+	m_serviceLocator->getMovementSystem()->step(dt);
 	m_currentLayerStack->update();
+	
+	m_renderer->draw();
 
 	m_serviceLocator->getInput()->resetInputManager();
 	m_serviceLocator->getWindow()->updateWindow();

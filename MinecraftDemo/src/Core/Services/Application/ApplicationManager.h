@@ -9,7 +9,7 @@ class ApplicationManager : public CoreService {
 friend class Core;
 
 public:
-	ApplicationManager(Core* core, CoreEventDispatcher* eventDispatcher = nullptr);
+	ApplicationManager(Core* core, CoreEventDispatcher* eventDispatcher);
 
 	void requestCoreStateChange(CoreState nextState);
 	double getDeltaTime();

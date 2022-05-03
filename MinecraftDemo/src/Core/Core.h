@@ -8,6 +8,15 @@
 #include "Exceptions/Exception.h"
 #include "Core/Services/CoreServiceLocator.h"
 #include "CoreEventDispatcher.h"
+#include "Core/Services/ChunkManager/ChunkManager.h"
+#include "Core/Services/BiomeManager/BiomeManager.h"
+#include "Core/Services/Atlas/Atlas.h"
+#include "Core/Services/Renderer/Renderer.h"
+#include "Core/Services/MovementSystem/MovementSystem.h"
+#include "Core/Services/World/World.h"
+#include "Core/Services/Window/Window.h"
+#include "Core/Services/Input/InputManager.h"
+#include "Core/Services/CameraSystem/CameraSystem.h"
 #include "LayerStack.h"
 #include <Boost/log/trivial.hpp>
 
@@ -38,5 +47,9 @@ private:
 	CoreServiceLocator* m_serviceLocator;
 	CoreEventDispatcher* m_eventDispatcher;
 	LayerStack* m_currentLayerStack;
+	ChunkManager* m_chunkManager;
+	BiomeManager* m_biomeManager;
+	Atlas* m_atlas;
+	Renderer* m_renderer;
 };
 

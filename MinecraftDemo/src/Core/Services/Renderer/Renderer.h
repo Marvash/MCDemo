@@ -5,15 +5,15 @@
 #include "Core/Services/CoreService.h"
 #include "Core/Textures/Texture.h"
 #include "Core/Shaders/Shader.h"
-#include "Core/Game/Camera/Camera.h"
 #include "Core/Exceptions/RendererException.h"
-#include "Core/Game/Chunk/Chunk.h"
+#include "Core/Chunk/Chunk.h"
 #include "Core/Textures/ImageTexture2D.h"
 #include "Core/Textures/MultisampleTexture2D.h"
+#include "Core/Services/CameraSystem/CameraRenderingData.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
-#include "Core/Game/GUI/GUIElement.h"
+#include "Core/GUI/GUIElement.h"
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -25,7 +25,7 @@ class Renderer : public CoreService
 {
 
 public:
-	Renderer(CoreEventDispatcher* eventDispatcher = nullptr);
+	Renderer(CoreEventDispatcher* eventDispatcher);
 
 	void onNotify(Event& newEvent) override;
 	void submitTexture(Texture* texture);
@@ -33,7 +33,7 @@ public:
 	void bindScreenTexture();
 	void setAtlas(Atlas* atlas);
 	void setBiomeManager(BiomeManager* biomeManager);
-	void drawChunks(Camera* camera);
+	void drawChunks();
 	void drawGUI();
 	void clearSubmittedChunks();
 	void clearSubmittedGUIElements();
@@ -41,7 +41,8 @@ public:
 	void clear();
 	void submitChunk(ChunkRenderData& data);
 	void submitGUIElement(GUIElement* element);
-	void draw(Camera* camera);
+	void setCameraRenderingData(CameraRenderingData* cameraRenderingData);
+	void draw();
 	void init();
 	void deinit();
 private:
@@ -61,6 +62,7 @@ private:
 	GLuint m_msaaRbo;
 	GLuint m_screenQuadVAO, m_screenQuadVBO;
 	GLuint m_testCubeVAO, m_testCubeVBO;
+	CameraRenderingData* m_cameraRenderingData;
 	float m_screenQuadVertices[24] = {
 		-1.0f,  1.0f,  0.0f, 1.0f,
 		-1.0f, -1.0f,  0.0f, 0.0f,

@@ -6,9 +6,7 @@ CoreService::CoreService(CoreEventDispatcher* eventDispatcher) : m_eventDispatch
 }
 
 void CoreService::notify(Event& newEvent) {
-	BOOST_LOG_TRIVIAL(trace) << "Here disp";
 	if (m_eventDispatcher != nullptr) {
-		BOOST_LOG_TRIVIAL(trace) << "Calling dispatcher";
 		m_eventDispatcher->notify(newEvent);
 	}
 }

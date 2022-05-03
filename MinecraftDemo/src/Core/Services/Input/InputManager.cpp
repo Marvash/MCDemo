@@ -132,6 +132,8 @@ InputKey InputManager::glfwKeyToInputKey(int key) {
 		return InputKey::KEY_S;
 	case GLFW_KEY_D:
 		return InputKey::KEY_D;
+	case GLFW_KEY_F:
+		return InputKey::KEY_F;
 	case GLFW_KEY_0:
 		return InputKey::KEY_0;
 	case GLFW_KEY_1:
@@ -156,6 +158,8 @@ InputKey InputManager::glfwKeyToInputKey(int key) {
 		return InputKey::KEY_LEFT_CTRL;
 	case GLFW_KEY_ESCAPE:
 		return InputKey::KEY_ESC;
+	case GLFW_KEY_SPACE:
+		return InputKey::KEY_SPACE;
 	}
 	return InputKey::UNKNOWN;
 }

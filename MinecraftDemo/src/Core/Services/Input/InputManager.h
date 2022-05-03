@@ -19,7 +19,7 @@ class InputManager : public CoreService
 {
 
 public:
-	InputManager(CoreEventDispatcher* eventDispatcher = nullptr);
+	InputManager(CoreEventDispatcher* eventDispatcher);
 
 	bool getInputState(InputMouseButton button);
 	bool getInputState(InputKey key);

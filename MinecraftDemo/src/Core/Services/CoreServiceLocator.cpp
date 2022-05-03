@@ -12,26 +12,50 @@ Window* CoreServiceLocator::getWindow() {
 	return m_window;
 }
 
-Renderer* CoreServiceLocator::getRenderer() {
-	return m_renderer;
+Graphics* CoreServiceLocator::getGraphics() {
+	return m_graphics;
 }
 
 ApplicationManager* CoreServiceLocator::getApplicationManager() {
 	return m_applicationManager;
 }
 
+MovementSystem* CoreServiceLocator::getMovementSystem() {
+	return m_movementSystem;
+}
+
+World* CoreServiceLocator::getWorld() {
+	return m_world;
+}
+
+CameraSystem* CoreServiceLocator::getCameraSystem() {
+	return m_cameraSystem;
+}
+
 void CoreServiceLocator::provide(InputManager* input) {
-	this->m_input = input;
+	m_input = input;
 }
 
 void CoreServiceLocator::provide(Window* window) {
-	this->m_window = window;
+	m_window = window;
 }
 
-void CoreServiceLocator::provide(Renderer* renderer) {
-	this->m_renderer = renderer;
+void CoreServiceLocator::provide(Graphics* renderer) {
+	m_graphics = renderer;
 }
 
 void CoreServiceLocator::provide(ApplicationManager* applicationManager) {
-	this->m_applicationManager = applicationManager;
+	m_applicationManager = applicationManager;
+}
+
+void CoreServiceLocator::provide(MovementSystem* movementSystem) {
+	m_movementSystem = movementSystem;
+}
+
+void CoreServiceLocator::provide(World* world) {
+	m_world = world;
+}
+
+void CoreServiceLocator::provide(CameraSystem* cameraSystem) {
+	m_cameraSystem = cameraSystem;
 }

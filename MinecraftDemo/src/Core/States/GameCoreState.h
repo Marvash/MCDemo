@@ -2,8 +2,8 @@
 #include "ApplicationCoreState.h"
 #include "CoreStateEnum.h"
 #include "Core/Services/CoreServiceLocator.h"
-#include "Core/Game/Layers/GameLayer.h"
-#include "Core/Game/Layers/GUILayer.h"
+#include "Core/Layers/GameLayer.h"
+#include "Core/Layers/GUILayer.h"
 #include <boost/log/trivial.hpp>
 
 class Core;

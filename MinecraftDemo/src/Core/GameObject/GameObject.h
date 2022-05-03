@@ -7,7 +7,8 @@ class GameObject
 public:
 	GameObject();
 	virtual void onNotify(Event& newEvent);
-	virtual void update(float dt);
+	virtual void update() = 0;
+	virtual void registerComponents() = 0;
 	glm::vec3 m_position;
 	glm::vec3 m_rotation;
 	unsigned int m_id;

@@ -12,6 +12,7 @@ enum class InputKey {
 	KEY_A,
 	KEY_S,
 	KEY_D,
+	KEY_F,
 	KEY_0,
 	KEY_1,
 	KEY_2,
@@ -23,6 +24,7 @@ enum class InputKey {
 	KEY_8,
 	KEY_9,
 	KEY_LEFT_CTRL,
+	KEY_SPACE,
 	KEY_ESC
 };
 
