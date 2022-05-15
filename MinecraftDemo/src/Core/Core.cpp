@@ -19,6 +19,7 @@ Core::Core() :
 	m_serviceLocator->provide(new World(m_eventDispatcher));
 	m_serviceLocator->provide(new Graphics(m_eventDispatcher));
 	m_serviceLocator->provide(new CameraSystem(m_eventDispatcher));
+	m_serviceLocator->provide(new GameObjectManager(m_eventDispatcher));
 	m_eventDispatcher->addSubService(m_serviceLocator->getWindow());
 	m_eventDispatcher->addSubService(m_renderer);
 	m_eventDispatcher->addSubService(m_serviceLocator->getInput());
@@ -122,7 +123,11 @@ void Core::update(double& dt) {
 	m_serviceLocator->getApplicationManager()->m_deltaTime = dt;
 
 	m_serviceLocator->getInput()->dispatchInputEvents();
+
 	m_serviceLocator->getMovementSystem()->step(dt);
+
+	m_serviceLocator->getGameObjectManager()->update();
+
 	m_currentLayerStack->update();
 	
 	m_renderer->draw();

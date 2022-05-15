@@ -204,7 +204,7 @@ void ChunkManager::computeAdjacentCubes(Cube*** adjacentCubes, GameObject* gameO
 					adjacentCubes[h][w][d] = *getCubeByCoords(position);
 				}
 				else {
-					adjacentCubes[h][w][d] = Cube(Cube::CubeId::UNGENERATED_BLOCK, nullptr, nullptr);
+					adjacentCubes[h][w][d] = Cube();
 				}
 				unlockHP();
 			}
@@ -218,19 +218,41 @@ void ChunkManager::convertToCenteredCubeCoordinates(glm::vec3& coords) {
 	coords.z = glm::floor(coords.z) + 0.5f;
 }
 
-void ChunkManager::destroyBlock(glm::vec3 rayOrigin, glm::vec3& playerLookDirection) {
-	float rayLength = 10.0f;
-	lockLP();
-	std::vector<Cube*> cubes = RayCast::castRay(this, rayOrigin, playerLookDirection, rayLength);
-	Cube* toDestroy = nullptr;
+glm::vec3 ChunkManager::getCubeAbsCoords(Cube* cube) {
+	Chunk* chunk = cube->getChunkRef();
+	int halfChunkSize = CHUNK_SIDE_SIZE / 2;
+	if (chunk != nullptr) {
+		return glm::vec3((chunk->chunkPosition.x - halfChunkSize) + cube->getCubeCoordsOffset().x, 
+			(chunk->chunkPosition.y - halfChunkSize) + cube->getCubeCoordsOffset().y, 
+			(chunk->chunkPosition.z - halfChunkSize) + cube->getCubeCoordsOffset().z);
+	}
+	return glm::vec3(0.0f, 0.0f, 0.0f);
+}
+
+Cube* ChunkManager::solidBlockRaycast(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength) {
+	lockHP();
+	std::vector<Cube*> cubes = RayCast::castRay(this, rayOrigin, direction, rayLength);
+	Cube* target = nullptr;
 	if (cubes.size() > 0) {
 		for (int i = 0; i < cubes.size(); i++) {
-			if (cubes.at(i)->getCubeId() != Cube::CubeId::AIR_BLOCK) {
-				toDestroy = cubes.at(i);
+			if (cubes.at(i)->getCubeId() != Cube::CubeId::AIR_BLOCK && cubes.at(i)->getCubeId() != Cube::CubeId::UNGENERATED_BLOCK) {
+				target = cubes.at(i);
 				i = cubes.size();
 			}
 		}
 	}
+	unlockHP();
+	return target;
+}
+
+void ChunkManager::getCubesInRay(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength, std::vector<Cube*>& cubes) {
+	lockHP();
+	RayCast::castRay(this, rayOrigin, direction, rayLength, cubes);
+	unlockHP();
+}
+
+void ChunkManager::destroyBlock(Cube* toDestroy) {
+	lockLP();
 	if (toDestroy != nullptr) {
 		toDestroy->setCubeId(Cube::CubeId::AIR_BLOCK);
 		Chunk* ownerChunk = toDestroy->getChunkRef();
@@ -295,22 +317,11 @@ void ChunkManager::destroyBlock(glm::vec3 rayOrigin, glm::vec3& playerLookDirect
 	*/
 }
 
-void ChunkManager::placeBlock(glm::vec3 rayOrigin, glm::vec3& playerLookDirection, Cube::CubeId cubeId) {
-	float rayLength = 10.0f;
+void ChunkManager::placeBlock(Cube* toPlace, Cube::CubeId cubeId) {
 	lockLP();
-	std::vector<Cube*> cubes = RayCast::castRay(this, rayOrigin, playerLookDirection, rayLength);
-	Cube* toFill = nullptr;
-	if (cubes.size() > 0) {
-		for (int i = 0; i < cubes.size(); i++) {
-			if (i > 0 && cubes.at(i)->getCubeId() != Cube::CubeId::AIR_BLOCK) {
-				toFill = cubes.at(i - 1);
-				i = cubes.size();
-			}
-		}
-	}
-	if (toFill != nullptr) {
-		toFill->setCubeId(cubeId);
-		Chunk* ownerChunk = toFill->getChunkRef();
+	if (toPlace != nullptr) {
+		toPlace->setCubeId(cubeId);
+		Chunk* ownerChunk = toPlace->getChunkRef();
 		ownerChunk->state = Chunk::ChunkState::SHOULDREBUILD;
 		if (ownerChunk->leftNeighbour != nullptr && ownerChunk->leftNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
 			ownerChunk->leftNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;

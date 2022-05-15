@@ -4,6 +4,7 @@
 #include "Core/Services/ChunkManager/ChunkManager.h"
 #include "Core/Components/MovementComponent.h"
 #include "Core/Events/Game/PlayerMoveEvent.h"
+#include "Core/Events/Game/PlayerVelocityEvent.h"
 #include "AABBCollider.h"
 
 class MovementComponent;

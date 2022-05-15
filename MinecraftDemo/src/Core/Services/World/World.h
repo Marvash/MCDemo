@@ -13,8 +13,9 @@ public:
 	void reloadChunks();
 	void updateRenderableChunks();
 	std::vector<ChunkRenderData*>* getRenderableChunks();
-	void destroyBlock(glm::vec3 rayOrigin, glm::vec3& playerLookDirection);
-	void placeBlock(glm::vec3 rayOrigin, glm::vec3& playerLookDirection, Cube::CubeId cubeId);
+	void getCubesInRay(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength, std::vector<Cube*>& cubes);
+	void destroyBlock(Cube* toDestroy);
+	void placeBlock(Cube* toPlace, Cube::CubeId cubeId);
 
 private:
 

@@ -6,6 +6,7 @@
 #include "Core/Cube/Cube.h"
 #include "Core/Services/MovementSystem/MovementModeEnum.h"
 #include "Core/Components/MovementComponent.h"
+#include "Core/Events/Game/PlayerSelectedCubeChange.h"
 #include <glm/glm.hpp>
 
 class CoreServiceLocator;
@@ -15,18 +16,20 @@ public:
 	Player(CoreServiceLocator* coreServiceLocator);
 	void onNotify(Event& newEvent) override;
 	void update() override;
-	void registerComponents() override;
+	Cube::CubeId getSelectedCube();
+	Cube* getTargetCube();
 
 private:
 	void processKeyinput();
 	void processMouseInput();
 	void processMousePosition();
 	void processMouseScroll();
-
-	CoreServiceLocator* m_coreServiceLocator;
+	Cube* getFirstSolidCube();
+	Cube* getLastPlaceableCube();
 	Cube::CubeId m_selectedCubeId;
-	MovementComponent m_movementComponent;
+	Cube* m_targetCube;
 
-	float jumpForce;
+	float m_jumpForce;
+	float m_targetCubeRayLength;
 };
 

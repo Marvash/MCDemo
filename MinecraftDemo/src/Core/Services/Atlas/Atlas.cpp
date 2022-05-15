@@ -77,7 +77,7 @@ int Atlas::getAtlasTexIndex(Cube::CubeId cubeId, Cube::FaceSide faceSide) {
 			return 192;
 		}
 		break;
-	case Cube::CubeId::OAK_LOG:
+	case Cube::CubeId::OAK_LOG_BLOCK:
 		switch (faceSide) {
 		case Cube::FaceSide::RIGHT:
 		case Cube::FaceSide::LEFT:
@@ -89,7 +89,7 @@ int Atlas::getAtlasTexIndex(Cube::CubeId cubeId, Cube::FaceSide faceSide) {
 			return 240;
 		}
 		break;
-	case Cube::CubeId::LEAVES:
+	case Cube::CubeId::LEAVES_BLOCK:
 		return 264;
 		break;
 	}

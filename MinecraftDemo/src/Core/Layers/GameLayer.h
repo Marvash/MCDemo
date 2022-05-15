@@ -14,7 +14,6 @@ public:
 	void onNotify(Event& newEvent) override;
 
 private:
-	void requestApplicationQuit();
 
 	CoreServiceLocator* m_coreServiceLocator;
 	Player* m_player;

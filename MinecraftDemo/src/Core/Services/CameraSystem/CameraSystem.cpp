@@ -62,6 +62,8 @@ void CameraSystem::processMouseMovement(float xoffset, float yoffset, bool const
 
     updateCameraVectors();
     updateRenderingData();
+    PlayerLookEvent playerLookEvent(m_front);
+    notify(playerLookEvent);
 }
 
 void CameraSystem::processMouseScroll(float yoffset)

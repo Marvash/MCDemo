@@ -25,6 +25,8 @@ void MovementSystem::step(double deltaTime) {
 				stepPhysicalMovement(deltaTime, object.second);
 				PlayerMoveEvent playerMoveEvent(gameObject->m_position);
 				notify(playerMoveEvent);
+				PlayerVelocityEvent playerVelocityEvent(movementComponent->m_velocity);
+				notify(playerVelocityEvent);
 				break;
 			}
 			case MovementMode::FLY:

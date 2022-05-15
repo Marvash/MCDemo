@@ -6,6 +6,7 @@
 #include "Core/Services/World/World.h"
 #include "Core/Services/Graphics/Graphics.h"
 #include "Core/Services/CameraSystem/CameraSystem.h"
+#include "Core/Services/GameObjectManager/GameObjectManager.h"
 
 class CoreServiceLocator {
 public:
@@ -18,6 +19,7 @@ public:
 	World* getWorld();
 	Graphics* getGraphics();
 	CameraSystem* getCameraSystem();
+	GameObjectManager* getGameObjectManager();
 
 	void provide(InputManager* input);
 	void provide(Window* window);
@@ -26,6 +28,7 @@ public:
 	void provide(World* biomeManager);
 	void provide(Graphics* biomeManager);
 	void provide(CameraSystem* cameraSystem);
+	void provide(GameObjectManager* gameObjectManager);
 
 private:
 	InputManager* m_input;
@@ -35,5 +38,6 @@ private:
 	MovementSystem* m_movementSystem;
 	World* m_world;
 	CameraSystem* m_cameraSystem;
+	GameObjectManager* m_gameObjectManager;
 };
 

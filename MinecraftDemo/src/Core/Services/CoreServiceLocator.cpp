@@ -32,6 +32,10 @@ CameraSystem* CoreServiceLocator::getCameraSystem() {
 	return m_cameraSystem;
 }
 
+GameObjectManager* CoreServiceLocator::getGameObjectManager() {
+	return m_gameObjectManager;
+}
+
 void CoreServiceLocator::provide(InputManager* input) {
 	m_input = input;
 }
@@ -58,4 +62,8 @@ void CoreServiceLocator::provide(World* world) {
 
 void CoreServiceLocator::provide(CameraSystem* cameraSystem) {
 	m_cameraSystem = cameraSystem;
+}
+
+void CoreServiceLocator::provide(GameObjectManager* gameObjectManager) {
+	m_gameObjectManager = gameObjectManager;
 }

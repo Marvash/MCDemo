@@ -53,13 +53,18 @@ ChunkRenderData& Chunk::getChunkRenderData() {
 }
 
 void Chunk::initEmptyBlockMatrix() {
+	//BOOST_LOG_TRIVIAL(info) << "Chunk pos x: " << chunkPosition.x << " y: " << chunkPosition.y << " z: " << chunkPosition.z;
+	float halfBlockSideSize = blockSideSize / 2.0f;
 	Cube*** m_blockMatrix = new Cube * *[chunkHeight];
 	for (int i = 0; i < chunkHeight; i++) {
 		m_blockMatrix[i] = new Cube * [chunkSideSize];
 		for (int j = 0; j < chunkSideSize; j++) {
 			m_blockMatrix[i][j] = new Cube[chunkSideSize];
 			for (int k = 0; k < chunkSideSize; k++) {
-				m_blockMatrix[i][j][k] = Cube(Cube::CubeId::UNGENERATED_BLOCK, this, nullptr);
+				float xOffset = (j + halfBlockSideSize);
+				float yOffset = (i + halfBlockSideSize);
+				float zOffset = (k + halfBlockSideSize);
+				m_blockMatrix[i][j][k] = Cube(Cube::CubeId::UNGENERATED_BLOCK, this, nullptr, xOffset, yOffset, zOffset);
 			}
 		}
 	}
@@ -428,7 +433,7 @@ Cube* Chunk::findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int wi
 		if (width == 0) {
 			neighbourChunk = leftNeighbour;
 			width = chunkSideSize - 1;
-			if (neighbourChunk != nullptr && neighbourChunk->state != ChunkState::ISREGENERATING && neighbourChunk->state != ChunkState::SHOULDREGENERATE) {
+			if (neighbourChunk != nullptr) {
 				neighbourCube = neighbourChunk->getBlockValue(height, width, depth);
 			}
 		}
@@ -441,7 +446,7 @@ Cube* Chunk::findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int wi
 		if (width == (chunkSideSize - 1)) {
 			neighbourChunk = rightNeighbour;
 			width = 0;
-			if (neighbourChunk != nullptr && neighbourChunk->state != ChunkState::ISREGENERATING && neighbourChunk->state != ChunkState::SHOULDREGENERATE) {
+			if (neighbourChunk != nullptr) {
 				neighbourCube = neighbourChunk->getBlockValue(height, width, depth);
 			}
 		}
@@ -454,7 +459,7 @@ Cube* Chunk::findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int wi
 		if (depth == (chunkSideSize - 1)) {
 			neighbourChunk = frontNeighbour;
 			depth = 0;
-			if (neighbourChunk != nullptr && neighbourChunk->state != ChunkState::ISREGENERATING && neighbourChunk->state != ChunkState::SHOULDREGENERATE) {
+			if (neighbourChunk != nullptr) {
 				neighbourCube = neighbourChunk->getBlockValue(height, width, depth);
 			}
 		}
@@ -467,7 +472,7 @@ Cube* Chunk::findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int wi
 		if (depth == 0) {
 			neighbourChunk = backNeighbour;
 			depth = chunkSideSize - 1;
-			if (neighbourChunk != nullptr && neighbourChunk->state != ChunkState::ISREGENERATING && neighbourChunk->state != ChunkState::SHOULDREGENERATE) {
+			if (neighbourChunk != nullptr) {
 				neighbourCube = neighbourChunk->getBlockValue(height, width, depth);
 			}
 		}
@@ -494,14 +499,9 @@ Cube* Chunk::findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int wi
 
 Cube* Chunk::findNeighbourBlock(Cube::FaceSide neighbourSide, Cube* cube) {
 	int height, width, depth;
-	for (height = 0; height < chunkHeight; height++) {
-		for (width = 0; width < chunkSideSize; width++) {
-			for (depth = 0; depth < chunkSideSize; depth++) {
-				if (&m_blockMatrix[height][width][depth] == cube) {
-					return findNeighbourBlock(neighbourSide, height, width, depth);
-				}
-			}
-		}
+	cube->getCubeIndexesOffset(height, width, depth);
+	if (&m_blockMatrix[height][width][depth] == cube) {
+		return findNeighbourBlock(neighbourSide, height, width, depth);
 	}
 	return nullptr;
 }

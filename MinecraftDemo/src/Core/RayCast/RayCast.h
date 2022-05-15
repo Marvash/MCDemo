@@ -9,4 +9,5 @@ class RayCast {
 public:
 	RayCast();
 	static std::vector<Cube*> castRay(ChunkManager* manager, glm::vec3 rayOrigin, glm::vec3 rayDirection, float rayLength);
+	static void castRay(ChunkManager* manager, glm::vec3 rayOrigin, glm::vec3 rayDirection, float rayLength, std::vector<Cube*>& cubes);
 };

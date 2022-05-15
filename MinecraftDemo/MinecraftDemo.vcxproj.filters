@@ -246,6 +246,9 @@
     <ClCompile Include="src\Core\Services\CameraSystem\CameraSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\Services\GameObjectManager\GameObjectManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fDefaultShader.fs" />
@@ -536,6 +539,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Services\MovementSystem\AABBCollider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\GameObjectManager\GameObjectManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\GameObject\GameObjectTypeEnum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Events\Game\PlayerLookEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Events\Game\PlayerSelectedCubeChange.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Events\Game\PlayerVelocityEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

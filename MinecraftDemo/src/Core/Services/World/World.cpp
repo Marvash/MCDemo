@@ -38,12 +38,16 @@ std::vector<ChunkRenderData*>* World::getRenderableChunks() {
 	return m_chunkManager->getRenderableChunks();
 }
 
-void World::destroyBlock(glm::vec3 rayOrigin, glm::vec3& playerLookDirection) {
-	m_chunkManager->destroyBlock(rayOrigin, playerLookDirection);
+void World::getCubesInRay(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength, std::vector<Cube*>& cubes) {
+	m_chunkManager->getCubesInRay(rayOrigin, direction, rayLength, cubes);
 }
 
-void World::placeBlock(glm::vec3 rayOrigin, glm::vec3& playerLookDirection, Cube::CubeId cubeId) {
-	m_chunkManager->placeBlock(rayOrigin, playerLookDirection, cubeId);
+void World::destroyBlock(Cube* toDestroy) {
+	m_chunkManager->destroyBlock(toDestroy);
+}
+
+void World::placeBlock(Cube* toPlace, Cube::CubeId cubeId) {
+	m_chunkManager->placeBlock(toPlace, cubeId);
 }
 
 void World::onNotify(Event& newEvent) {

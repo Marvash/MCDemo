@@ -75,7 +75,7 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 216;
 			}
 			break;
-		case Cube::CubeId::LEAVES:
+		case Cube::CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
@@ -107,7 +107,7 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 54;
 			}
 			break;
-		case Cube::CubeId::LEAVES:
+		case Cube::CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
@@ -126,7 +126,7 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 108;
 			}
 			break;
-		case Cube::CubeId::LEAVES:
+		case Cube::CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
@@ -147,7 +147,7 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 135;
 			}
 			break;
-		case Cube::CubeId::LEAVES:
+		case Cube::CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
@@ -166,7 +166,7 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 162;
 			}
 			break;
-		case Cube::CubeId::LEAVES:
+		case Cube::CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
@@ -185,7 +185,7 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 27;
 			}
 			break;
-		case Cube::CubeId::LEAVES:
+		case Cube::CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
@@ -204,7 +204,7 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 81;
 			}
 			break;
-		case Cube::CubeId::LEAVES:
+		case Cube::CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
@@ -223,7 +223,7 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 189;
 			}
 			break;
-		case Cube::CubeId::LEAVES:
+		case Cube::CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;

@@ -33,8 +33,8 @@ public:
 	void startGeneratorThreads();
 	void stopBuilderThreads();
 	void stopGeneratorThreads();
-	void destroyBlock(glm::vec3 rayOrigin, glm::vec3& playerLookDirection);
-	void placeBlock(glm::vec3 rayOrigin, glm::vec3& playerLookDirection, Cube::CubeId cubeId);
+	void destroyBlock(Cube* toDestroy);
+	void placeBlock(Cube* toPlace, Cube::CubeId cubeId);
 	void updateGenerationOrigin(glm::vec3& playerPos);
 	Cube* getCubeByCoords(glm::vec3 coords);
 	void convertToCenteredCubeCoordinates(glm::vec3& coords);
@@ -42,6 +42,9 @@ public:
 	void computeAdjacentCubes(Cube*** adjacentCubes, GameObject* gameObject, int radius);
 	void onNotify(Event& newEvent) override;
 	void notify(Event& newEvent) override;
+	Cube* solidBlockRaycast(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength);
+	void getCubesInRay(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength, std::vector<Cube*>& cubes);
+	glm::vec3 getCubeAbsCoords(Cube* cube);
 
 private:
 	enum class ChunkSide {
