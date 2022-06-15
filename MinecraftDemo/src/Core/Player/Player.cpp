@@ -3,19 +3,22 @@
 
 Player::Player(CoreServiceLocator* coreServiceLocator) : GameObject(coreServiceLocator, GameObjectType::DYNAMIC),
 	m_selectedCubeId(Cube::CubeId::DIRT_BLOCK),
-	m_jumpForce(8.2f),
+	m_jumpForce(9.0f), // 8.2f
 	m_targetCube(nullptr),
-	m_targetCubeRayLength(10.0f) {
+	m_targetCubeRayLength(10.0f),
+	m_lookSensitivity(0.25f),
+	m_movementModeIndex(0) {
 	setMovementComponent(new MovementComponent());
-	m_position = glm::vec3(112.0f, 2.0f, -44.0f);
+	m_position = glm::vec3(112.5f, 2.5f, -44.5f);
 	//m_position = glm::vec3(0.0f, 2.0f, 0.0f);
-	m_movementComponent->m_movementSpeed = 5.0f;
-	m_movementComponent->m_fallingMovementSpeed = 3.0f;
-	m_movementComponent->m_flySpeed = 15.0f;
-	m_movementComponent->m_movementMode = MovementMode::DEFAULT;
-	m_movementComponent->m_jumpStrength = 8.2f;
+	m_movementComponent->setMovementSpeed(4.0f);
+	m_movementComponent->setFlySpeed(15.0f);
+	m_movementComponent->setColliderHalfHeight(0.9f);
+	m_movementComponent->setColliderHalfWidth(0.3f);
 	m_coreServiceLocator->getCameraSystem()->setPlayerPosition(m_position);
+	m_coreServiceLocator->getWorld()->updateGenerationOrigin(m_position);
 	registerComponents();
+	m_coreServiceLocator->getMovementSystem()->setMovementMode(this, MovementMode::STANDARD);
 	m_coreServiceLocator->getGameObjectManager()->setPlayerId(m_id);
 }
 
@@ -24,8 +27,8 @@ void Player::onNotify(Event& newEvent) {
 
 void Player::processMousePosition() {
 	InputManager* inputManager = m_coreServiceLocator->getInput();
-	float xoffset = (float)inputManager->getMouseXDelta();
-	float yoffset = (float)inputManager->getMouseYDelta();
+	float xoffset = (float)inputManager->getMouseXDelta() * m_lookSensitivity;
+	float yoffset = (float)inputManager->getMouseYDelta() * m_lookSensitivity;
 	m_coreServiceLocator->getCameraSystem()->processMouseMovement(xoffset, yoffset, true);
 }
 
@@ -39,7 +42,7 @@ void Player::processKeyinput() {
 	InputManager* inputManager = m_coreServiceLocator->getInput();
 	double dt = m_coreServiceLocator->getApplicationManager()->getDeltaTime();
 	/*
-	if (inputManager->getInputState(InputKey::KEY_W)) {
+	if (inputManager->getInputState(InputKey::KEY_W)) { 
 		m_camera->processKeyboard(CameraMovement::FORWARD, dt);
 	}
 	if (inputManager->getInputState(InputKey::KEY_A)) {
@@ -65,28 +68,55 @@ void Player::processKeyinput() {
 	if (inputManager->getInputState(InputKey::KEY_D)) {
 		inputVelocity += m_coreServiceLocator->getCameraSystem()->m_right;
 	}
-	if (m_movementComponent->m_movementMode == MovementMode::DEFAULT) {
-		inputVelocity.y = 0.0f;
-		if (glm::length(inputVelocity) > 0.0f) {
-			inputVelocity = glm::normalize(inputVelocity);
-		}
-		m_movementComponent->m_velocity.x = inputVelocity.x;
-		m_movementComponent->m_velocity.z = inputVelocity.z;
-
-		if (inputManager->getInputStatePressed(InputKey::KEY_SPACE)) {
-			if (m_movementComponent->m_isGrounded) {
-				m_coreServiceLocator->getMovementSystem()->applyImpulse(m_movementComponent, glm::vec3(0.0f, m_jumpForce, 0.0f));
+	glm::vec3 targetVelocity(m_movementComponent->getTargetVelocity());
+	switch (m_movementComponent->getMovementMode()) {
+		case MovementMode::STANDARD: {
+			inputVelocity.y = 0.0f;
+			if (glm::length(inputVelocity) > 0.0f) {
+				inputVelocity = glm::normalize(inputVelocity);
 			}
+			targetVelocity.x = inputVelocity.x * m_movementComponent->getMovementSpeed();
+			targetVelocity.z = inputVelocity.z * m_movementComponent->getMovementSpeed();
+
+			if (inputManager->getInputStatePressed(InputKey::KEY_SPACE)) {
+				if (m_movementComponent->getIsGrounded()) {
+					glm::vec3 velocity(m_movementComponent->getVelocity());
+					velocity.y = m_jumpForce;
+					//m_movementComponent->m_velocity.z = -10000.0f;
+					m_movementComponent->setVelocity(velocity);
+				}
+			}
+			break;
+		}
+		case MovementMode::FLY: {
+			inputVelocity.y = 0.0f;
+			if (glm::length(inputVelocity) > 0.0f) {
+				inputVelocity = glm::normalize(inputVelocity);
+			}
+			if (inputManager->getInputState(InputKey::KEY_SPACE)) {
+				inputVelocity.y = 1.0f;
+			}
+			else if (inputManager->getInputState(InputKey::KEY_LEFT_SHIFT)) {
+				inputVelocity.y = -1.0f;
+			}
+			
+			targetVelocity.x = inputVelocity.x * m_movementComponent->getFlySpeed();
+			targetVelocity.z = inputVelocity.z * m_movementComponent->getFlySpeed();
+			targetVelocity.y = inputVelocity.y * m_movementComponent->getFlySpeed();
+			
+			break;
+		}
+		case MovementMode::FLYNOCLIP: {
+			if (glm::length(inputVelocity) > 0.0f) {
+				inputVelocity = glm::normalize(inputVelocity);
+			}
+			targetVelocity.x = inputVelocity.x * m_movementComponent->getFlySpeed();
+			targetVelocity.y = inputVelocity.y * m_movementComponent->getFlySpeed();
+			targetVelocity.z = inputVelocity.z * m_movementComponent->getFlySpeed();
+			break;
 		}
 	}
-	else {
-		if (glm::length(inputVelocity) > 0.0f) {
-			inputVelocity = glm::normalize(inputVelocity);
-			m_movementComponent->m_velocity.x = inputVelocity.x;
-			m_movementComponent->m_velocity.y = inputVelocity.y;
-			m_movementComponent->m_velocity.z = inputVelocity.z;
-		}
-	}
+	m_movementComponent->setTargetVelocity(targetVelocity);
 	std::stringstream ss;
 	if (inputManager->getInputStatePressed(InputKey::KEY_1)) {
 		m_selectedCubeId = Cube::CubeId::SAND_BLOCK;
@@ -94,8 +124,6 @@ void Player::processKeyinput() {
 		std::string displayName(Cube::getDisplayName(Cube::CubeId::SAND_BLOCK));
 		ss << cubeId << " " << displayName;
 		std::string finalString(ss.str());
-		PlayerSelectedCubeChange selectedCubeChange(finalString);
-		m_coreServiceLocator->getGameObjectManager()->sendEvent(selectedCubeChange);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_2)) {
 		m_selectedCubeId = Cube::CubeId::DIRT_BLOCK;
@@ -103,8 +131,6 @@ void Player::processKeyinput() {
 		std::string displayName(Cube::getDisplayName(Cube::CubeId::DIRT_BLOCK));
 		ss << cubeId << " " << displayName;
 		std::string finalString(ss.str());
-		PlayerSelectedCubeChange selectedCubeChange(finalString);
-		m_coreServiceLocator->getGameObjectManager()->sendEvent(selectedCubeChange);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_3)) {
 		m_selectedCubeId = Cube::CubeId::STONE_BLOCK;
@@ -112,8 +138,6 @@ void Player::processKeyinput() {
 		std::string displayName(Cube::getDisplayName(Cube::CubeId::STONE_BLOCK));
 		ss << cubeId << " " << displayName;
 		std::string finalString(ss.str());
-		PlayerSelectedCubeChange selectedCubeChange(finalString);
-		m_coreServiceLocator->getGameObjectManager()->sendEvent(selectedCubeChange);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_4)) {
 		m_selectedCubeId = Cube::CubeId::OAK_LOG_BLOCK;
@@ -121,8 +145,6 @@ void Player::processKeyinput() {
 		std::string displayName(Cube::getDisplayName(Cube::CubeId::OAK_LOG_BLOCK));
 		ss << cubeId << " " << displayName;
 		std::string finalString(ss.str());
-		PlayerSelectedCubeChange selectedCubeChange(finalString);
-		m_coreServiceLocator->getGameObjectManager()->sendEvent(selectedCubeChange);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_5)) {
 		m_selectedCubeId = Cube::CubeId::LEAVES_BLOCK;
@@ -130,21 +152,18 @@ void Player::processKeyinput() {
 		std::string displayName(Cube::getDisplayName(Cube::CubeId::LEAVES_BLOCK));
 		ss << cubeId << " " << displayName;
 		std::string finalString(ss.str());
-		PlayerSelectedCubeChange selectedCubeChange(finalString);
-		m_coreServiceLocator->getGameObjectManager()->sendEvent(selectedCubeChange);
 	}
 	if (inputManager->getInputState(InputKey::KEY_LEFT_CTRL)) {
-		m_movementComponent->m_flySpeed = 30.0f;
+		m_movementComponent->setFlySpeed(30.0f);
 	} else {
-		m_movementComponent->m_flySpeed = 15.0f;
+		m_movementComponent->setFlySpeed(15.0f);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_F)) {
-		if (m_movementComponent->m_movementMode == MovementMode::FLYNOCLIP) {
-			m_movementComponent->m_movementMode = MovementMode::DEFAULT;
+		m_movementModeIndex++;
+		if ((m_movementModeIndex % ((int)MovementMode::FLYNOCLIP + 1)) == 0) {
+			m_movementModeIndex = 0;
 		}
-		else {
-			m_movementComponent->m_movementMode = MovementMode::FLYNOCLIP;
-		}
+		m_coreServiceLocator->getMovementSystem()->setMovementMode(this, (MovementMode)m_movementModeIndex);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_ESC)) {
 		m_coreServiceLocator->getApplicationManager()->requestCoreStateChange(CoreState::QUIT);
@@ -177,6 +196,7 @@ void Player::update() {
 	processMouseInput();
 	processKeyinput();
 	m_coreServiceLocator->getCameraSystem()->setPlayerPosition(m_position);
+	m_coreServiceLocator->getWorld()->updateGenerationOrigin(m_position);
 	m_targetCube = getFirstSolidCube();
 }
 

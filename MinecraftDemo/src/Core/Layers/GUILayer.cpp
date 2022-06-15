@@ -26,7 +26,7 @@ void GUILayer::updateDebugPanel() {
 	if (player != nullptr) {
 		m_debugPanel->setPlayerPosition(player->m_position);
 		m_debugPanel->setPlayerLook(cameraSystem->m_front);
-		m_debugPanel->setPlayerVelocity(player->m_movementComponent->m_velocity);
+		m_debugPanel->setPlayerVelocity(player->m_movementComponent->getVelocity());
 		std::string cubeName = Cube::getDisplayName(player->getSelectedCube());
 		m_debugPanel->setSelectedCubeName(cubeName);
 		cubeName = "None";
@@ -34,6 +34,8 @@ void GUILayer::updateDebugPanel() {
 			cubeName = Cube::getDisplayName(player->getTargetCube()->getCubeId());
 		}
 		m_debugPanel->setTargetCubeName(cubeName);
+		std::string movementModeName = m_coreServiceLocator->getMovementSystem()->getMovementModeDisplayName(player->m_movementComponent->getMovementMode());
+		m_debugPanel->setSelectedMovementModeName(movementModeName);
 	}
 }
 

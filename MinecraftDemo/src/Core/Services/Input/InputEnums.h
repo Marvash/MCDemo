@@ -25,6 +25,7 @@ enum class InputKey {
 	KEY_9,
 	KEY_LEFT_CTRL,
 	KEY_SPACE,
+	KEY_LEFT_SHIFT,
 	KEY_ESC
 };
 

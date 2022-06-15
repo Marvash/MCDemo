@@ -34,6 +34,10 @@ void World::updateRenderableChunks() {
 	m_chunkManager->updateRenderableChunks();
 }
 
+void World::updateGenerationOrigin(glm::vec3& position) {
+	m_chunkManager->updateGenerationOrigin(position);
+}
+
 std::vector<ChunkRenderData*>* World::getRenderableChunks() {
 	return m_chunkManager->getRenderableChunks();
 }
@@ -51,12 +55,4 @@ void World::placeBlock(Cube* toPlace, Cube::CubeId cubeId) {
 }
 
 void World::onNotify(Event& newEvent) {
-	switch (newEvent.getEventType()) {
-		case EventType::PLAYER_MOVE: {
-			PlayerMoveEvent* playerMoveEvent = static_cast<PlayerMoveEvent*>(&newEvent);
-			m_chunkManager->updateGenerationOrigin(playerMoveEvent->m_position);
-
-			break;
-		}
-	}
 }

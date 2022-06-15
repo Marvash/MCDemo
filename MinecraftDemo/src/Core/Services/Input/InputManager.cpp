@@ -160,6 +160,8 @@ InputKey InputManager::glfwKeyToInputKey(int key) {
 		return InputKey::KEY_ESC;
 	case GLFW_KEY_SPACE:
 		return InputKey::KEY_SPACE;
+	case GLFW_KEY_LEFT_SHIFT:
+		return InputKey::KEY_LEFT_SHIFT;
 	}
 	return InputKey::UNKNOWN;
 }

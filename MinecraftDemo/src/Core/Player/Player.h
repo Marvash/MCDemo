@@ -6,7 +6,6 @@
 #include "Core/Cube/Cube.h"
 #include "Core/Services/MovementSystem/MovementModeEnum.h"
 #include "Core/Components/MovementComponent.h"
-#include "Core/Events/Game/PlayerSelectedCubeChange.h"
 #include <glm/glm.hpp>
 
 class CoreServiceLocator;
@@ -31,5 +30,7 @@ private:
 
 	float m_jumpForce;
 	float m_targetCubeRayLength;
+	float m_lookSensitivity;
+	int m_movementModeIndex;
 };
 

@@ -222,9 +222,6 @@
     <ClCompile Include="src\Core\Cube\Cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\RayCast\RayCast.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Core\TerrainGenerator\TerrainGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -247,6 +244,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Services\GameObjectManager\GameObjectManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\MovementSystem\MovementModes\StandardMovementMode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\Strategy\StrategyContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\Strategy\Strategy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\MovementSystem\MovementModes\FlyNoClipMovementMode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Components\MovementComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\MovementSystem\MovementModes\FlyMovementMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -502,9 +517,6 @@
     <ClInclude Include="src\Core\Cube\Cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\RayCast\RayCast.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Core\TerrainGenerator\TerrainGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -515,9 +527,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Services\MovementSystem\MovementModeEnum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Core\Events\Game\PlayerMoveEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Services\MovementSystem\MovementSystem.h">
@@ -547,13 +556,19 @@
     <ClInclude Include="src\Core\GameObject\GameObjectTypeEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Events\Game\PlayerLookEvent.h">
+    <ClInclude Include="src\Core\Services\MovementSystem\MovementModes\StandardMovementMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Events\Game\PlayerSelectedCubeChange.h">
+    <ClInclude Include="src\Utils\Strategy\StrategyContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Events\Game\PlayerVelocityEvent.h">
+    <ClInclude Include="src\Utils\Strategy\Strategy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\MovementSystem\MovementModes\FlyNoClipMovementMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\MovementSystem\MovementModes\FlyMovementMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,36 +3,32 @@
 #include "Core/Services/CoreService.h"
 #include "Core/Services/ChunkManager/ChunkManager.h"
 #include "Core/Components/MovementComponent.h"
-#include "Core/Events/Game/PlayerMoveEvent.h"
-#include "Core/Events/Game/PlayerVelocityEvent.h"
+#include "Utils/Strategy/StrategyContext.h"
+#include "Utils/Strategy/Strategy.h"
+#include "Core/Services/MovementSystem/MovementModes/StandardMovementMode.h"
+#include "Core/Services/MovementSystem/MovementModes/FlyNoClipMovementMode.h"
+#include "Core/Services/MovementSystem/MovementModes/FlyMovementMode.h"
 #include "AABBCollider.h"
 
 class MovementComponent;
 
 class MovementSystem : public CoreService {
 public:
-	struct PhysicsGameObject {
-		GameObject* gameObject;
-		MovementComponent* movementComponent;
-		Cube*** adjacentCubes;
-		AABBCollider collider;
-	};
-
 	MovementSystem(CoreEventDispatcher* coreEventDispatcher);
+	~MovementSystem();
 	void init( ChunkManager* chunkManager);
 	void onNotify(Event& newEvent) override;
 	void registerObject(GameObject* gameObject, MovementComponent* movementComponent);
-	void step(double deltaTime);
-	void applyImpulse(MovementComponent* movementComponent, glm::vec3 vector);
+	void update(double deltaTime);
+	void setMovementMode(GameObject* gameObject, MovementMode movementMode);
+	std::string getMovementModeDisplayName(MovementMode movementMode);
 
-	std::map<GameObject*, PhysicsGameObject*> m_registeredObjects;
+	std::map<GameObject*, MovementComponent*> m_registeredObjects;
 
 private:
-	void stepPhysicalMovement(float dt, PhysicsGameObject* physicsGameObject);
-	Cube* getAdjacentCubeByCoord(Cube*** adjacentCubes, glm::vec3& centralCubeCoords, glm::vec3& requestedCoords, int radius);
-	void convertToCenteredCubeCoordinates(glm::vec3& coords);
-
-	const float GRAVITY = 30.0f;
-	const float MAX_VELOCITY = 50.0f;
 	ChunkManager* m_chunkManager;
+	StrategyContext* m_movementStrategyContext;
+	StandardMovementMode* m_standardMovementMode;
+	FlyNoClipMovementMode* m_flyNoClipMovementMode;
+	FlyMovementMode* m_flyMovementMode;
 };

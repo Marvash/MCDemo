@@ -1,7 +1,7 @@
 #pragma once
 
 enum class MovementMode {
-	DEFAULT,
+	STANDARD,
 	FLY,
 	FLYNOCLIP
 };

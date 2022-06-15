@@ -9,11 +9,12 @@ public:
 	DebugPanel();
 	void draw() override;
 	void setDeltaTime(double deltaTime);
-	void setPlayerPosition(glm::vec3& position);
-	void setPlayerLook(glm::vec3& look);
-	void setPlayerVelocity(glm::vec3& velocity);
+	void setPlayerPosition(glm::vec3 position);
+	void setPlayerLook(glm::vec3 look);
+	void setPlayerVelocity(glm::vec3 velocity);
 	void setSelectedCubeName(std::string& cubeName);
 	void setTargetCubeName(std::string& cubeName);
+	void setSelectedMovementModeName(std::string& modeName);
 
 private:
 	ImGuiWindowFlags m_windowFlags;
@@ -23,4 +24,5 @@ private:
 	glm::vec3 m_playerVelocity;
 	std::string m_selectedCubeName;
 	std::string m_targetCubeName;
+	std::string m_selectedMovementModeName;
 };

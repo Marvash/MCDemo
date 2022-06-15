@@ -2,7 +2,6 @@
 #include "Core/CoreEventDispatcher.h"
 #include "Core/Services/CoreService.h"
 #include "CameraRenderingData.h"
-#include "Core/Events/Game/PlayerLookEvent.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 

@@ -265,9 +265,15 @@ void Chunk::buildMesh() {
 				if (m_blockMatrix[i][j][w].getCubeId() == Cube::CubeId::AIR_BLOCK || m_blockMatrix[i][j][w].getCubeId() == Cube::CubeId::UNGENERATED_BLOCK) {
 					continue;
 				}
+				/*
 				float vertexBaseHeight = i + (blockSideSize / 2.0f);
-				float vertexBaseWidth = j - ((chunkSideSize / 2.0f) - (blockSideSize / 2.0f));
-				float vertexBaseDepth = w - ((chunkSideSize / 2.0f) - (blockSideSize / 2.0f));
+				float vertexBaseWidth = j - ((chunkSideSize / 2.0f) + (blockSideSize / 2.0f));
+				float vertexBaseDepth = w - ((chunkSideSize / 2.0f) + (blockSideSize / 2.0f));
+				*/
+				glm::vec3 cubeOffset = m_blockMatrix[i][j][w].getCubeCoordsOffset();
+				float vertexBaseHeight = (cubeOffset.y);
+				float vertexBaseWidth = (cubeOffset.x - (chunkSideSize / 2));
+				float vertexBaseDepth = (cubeOffset.z - (chunkSideSize / 2));
 				size_t vertexCoordsBaseIndex = correctVertexCount * 3;
 				size_t texCoordsBaseIndex = correctVertexCount * 2;
 				int texCoordsIndex = m_atlas->getAtlasTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::TOP);
@@ -408,8 +414,11 @@ void Chunk::cleanVerticesArrays() {
 
 Cube* Chunk::getCubeByCoords(glm::vec3 coords) {
 	glm::vec3 originChunkPos = chunkPosition;
+	//BOOST_LOG_TRIVIAL(info) << "o: " << originChunkPos.x << " " << originChunkPos.y << " " << originChunkPos.z;
+	//BOOST_LOG_TRIVIAL(info) << "c: " << coords.x << " " << coords.y << " " << coords.z;
 	originChunkPos.x = originChunkPos.x - (chunkSideSize / 2.0f);
 	originChunkPos.z = originChunkPos.z - (chunkSideSize / 2.0f);
+	//BOOST_LOG_TRIVIAL(info) << "o2: " << originChunkPos.x << " " << originChunkPos.y << " " << originChunkPos.z;
 	if (glm::abs(coords.x - originChunkPos.x) > chunkSideSize || glm::abs(coords.z - originChunkPos.z) > chunkSideSize || coords.y < originChunkPos.y || coords.y >= (chunkHeight + originChunkPos.y) /* || state < ChunkState::SHOULDREBUILD*/) {
 		//BOOST_LOG_TRIVIAL(info) << coords.x << " " << coords.y << " " << coords.z;
 
@@ -418,6 +427,7 @@ Cube* Chunk::getCubeByCoords(glm::vec3 coords) {
 	int cubeWidthIndex = glm::abs(glm::floor((coords.x - originChunkPos.x)));
 	int cubeDepthIndex = glm::abs(glm::floor((coords.z - originChunkPos.z)));
 	int cubeHeightIndex = glm::abs(glm::floor((coords.y - originChunkPos.y)));
+	//BOOST_LOG_TRIVIAL(info) << "f: " << cubeWidthIndex << " " << cubeHeightIndex << " " << cubeDepthIndex;
 	return &m_blockMatrix[cubeHeightIndex][cubeWidthIndex][cubeDepthIndex];
 }
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "Core/Services/CoreService.h"
 #include "Core/Services/ChunkManager/ChunkManager.h"
-#include "Core/Events/Game/PlayerMoveEvent.h"
 
 class World : public CoreService {
 public:
@@ -12,6 +11,7 @@ public:
 	void stopThreads();
 	void reloadChunks();
 	void updateRenderableChunks();
+	void updateGenerationOrigin(glm::vec3& position);
 	std::vector<ChunkRenderData*>* getRenderableChunks();
 	void getCubesInRay(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength, std::vector<Cube*>& cubes);
 	void destroyBlock(Cube* toDestroy);

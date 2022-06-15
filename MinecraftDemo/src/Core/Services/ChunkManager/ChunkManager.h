@@ -2,7 +2,6 @@
 #include "Core/GameObject/GameObject.h"
 #include "Core/Chunk/Chunk.h"
 #include "Core/Cube/Cube.h"
-#include "Core/RayCast/RayCast.h"
 #include "Core/TerrainGenerator/TerrainGenerator.h"
 #include "Core/Services/CoreService.h"
 #include "Core/Services/Atlas/Atlas.h"
@@ -42,9 +41,10 @@ public:
 	void computeAdjacentCubes(Cube*** adjacentCubes, GameObject* gameObject, int radius);
 	void onNotify(Event& newEvent) override;
 	void notify(Event& newEvent) override;
-	Cube* solidBlockRaycast(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength);
-	void getCubesInRay(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength, std::vector<Cube*>& cubes);
+	Cube* solidBlockCast(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength);
 	glm::vec3 getCubeAbsCoords(Cube* cube);
+	std::vector<Cube*> getCubesInRay(glm::vec3 rayOrigin, glm::vec3 rayDirection, float rayLength);
+	void getCubesInRay(glm::vec3 rayOrigin, glm::vec3 rayDirection, float rayLength, std::vector<Cube*>& cubes);
 
 private:
 	enum class ChunkSide {

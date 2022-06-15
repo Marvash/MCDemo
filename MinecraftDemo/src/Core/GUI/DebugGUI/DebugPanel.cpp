@@ -52,6 +52,7 @@ void DebugPanel::draw() {
     ImGui::TextColored(ImVec4(0.0, 0.0, 1.0, 1.0), "Z: %.3f", m_playerVelocity.z);
     ImGui::Text("Selected Cube: %s", m_selectedCubeName.c_str());
     ImGui::Text("Target Cube: %s", m_targetCubeName.c_str());
+    ImGui::Text("Movement Mode: %s", m_selectedMovementModeName.c_str());
     ImGui::End();
 }
 
@@ -59,11 +60,11 @@ void DebugPanel::setDeltaTime(double deltaTime) {
 	m_deltaTime = deltaTime;
 }
 
-void DebugPanel::setPlayerPosition(glm::vec3& position) {
+void DebugPanel::setPlayerPosition(glm::vec3 position) {
     m_playerPosition = position;
 }
 
-void DebugPanel::setPlayerLook(glm::vec3& look) {
+void DebugPanel::setPlayerLook(glm::vec3 look) {
     m_playerLook = look;
 }
 
@@ -75,6 +76,10 @@ void DebugPanel::setTargetCubeName(std::string& cubeName) {
     m_targetCubeName = cubeName;
 }
 
-void DebugPanel::setPlayerVelocity(glm::vec3& velocity) {
+void DebugPanel::setPlayerVelocity(glm::vec3 velocity) {
     m_playerVelocity = velocity;
+}
+
+void DebugPanel::setSelectedMovementModeName(std::string& modeName) {
+    m_selectedMovementModeName = modeName;
 }

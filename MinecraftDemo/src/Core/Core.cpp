@@ -122,9 +122,9 @@ void Core::run() {
 void Core::update(double& dt) {
 	m_serviceLocator->getApplicationManager()->m_deltaTime = dt;
 
-	m_serviceLocator->getInput()->dispatchInputEvents();
+	m_serviceLocator->getMovementSystem()->update(dt);
 
-	m_serviceLocator->getMovementSystem()->step(dt);
+	m_serviceLocator->getInput()->dispatchInputEvents();
 
 	m_serviceLocator->getGameObjectManager()->update();
 
