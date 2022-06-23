@@ -33,7 +33,6 @@ private:
 
     const float YAW = -90.0f;
     const float PITCH = 0.0f;
-    const float SENSITIVITY = 0.1f;
     const float ZOOM = 60.0f;
 
     glm::vec3 m_worldUp;
@@ -41,7 +40,6 @@ private:
     float m_yaw;
     float m_pitch;
 
-    float m_mouseSensitivity;
     float m_zoom;
     glm::mat4 m_viewMatrix;
 };

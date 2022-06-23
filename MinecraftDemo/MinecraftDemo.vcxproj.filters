@@ -264,6 +264,9 @@
     <ClCompile Include="src\Core\Services\MovementSystem\MovementModes\FlyMovementMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\GUI\Crosshair.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fDefaultShader.fs" />
@@ -569,6 +572,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Services\MovementSystem\MovementModes\FlyMovementMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\GUI\Crosshair.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

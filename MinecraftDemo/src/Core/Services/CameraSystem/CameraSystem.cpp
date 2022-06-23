@@ -6,7 +6,6 @@ CameraSystem::CameraSystem(CoreEventDispatcher* coreEventDispatcher) :
     m_up(glm::vec3(0.0f, 1.0f, 0.0f)),
     m_worldUp(m_up),
     m_front(glm::vec3(0.0f, 0.0f, -1.0f)),
-    m_mouseSensitivity(SENSITIVITY),
     m_zoom(ZOOM),
     m_yaw(YAW),
     m_pitch(PITCH),
@@ -41,14 +40,11 @@ glm::vec3 CameraSystem::getCameraPosition() {
 }
 
 void CameraSystem::updateViewMatrix() {
-    m_viewMatrix = glm::lookAt(m_cameraPosition, m_cameraPosition + m_front, m_up);
+    m_viewMatrix = glm::lookAt(m_cameraPosition, m_cameraPosition + m_front, m_worldUp);
 }
 
 void CameraSystem::processMouseMovement(float xoffset, float yoffset, bool constrainpitch)
 {
-    xoffset *= m_mouseSensitivity;
-    yoffset *= m_mouseSensitivity;
-
     m_yaw += xoffset;
     m_pitch += yoffset;
 

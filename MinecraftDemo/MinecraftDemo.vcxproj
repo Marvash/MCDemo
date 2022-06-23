@@ -145,6 +145,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Components\MovementComponent.cpp" />
+    <ClCompile Include="src\Core\GUI\Crosshair.cpp" />
     <ClCompile Include="src\Core\Services\MovementSystem\MovementModes\FlyMovementMode.cpp" />
     <ClCompile Include="src\Core\Services\MovementSystem\MovementModes\FlyNoClipMovementMode.cpp" />
     <ClCompile Include="src\Core\Application\Application.cpp" />
@@ -237,6 +238,7 @@
     <None Include="shaders\vShader.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\GUI\Crosshair.h" />
     <ClInclude Include="src\Core\Services\MovementSystem\MovementModes\FlyMovementMode.h" />
     <ClInclude Include="src\Core\Services\MovementSystem\MovementModes\FlyNoClipMovementMode.h" />
     <ClInclude Include="src\Core\Application\Application.h" />

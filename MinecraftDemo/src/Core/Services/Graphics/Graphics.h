@@ -12,6 +12,8 @@ public:
 	void submitRenderableChunks(std::vector<ChunkRenderData*>* renderableChunks);
 	void submitGUIElement(GUIElement* element);
 	void setCameraRenderingData(CameraRenderingData* camera);
+	float getViewportWidth();
+	float getViewportHeight();
 
 private:
 	Renderer* m_renderer;

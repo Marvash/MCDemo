@@ -25,7 +25,7 @@ void DebugPanel::draw() {
     ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_None);
     ImGui::SetNextWindowSize(ImVec2(380, 160), ImGuiCond_None);
     ImGui::SetNextWindowBgAlpha(0.4);
-	ImGui::Begin("", nullptr, m_windowFlags);
+	ImGui::Begin("DebugPanel", nullptr, m_windowFlags);
     //ImGuiStyle* style = &ImGui::GetStyle();
     //ImGui::Text("Framerate: %d", (int)(1.0 / m_deltaTime));
     ImGui::Text("Framerate: %.1f", ImGui::GetIO().Framerate);

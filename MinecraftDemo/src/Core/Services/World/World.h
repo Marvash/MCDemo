@@ -14,6 +14,8 @@ public:
 	void updateGenerationOrigin(glm::vec3& position);
 	std::vector<ChunkRenderData*>* getRenderableChunks();
 	void getCubesInRay(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength, std::vector<Cube*>& cubes);
+	Cube* getCubeByCoords(glm::vec3 coords);
+	glm::vec3 getCubeAbsCoords(Cube* cube);
 	void destroyBlock(Cube* toDestroy);
 	void placeBlock(Cube* toPlace, Cube::CubeId cubeId);
 

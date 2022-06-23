@@ -24,6 +24,14 @@ void Graphics::setCameraRenderingData(CameraRenderingData* cameraRenderingData) 
 	m_renderer->setCameraRenderingData(cameraRenderingData);
 }
 
+float Graphics::getViewportWidth() {
+	return m_renderer->getViewportWidth();
+}
+
+float Graphics::getViewportHeight() {
+	return m_renderer->getViewportHeight();
+}
+
 void Graphics::onNotify(Event& newEvent) {
 
 }

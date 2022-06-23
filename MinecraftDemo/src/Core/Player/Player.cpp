@@ -6,8 +6,8 @@ Player::Player(CoreServiceLocator* coreServiceLocator) : GameObject(coreServiceL
 	m_jumpForce(9.0f), // 8.2f
 	m_targetCube(nullptr),
 	m_targetCubeRayLength(10.0f),
-	m_lookSensitivity(0.25f),
-	m_movementModeIndex(0) {
+	m_lookSensitivity(0.02f),
+	m_movementModeIndex((int)MovementMode::FLY) {
 	setMovementComponent(new MovementComponent());
 	m_position = glm::vec3(112.5f, 2.5f, -44.5f);
 	//m_position = glm::vec3(0.0f, 2.0f, 0.0f);
@@ -18,7 +18,7 @@ Player::Player(CoreServiceLocator* coreServiceLocator) : GameObject(coreServiceL
 	m_coreServiceLocator->getCameraSystem()->setPlayerPosition(m_position);
 	m_coreServiceLocator->getWorld()->updateGenerationOrigin(m_position);
 	registerComponents();
-	m_coreServiceLocator->getMovementSystem()->setMovementMode(this, MovementMode::STANDARD);
+	m_coreServiceLocator->getMovementSystem()->setMovementMode(this, MovementMode::FLY);
 	m_coreServiceLocator->getGameObjectManager()->setPlayerId(m_id);
 }
 
@@ -198,6 +198,9 @@ void Player::update() {
 	m_coreServiceLocator->getCameraSystem()->setPlayerPosition(m_position);
 	m_coreServiceLocator->getWorld()->updateGenerationOrigin(m_position);
 	m_targetCube = getFirstSolidCube();
+	glm::vec3 coords = m_coreServiceLocator->getWorld()->getCubeAbsCoords(m_coreServiceLocator->getWorld()->getCubeByCoords(m_position));
+	//BOOST_LOG_TRIVIAL(info) << "pos: " << m_position.x << " " << m_position.y << " " << m_position.z;
+	//BOOST_LOG_TRIVIAL(info) << "coords: " << coords.x << " " << coords.y << " " << coords.z;
 }
 
 Cube* Player::getFirstSolidCube() {
@@ -205,11 +208,17 @@ Cube* Player::getFirstSolidCube() {
 	std::vector<Cube*> cubesInRay;
 	glm::vec3 cameraPos = m_coreServiceLocator->getCameraSystem()->getCameraPosition();
 	glm::vec3 cameraLookDir = m_coreServiceLocator->getCameraSystem()->m_front;
+	//BOOST_LOG_TRIVIAL(info) << "player pos: " << m_position.x << " " << m_position.y << " " << m_position.z;
+	//BOOST_LOG_TRIVIAL(info) << "player campos: " << cameraPos.x << " " << cameraPos.y << " " << cameraPos.z;
+	//BOOST_LOG_TRIVIAL(info) << "player front: " << cameraLookDir.x << " " << cameraLookDir.y << " " << cameraLookDir.z;
 	m_coreServiceLocator->getWorld()->getCubesInRay(cameraPos, cameraLookDir, m_targetCubeRayLength, cubesInRay);
 	if (cubesInRay.size() > 0) {
 		for (int i = 0; i < cubesInRay.size(); i++) {
+			glm::vec3 cubeCoords = m_coreServiceLocator->getWorld()->getCubeAbsCoords(cubesInRay.at(i));
+			//BOOST_LOG_TRIVIAL(info) << "cube " << i << " coords: " << cubeCoords.x << " " << cubeCoords.y << " " << cubeCoords.z;
 			if (cubesInRay.at(i)->getCubeId() != Cube::CubeId::AIR_BLOCK && cubesInRay.at(i)->getCubeId() != Cube::CubeId::UNGENERATED_BLOCK) {
 				target = cubesInRay.at(i);
+				//BOOST_LOG_TRIVIAL(info) << "target is cube " << i;
 				break;
 			}
 		}

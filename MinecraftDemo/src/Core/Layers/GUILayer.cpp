@@ -9,15 +9,18 @@ GUILayer::GUILayer(CoreServiceLocator* coreServiceLocator) :
 
 void GUILayer::onAdd() {
 	m_debugPanel = new DebugPanel();
+	m_crosshair = new Crosshair(m_coreServiceLocator);
 }
 
 void GUILayer::onRemove() {
 	delete m_debugPanel;
+	delete m_crosshair;
 }
 
 void GUILayer::update() {
 	updateDebugPanel();
 	m_coreServiceLocator->getGraphics()->submitGUIElement(m_debugPanel);
+	m_coreServiceLocator->getGraphics()->submitGUIElement(m_crosshair);
 }
 
 void GUILayer::updateDebugPanel() {

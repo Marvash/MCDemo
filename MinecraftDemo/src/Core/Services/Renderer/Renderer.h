@@ -45,6 +45,8 @@ public:
 	void draw();
 	void init();
 	void deinit();
+	float getViewportWidth();
+	float getViewportHeight();
 private:
 	void setViewport(int posX, int posY, unsigned int width, unsigned int height);
 	void msaaResize();

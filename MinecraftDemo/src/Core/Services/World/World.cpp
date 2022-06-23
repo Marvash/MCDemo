@@ -46,6 +46,14 @@ void World::getCubesInRay(glm::vec3& rayOrigin, glm::vec3& direction, float rayL
 	m_chunkManager->getCubesInRay(rayOrigin, direction, rayLength, cubes);
 }
 
+Cube* World::getCubeByCoords(glm::vec3 coords) {
+	return m_chunkManager->getCubeByCoords(coords);
+}
+
+glm::vec3 World::getCubeAbsCoords(Cube* cube) {
+	return m_chunkManager->getCubeAbsCoords(cube);
+}
+
 void World::destroyBlock(Cube* toDestroy) {
 	m_chunkManager->destroyBlock(toDestroy);
 }

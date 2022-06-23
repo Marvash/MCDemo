@@ -20,7 +20,8 @@ void Window::init() {
 	glfwWindowHint(GLFW_GREEN_BITS, glfwMode->greenBits);
 	glfwWindowHint(GLFW_BLUE_BITS, glfwMode->blueBits);
 	glfwWindowHint(GLFW_REFRESH_RATE, glfwMode->refreshRate);
-	m_glfwWindow = glfwCreateWindow(m_windowWidth, m_windowHeight, m_windowName.c_str(), nullptr, nullptr);
+	//glfwWindowHint(GLFW_DECORATED, false);
+	m_glfwWindow = glfwCreateWindow(m_windowWidth, m_windowHeight, m_windowName.c_str(), mainMonitor, nullptr);
 	if (m_glfwWindow == nullptr)
 	{
 		std::string errorMessage = "Failed to create GLFW window";
@@ -40,7 +41,8 @@ void Window::init() {
 	notify(event);
 	// tell GLFW to capture our mouse
 	glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	BOOST_LOG_TRIVIAL(trace) << "Window intialized! Sending window init event...";
+
+	BOOST_LOG_TRIVIAL(trace) << "Window intialized! Window Size is " << m_windowWidth << " " << m_windowHeight;
 }
 
 void Window::deinit() {
