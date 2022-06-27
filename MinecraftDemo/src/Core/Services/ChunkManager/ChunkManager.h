@@ -35,7 +35,7 @@ public:
 	void destroyBlock(Cube* toDestroy);
 	void placeBlock(Cube* toPlace, Cube::CubeId cubeId);
 	void updateGenerationOrigin(glm::vec3& playerPos);
-	Cube* getCubeByCoords(glm::vec3 coords);
+	Cube* getCubeByCoords(glm::f64vec3 coords);
 	void convertToCenteredCubeCoordinates(glm::vec3& coords);
 	void init(BiomeManager* biomeManager, Atlas* atlas);
 	void computeAdjacentCubes(Cube*** adjacentCubes, GameObject* gameObject, int radius);

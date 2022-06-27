@@ -1,12 +1,12 @@
 #include "MovementComponent.h"
 
 MovementComponent::MovementComponent() :
-	m_targetVelocity(glm::vec3(0.0f, 0.0f, 0.0f)),
-	m_velocity(glm::vec3(0.0f, 0.0f, 0.0f)),
-	m_previousPosition(glm::vec3(0.0f, 0.0f, 0.0f)),
-	m_currentPosition(glm::vec3(0.0f, 0.0f, 0.0f)),
-	m_previousVelocity(glm::vec3(0.0f, 0.0f, 0.0f)),
-	m_currentVelocity(glm::vec3(0.0f, 0.0f, 0.0f)),
+	m_targetVelocity(glm::f64vec3(0.0, 0.0, 0.0)),
+	m_velocity(glm::f64vec3(0.0, 0.0, 0.0)),
+	m_previousPosition(glm::f64vec3(0.0, 0.0, 0.0)),
+	m_currentPosition(glm::f64vec3(0.0, 0.0, 0.0)),
+	m_previousVelocity(glm::f64vec3(0.0, 0.0, 0.0)),
+	m_currentVelocity(glm::f64vec3(0.0, 0.0, 0.0)),
 	m_movementSpeed(0.0f),
 	m_flySpeed(0.0f),
 	m_movementMode(MovementMode::STANDARD),
@@ -18,16 +18,16 @@ MovementComponent::MovementComponent() :
 	m_airDampeningInfluence(1.0f) {
 }
 
-glm::vec3 MovementComponent::getTargetVelocity() {
+glm::f64vec3 MovementComponent::getTargetVelocity() {
 	return m_targetVelocity;
 }
-void MovementComponent::setTargetVelocity(glm::vec3 targetVelocity) {
+void MovementComponent::setTargetVelocity(glm::f64vec3 targetVelocity) {
 	m_targetVelocity = targetVelocity;
 }
-glm::vec3 MovementComponent::getVelocity() {
+glm::f64vec3 MovementComponent::getVelocity() {
 	return m_velocity;
 }
-void MovementComponent::setVelocity(glm::vec3 velocity) {
+void MovementComponent::setVelocity(glm::f64vec3 velocity) {
 	m_velocity = velocity;
 }
 float MovementComponent::getMovementSpeed() {

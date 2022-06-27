@@ -412,14 +412,14 @@ void Chunk::cleanVerticesArrays() {
 	indexes = nullptr;
 }
 
-Cube* Chunk::getCubeByCoords(glm::vec3 coords) {
-	glm::vec3 originChunkPos = chunkPosition;
+Cube* Chunk::getCubeByCoords(glm::f64vec3 coords) {
+	glm::f64vec3 originChunkPos = chunkPosition;
 	//BOOST_LOG_TRIVIAL(info) << "o: " << originChunkPos.x << " " << originChunkPos.y << " " << originChunkPos.z;
 	//BOOST_LOG_TRIVIAL(info) << "c: " << coords.x << " " << coords.y << " " << coords.z;
-	originChunkPos.x = originChunkPos.x - (chunkSideSize / 2.0f);
-	originChunkPos.z = originChunkPos.z - (chunkSideSize / 2.0f);
+	originChunkPos.x = originChunkPos.x - ((double)chunkSideSize / 2.0);
+	originChunkPos.z = originChunkPos.z - ((double)chunkSideSize / 2.0);
 	//BOOST_LOG_TRIVIAL(info) << "o2: " << originChunkPos.x << " " << originChunkPos.y << " " << originChunkPos.z;
-	if (glm::abs(coords.x - originChunkPos.x) > chunkSideSize || glm::abs(coords.z - originChunkPos.z) > chunkSideSize || coords.y < originChunkPos.y || coords.y >= (chunkHeight + originChunkPos.y) /* || state < ChunkState::SHOULDREBUILD*/) {
+	if (glm::abs(coords.x - originChunkPos.x) > (double)chunkSideSize || glm::abs(coords.z - originChunkPos.z) > (double)chunkSideSize || coords.y < originChunkPos.y || coords.y >= ((double)chunkHeight + originChunkPos.y) /* || state < ChunkState::SHOULDREBUILD*/) {
 		//BOOST_LOG_TRIVIAL(info) << coords.x << " " << coords.y << " " << coords.z;
 
 		return nullptr;

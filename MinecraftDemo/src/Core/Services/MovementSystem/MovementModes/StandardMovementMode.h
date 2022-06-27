@@ -18,18 +18,18 @@ public:
 private:
 	void execute() override;
 	void stepPhysicalMovement();
-	void computeInterpolatedPosition(float alpha, GameObject* gameObject, MovementComponent* movementComponent);
+	void computeInterpolatedPosition(double alpha, GameObject* gameObject, MovementComponent* movementComponent);
 
-	const float GRAVITY = 30.0f;
-	const float GROUND_VELOCITY_LERP_FACTOR = 0.45f;
-	const float AIR_VELOCITY_LERP_FACTOR = 0.1f;
-	const float MAX_VELOCITY = 150.0f;
-	const float FIXED_DELTA = 0.05f;
-	const float COLLISION_OFFSET = 0.00001f;
+	const double GRAVITY = 30.0;
+	const double GROUND_VELOCITY_LERP_FACTOR = 0.45;
+	const double AIR_VELOCITY_LERP_FACTOR = 0.1;
+	const double MAX_VELOCITY = 150.0;
+	const double FIXED_DELTA = 0.05;
+	const double COLLISION_OFFSET = 0.00001;
 
 	double m_accumulator;
 	int m_nSteps;
-	float m_alpha;
+	double m_alpha;
 
 	friend class StrategyContext;
 };

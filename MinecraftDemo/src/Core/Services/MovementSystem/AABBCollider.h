@@ -5,18 +5,18 @@ struct AABBCollider {
 	float halfWidthInternal;
 	float halfHeightInternal;
 
-	glm::vec3 position;
+	glm::f64vec3 position;
 
-	glm::vec3 bottomLeftFront;
-	glm::vec3 bottomRightFront;
-	glm::vec3 bottomRightBack;
-	glm::vec3 bottomLeftBack;
-	glm::vec3 topLeftBack;
-	glm::vec3 topRightBack;
-	glm::vec3 topRightFront;
-	glm::vec3 topLeftFront;
+	glm::f64vec3 bottomLeftFront;
+	glm::f64vec3 bottomRightFront;
+	glm::f64vec3 bottomRightBack;
+	glm::f64vec3 bottomLeftBack;
+	glm::f64vec3 topLeftBack;
+	glm::f64vec3 topRightBack;
+	glm::f64vec3 topRightFront;
+	glm::f64vec3 topLeftFront;
 
-	void buildAABBCollider(glm::vec3& position, float halfWidth, float halfHeight) {
+	void buildAABBCollider(glm::f64vec3& position, float halfWidth, float halfHeight) {
 		bottomLeftFront.x = position.x - halfWidth;
 		bottomLeftFront.y = position.y - halfHeight;
 		bottomLeftFront.z = position.z + halfWidth;
@@ -53,7 +53,7 @@ struct AABBCollider {
 		halfHeightInternal = halfHeight;
 	}
 
-	void moveCollider(glm::vec3& vector) {
+	void moveCollider(glm::f64vec3& vector) {
 		position = vector;
 		buildAABBCollider(position, halfWidthInternal, halfHeightInternal);
 	}
