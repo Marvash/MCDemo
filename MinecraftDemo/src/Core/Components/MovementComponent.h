@@ -8,10 +8,10 @@ class MovementComponent {
 
 public:
 	MovementComponent();
-	glm::vec3 getTargetVelocity();
-	void setTargetVelocity(glm::vec3 targetVelocity);
-	glm::vec3 getVelocity();
-	void setVelocity(glm::vec3 velocity);
+	glm::f64vec3 getTargetVelocity();
+	void setTargetVelocity(glm::f64vec3 targetVelocity);
+	glm::f64vec3 getVelocity();
+	void setVelocity(glm::f64vec3 velocity);
 	float getMovementSpeed();
 	void setMovementSpeed(float movementSpeed);
 	float getFlySpeed();                                               
@@ -30,12 +30,12 @@ public:
 	MovementMode getMovementMode();
 
 private:
-	glm::vec3 m_targetVelocity;
-	glm::vec3 m_velocity;
-	glm::vec3 m_previousPosition;
-	glm::vec3 m_currentPosition;
-	glm::vec3 m_previousVelocity;
-	glm::vec3 m_currentVelocity;
+	glm::f64vec3 m_targetVelocity;
+	glm::f64vec3 m_velocity;
+	glm::f64vec3 m_previousPosition;
+	glm::f64vec3 m_currentPosition;
+	glm::f64vec3 m_previousVelocity;
+	glm::f64vec3 m_currentVelocity;
 	float m_movementSpeed;
 	float m_flySpeed;
 	MovementMode m_movementMode;

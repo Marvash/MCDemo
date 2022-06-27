@@ -89,9 +89,6 @@ float Renderer::getViewportHeight() {
 }
 
 void Renderer::setViewport(int posX, int posY, unsigned int width, unsigned int height) {
-	int* dims = new int[2];
-	glGetIntegerv(GL_MAX_VIEWPORT_DIMS, dims);
-	BOOST_LOG_TRIVIAL(info) << "MAX VIEWPORT DIMS " << dims[0] << " " << dims[1];
 	glViewport(posX, posY, width, height);
 }
 
@@ -229,7 +226,6 @@ void Renderer::drawChunks() {
 	glm::mat4 view = *m_cameraRenderingData->viewMatrix;
 	for (auto& chunk : m_submittedChunks) {
 		glm::mat4 model = glm::mat4(1.0f);
-		//BOOST_LOG_TRIVIAL(info) << "Rendering chunk pos " << chunk.second.position.x << " " << chunk.second.position.y << " " << chunk.second.position.z;
 		model = glm::translate(model, chunk.second.position);
 		glm::mat4 mvp = projection * view * model * glm::mat4(1.0f);
 		m_chunkShader->setMat4("mvp", mvp);

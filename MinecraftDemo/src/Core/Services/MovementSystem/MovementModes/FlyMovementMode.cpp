@@ -8,7 +8,7 @@ FlyMovementMode::FlyMovementMode() :
 	m_accumulator(0.0),
 	m_deltaTime(0.0),
 	m_nSteps(0),
-	m_alpha(0.0f) {
+	m_alpha(0.0) {
 
 }
 
@@ -37,12 +37,12 @@ void FlyMovementMode::stepPhysicalMovement() {
 	mc->m_previousPosition = mc->m_currentPosition;
 	mc->m_previousVelocity = mc->m_currentVelocity;
 
-	glm::vec3 targetVelNorm(0.0f, 0.0f, 0.0f);
-	if (glm::length(mc->m_targetVelocity) > 0.0f) {
+	glm::f64vec3 targetVelNorm(0.0, 0.0, 0.0);
+	if (glm::length(mc->m_targetVelocity) > 0.0) {
 		targetVelNorm = glm::normalize(mc->m_targetVelocity);
 	}
 
-	float lerpFactor = AIR_VELOCITY_LERP_FACTOR * mc->m_airDampeningInfluence;
+	double lerpFactor = AIR_VELOCITY_LERP_FACTOR * mc->m_airDampeningInfluence;
 	//mc->m_velocity.z = cubicInterpolation();
 	mc->m_velocity.y = mc->m_velocity.y + ((mc->m_targetVelocity.y - mc->m_velocity.y) * lerpFactor);
 	mc->m_velocity.z = mc->m_velocity.z + ((mc->m_targetVelocity.z - mc->m_velocity.z) * lerpFactor);
@@ -71,7 +71,7 @@ void FlyMovementMode::stepPhysicalMovement() {
 	}
 	mc->m_velocity.x = mc->m_velocity.x + velocityDecrementX;
 	*/
-	glm::vec3 targetPosition = mc->m_currentPosition;
+	glm::f64vec3 targetPosition = mc->m_currentPosition;
 	collider.buildAABBCollider(mc->m_currentPosition, mc->m_colliderHalfWidth, mc->m_colliderHalfHeight);
 
 	targetPosition.y += mc->m_velocity.y * FIXED_DELTA;
@@ -79,9 +79,9 @@ void FlyMovementMode::stepPhysicalMovement() {
 
 	//BOOST_LOG_TRIVIAL(info) << "aabb: " << collider.bottomRightBack.x << " " << collider.bottomRightBack.y << " " << collider.bottomRightBack.z;
 
-	glm::vec3 targetDistance = targetPosition;
+	glm::f64vec3 targetDistance = targetPosition;
 
-	glm::vec3 colliderVertexPosition = collider.bottomLeftFront;
+	glm::f64vec3 colliderVertexPosition = collider.bottomLeftFront;
 	bool vertical = true;
 	bool horizontal = true;
 	bool depth = true;
@@ -92,20 +92,20 @@ void FlyMovementMode::stepPhysicalMovement() {
 	bool leftCollision = false;
 	bool rightCollision = false;
 	Cube::CubeId cubeId;
-	float nearestCubes = 0.0f;
+	float nearestCubes = 0.0;
 	// Bottom side
-	if (mc->m_velocity.y < 0.0f) {
+	if (mc->m_velocity.y < 0.0) {
 		targetDistance.y -= mc->m_colliderHalfHeight;
 		//BOOST_LOG_TRIVIAL(info) << "POS2: " << targetPosition.y;
 		//BOOST_LOG_TRIVIAL(info) << "DISTANCE: " << glm::abs(targetDistance.y - colliderVertexPosition.y) << " " << mc->m_velocity.y << " " << targetDistance.y;
 		do {
 			nearestCubes = glm::floor(colliderVertexPosition.y);
-			if (glm::abs(targetDistance.y - colliderVertexPosition.y) < 1.0f) {
+			if (glm::abs(targetDistance.y - colliderVertexPosition.y) < 1.0) {
 				colliderVertexPosition.y = targetDistance.y;
 				depth = false;
 			}
 			else {
-				colliderVertexPosition.y += (glm::sign(mc->m_velocity.y) * 1.0f);
+				colliderVertexPosition.y += (glm::sign(mc->m_velocity.y) * 1.0);
 			}
 			//BOOST_LOG_TRIVIAL(info) << "sub: " << colliderVertexPosition.y;
 			if (colliderVertexPosition.y < nearestCubes) {
@@ -148,15 +148,15 @@ void FlyMovementMode::stepPhysicalMovement() {
 							vertical = false;
 						}
 						*/
-						colliderVertexPosition.x += 1.0f;
+						colliderVertexPosition.x += 1.0;
 					}
-					colliderVertexPosition.z -= 1.0f;
+					colliderVertexPosition.z -= 1.0;
 				}
 			}
 		} while (depth);
 	}
 	//Top side
-	if (mc->m_velocity.y > 0.0f) {
+	if (mc->m_velocity.y > 0.0) {
 		targetDistance.y += mc->m_colliderHalfHeight;
 		colliderVertexPosition = collider.topLeftBack;
 		vertical = true;
@@ -164,12 +164,12 @@ void FlyMovementMode::stepPhysicalMovement() {
 		depth = true;
 		do {
 			nearestCubes = glm::ceil(colliderVertexPosition.y);
-			if (glm::abs(targetDistance.y - colliderVertexPosition.y) < 1.0f) {
+			if (glm::abs(targetDistance.y - colliderVertexPosition.y) < 1.0) {
 				colliderVertexPosition.y = targetDistance.y;
 				depth = false;
 			}
 			else {
-				colliderVertexPosition.y += (glm::sign(mc->m_velocity.y) * 1.0f);
+				colliderVertexPosition.y += (glm::sign(mc->m_velocity.y) * 1.0);
 			}
 			if (colliderVertexPosition.y > nearestCubes) {
 				colliderVertexPosition.z = collider.topLeftBack.z;
@@ -194,9 +194,9 @@ void FlyMovementMode::stepPhysicalMovement() {
 							vertical = false;
 							depth = false;
 						}
-						colliderVertexPosition.x += 1.0f;
+						colliderVertexPosition.x += 1.0;
 					}
-					colliderVertexPosition.z += 1.0f;
+					colliderVertexPosition.z += 1.0;
 				}
 			}
 		} while (depth);
@@ -209,7 +209,7 @@ void FlyMovementMode::stepPhysicalMovement() {
 	//BOOST_LOG_TRIVIAL(info) << "gz: " << go->m_position.x << " " << go->m_position.y << " " << go->m_position.z;
 	targetDistance = targetPosition;
 	//Back side
-	if (mc->m_velocity.z < 0.0f) {
+	if (mc->m_velocity.z < 0.0) {
 		targetDistance.z -= mc->m_colliderHalfWidth;
 		colliderVertexPosition = collider.topRightBack;
 		vertical = true;
@@ -217,12 +217,12 @@ void FlyMovementMode::stepPhysicalMovement() {
 		depth = true;
 		do {
 			nearestCubes = glm::floor(colliderVertexPosition.z);
-			if (glm::abs(targetDistance.z - colliderVertexPosition.z) < 1.0f) {
+			if (glm::abs(targetDistance.z - colliderVertexPosition.z) < 1.0) {
 				colliderVertexPosition.z = targetDistance.z;
 				depth = false;
 			}
 			else {
-				colliderVertexPosition.z += (glm::sign(mc->m_velocity.z) * 1.0f);
+				colliderVertexPosition.z += (glm::sign(mc->m_velocity.z) * 1.0);
 			}
 			if (colliderVertexPosition.z < nearestCubes) {
 				colliderVertexPosition.y = collider.topRightBack.y;
@@ -248,15 +248,15 @@ void FlyMovementMode::stepPhysicalMovement() {
 							vertical = false;
 							depth = false;
 						}
-						colliderVertexPosition.x -= 1.0f;
+						colliderVertexPosition.x -= 1.0;
 					}
-					colliderVertexPosition.y -= 1.0f;
+					colliderVertexPosition.y -= 1.0;
 				}
 			}
 		} while (depth);
 	}
 	//Front side
-	if (mc->m_velocity.z > 0.0f) {
+	if (mc->m_velocity.z > 0.0) {
 		targetDistance.z += mc->m_colliderHalfWidth;
 		colliderVertexPosition = collider.topLeftFront;
 		vertical = true;
@@ -264,12 +264,12 @@ void FlyMovementMode::stepPhysicalMovement() {
 		depth = true;
 		do {
 			nearestCubes = glm::ceil(colliderVertexPosition.z);
-			if (glm::abs(targetDistance.z - colliderVertexPosition.z) < 1.0f) {
+			if (glm::abs(targetDistance.z - colliderVertexPosition.z) < 1.0) {
 				colliderVertexPosition.z = targetDistance.z;
 				depth = false;
 			}
 			else {
-				colliderVertexPosition.z += (glm::sign(mc->m_velocity.z) * 1.0f);
+				colliderVertexPosition.z += (glm::sign(mc->m_velocity.z) * 1.0);
 			}
 			if (colliderVertexPosition.z > nearestCubes) {
 				colliderVertexPosition.y = collider.topLeftFront.y;
@@ -294,9 +294,9 @@ void FlyMovementMode::stepPhysicalMovement() {
 							vertical = false;
 							depth = false;
 						}
-						colliderVertexPosition.x += 1.0f;
+						colliderVertexPosition.x += 1.0;
 					}
-					colliderVertexPosition.y -= 1.0f;
+					colliderVertexPosition.y -= 1.0;
 				}
 			}
 		} while (depth);
@@ -308,7 +308,7 @@ void FlyMovementMode::stepPhysicalMovement() {
 	//BOOST_LOG_TRIVIAL(info) << "gx: " << go->m_position.x << " " << go->m_position.y << " " << go->m_position.z;
 	targetDistance = targetPosition;
 	//Left side
-	if (mc->m_velocity.x < 0.0f) {
+	if (mc->m_velocity.x < 0.0) {
 		targetDistance.x -= mc->m_colliderHalfWidth;
 		colliderVertexPosition = collider.topLeftBack;
 		vertical = true;
@@ -316,12 +316,12 @@ void FlyMovementMode::stepPhysicalMovement() {
 		depth = true;
 		do {
 			nearestCubes = glm::floor(colliderVertexPosition.x);
-			if (glm::abs(targetDistance.x - colliderVertexPosition.x) < 1.0f) {
+			if (glm::abs(targetDistance.x - colliderVertexPosition.x) < 1.0) {
 				colliderVertexPosition.x = targetDistance.x;
 				depth = false;
 			}
 			else {
-				colliderVertexPosition.x += (glm::sign(mc->m_velocity.x) * 1.0f);
+				colliderVertexPosition.x += (glm::sign(mc->m_velocity.x) * 1.0);
 			}
 			if (colliderVertexPosition.x < nearestCubes) {
 				colliderVertexPosition.y = collider.topLeftBack.y;
@@ -346,15 +346,15 @@ void FlyMovementMode::stepPhysicalMovement() {
 							vertical = false;
 							depth = false;
 						}
-						colliderVertexPosition.z += 1.0f;
+						colliderVertexPosition.z += 1.0;
 					}
-					colliderVertexPosition.y -= 1.0f;
+					colliderVertexPosition.y -= 1.0;
 				}
 			}
 		} while (depth);
 	}
 	//Right side
-	if (mc->m_velocity.x > 0.0f) {
+	if (mc->m_velocity.x > 0.0) {
 		targetDistance.x += mc->m_colliderHalfWidth;
 		colliderVertexPosition = collider.topRightFront;
 		vertical = true;
@@ -362,12 +362,12 @@ void FlyMovementMode::stepPhysicalMovement() {
 		depth = true;
 		do {
 			nearestCubes = glm::ceil(colliderVertexPosition.x);
-			if (glm::abs(targetDistance.x - colliderVertexPosition.x) < 1.0f) {
+			if (glm::abs(targetDistance.x - colliderVertexPosition.x) < 1.0) {
 				colliderVertexPosition.x = targetDistance.x;
 				depth = false;
 			}
 			else {
-				colliderVertexPosition.x += (glm::sign(mc->m_velocity.x) * 1.0f);
+				colliderVertexPosition.x += (glm::sign(mc->m_velocity.x) * 1.0);
 			}
 			if (colliderVertexPosition.x > nearestCubes) {
 				colliderVertexPosition.y = collider.topRightFront.y;
@@ -393,9 +393,9 @@ void FlyMovementMode::stepPhysicalMovement() {
 							vertical = false;
 							depth = false;
 						}
-						colliderVertexPosition.z -= 1.0f;
+						colliderVertexPosition.z -= 1.0;
 					}
-					colliderVertexPosition.y -= 1.0f;
+					colliderVertexPosition.y -= 1.0;
 				}
 			}
 		} while (depth);
@@ -404,34 +404,34 @@ void FlyMovementMode::stepPhysicalMovement() {
 
 
 	if (bottomCollision) {
-		mc->m_velocity.y = 0.0f;
+		mc->m_velocity.y = 0.0;
 		mc->m_isGrounded = true;
 	}
 	else {
 		mc->m_isGrounded = false;
 	}
 	if (topCollision) {
-		mc->m_velocity.y = 0.0f;
+		mc->m_velocity.y = 0.0;
 	}
 	if (leftCollision) {
-		mc->m_velocity.x = 0.0f;
+		mc->m_velocity.x = 0.0;
 	}
 	if (rightCollision) {
-		mc->m_velocity.x = 0.0f;
+		mc->m_velocity.x = 0.0;
 	}
 	if (frontCollision) {
-		mc->m_velocity.z = 0.0f;
+		mc->m_velocity.z = 0.0;
 	}
 	if (backCollision) {
-		mc->m_velocity.z = 0.0f;
+		mc->m_velocity.z = 0.0;
 	}
 
 	mc->m_currentPosition = targetPosition;
 	mc->m_currentVelocity = mc->m_velocity;
 }
 
-void FlyMovementMode::computeInterpolatedPosition(float alpha, GameObject* gameObject, MovementComponent* movementComponent) {
+void FlyMovementMode::computeInterpolatedPosition(double alpha, GameObject* gameObject, MovementComponent* movementComponent) {
 	GameObject* go = gameObject;
 	MovementComponent* mc = movementComponent;
-	go->m_position = (mc->m_currentPosition * alpha) + (mc->m_previousPosition * (1.0f - alpha));
+	go->m_position = (mc->m_currentPosition * alpha) + (mc->m_previousPosition * (1.0 - alpha));
 }

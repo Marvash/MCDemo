@@ -329,13 +329,13 @@ void ChunkManager::placeBlock(Cube* toPlace, Cube::CubeId cubeId) {
 	unlockLP();
 }
 
-Cube* ChunkManager::getCubeByCoords(glm::vec3 coords) {
-	glm::vec3 originChunkPos = m_chunkMatrix[0][0]->chunkPosition;
+Cube* ChunkManager::getCubeByCoords(glm::f64vec3 coords) {
+	glm::f64vec3 originChunkPos = m_chunkMatrix[0][0]->chunkPosition;
 	//BOOST_LOG_TRIVIAL(info) << originChunkPos.x << " " << originChunkPos.y << " " << originChunkPos.z;
-	originChunkPos.x = originChunkPos.x - (CHUNK_SIDE_SIZE / 2.0f);
-	originChunkPos.z = originChunkPos.z - (CHUNK_SIDE_SIZE / 2.0f);
-	int chunkWidthIndex = glm::abs(int((coords.x - originChunkPos.x) / CHUNK_SIDE_SIZE));
-	int chunkDepthIndex = glm::abs(int((coords.z - originChunkPos.z) / CHUNK_SIDE_SIZE));
+	originChunkPos.x = originChunkPos.x - ((double)CHUNK_SIDE_SIZE / 2.0);
+	originChunkPos.z = originChunkPos.z - ((double)CHUNK_SIDE_SIZE / 2.0);
+	int chunkWidthIndex = glm::abs(int((coords.x - originChunkPos.x) / (double)CHUNK_SIDE_SIZE));
+	int chunkDepthIndex = glm::abs(int((coords.z - originChunkPos.z) / (double)CHUNK_SIDE_SIZE));
 	Chunk* tmp = m_chunkMatrix[chunkWidthIndex][chunkDepthIndex];
 	//BOOST_LOG_TRIVIAL(info) << coords.x << " " << coords.y << " " << coords.z;
 	Cube* cube = m_chunkMatrix[chunkWidthIndex][chunkDepthIndex]->getCubeByCoords(coords);
