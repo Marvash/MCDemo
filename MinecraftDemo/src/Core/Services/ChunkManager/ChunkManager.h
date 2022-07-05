@@ -25,7 +25,7 @@ public:
 	~ChunkManager();
 	void generateChunks();
 	void updateRenderableChunks();
-	std::vector<ChunkRenderData*>* getRenderableChunks();
+	std::vector<RenderingComponent*>* getChunkRenderingComponents();
 	void rebuildChunks();
 	void reloadChunks();
 	void startBuilderThreads();
@@ -62,7 +62,7 @@ private:
 	Chunk*** m_chunkMatrix;
 	glm::vec3 m_generationOrigin;
 	glm::vec3 m_playerPosition;
-	std::vector<ChunkRenderData*> m_renderableChunks;
+	std::vector<RenderingComponent*> m_chunksRenderingComponents;
 	
 	bool m_buildersShouldStop;
 	bool m_generatorsShouldStop;

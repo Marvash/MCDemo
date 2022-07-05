@@ -26,6 +26,6 @@ int main() {
 		application.run();
 	}
 	catch (std::exception& e) {
-		BOOST_LOG_TRIVIAL(fatal) << "ANOMALOUS BEHAVIOUR DETECTED: " << e.what();
+		BOOST_LOG_TRIVIAL(fatal) << "ANOMALOUS BEHAVIOUR: " << e.what();
 	}
 }

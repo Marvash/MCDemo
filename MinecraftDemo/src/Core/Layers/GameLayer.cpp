@@ -9,7 +9,6 @@ GameLayer::GameLayer(CoreServiceLocator* coreServiceLocator) :
 void GameLayer::update() {
 	m_coreServiceLocator->getWorld()->reloadChunks();
 	m_coreServiceLocator->getWorld()->updateRenderableChunks();
-	m_coreServiceLocator->getGraphics()->submitRenderableChunks(m_coreServiceLocator->getWorld()->getRenderableChunks());
 }
 
 void GameLayer::onNotify(Event& newEvent) {
@@ -21,6 +20,9 @@ void GameLayer::onAdd() {
 	m_coreServiceLocator->getWorld()->updateGenerationOrigin(m_player->m_position);
 	m_coreServiceLocator->getWorld()->startThreads();
 	m_coreServiceLocator->getGraphics()->setCameraRenderingData(m_coreServiceLocator->getCameraSystem()->getCameraRenderingData());
+	for (RenderingComponent* component : *m_coreServiceLocator->getWorld()->getChunkComponents()) {
+		m_coreServiceLocator->getGraphics()->registerComponent(component);
+	}
 }
 
 void GameLayer::onRemove() {

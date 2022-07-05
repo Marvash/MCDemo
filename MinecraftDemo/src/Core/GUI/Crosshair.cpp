@@ -1,7 +1,7 @@
 #include "Crosshair.h"
 #include <boost/log/trivial.hpp>
 
-Crosshair::Crosshair(CoreServiceLocator* coreServiceLocator) :
+Crosshair::Crosshair(CoreServiceLocator* coreServiceLocator) : 
     GUIElement(),
     m_windowFlags(0),
     m_coreServiceLocator(coreServiceLocator),

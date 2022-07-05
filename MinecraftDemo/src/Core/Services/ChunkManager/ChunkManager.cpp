@@ -1,5 +1,4 @@
 #include "ChunkManager.h"
-#include "Core/Services/CoreServiceLocator.h"
 
 const int ChunkManager::CHUNK_ARRAY_WIDTH = 24;
 const int ChunkManager::CHUNK_ARRAY_DEPTH = 24;
@@ -33,6 +32,7 @@ void ChunkManager::init(BiomeManager* biomeManager, Atlas* atlas) {
 			//BOOST_LOG_TRIVIAL(info) << xPos << " " << yPos << " " << zPos;
 			glm::vec3 chunkPosition = glm::vec3(xPos, yPos, zPos);
 			m_chunkMatrix[i][j] = new Chunk(biomeManager, atlas, CHUNK_HEIGHT, CHUNK_SIDE_SIZE, chunkPosition);
+			m_chunksRenderingComponents.push_back(m_chunkMatrix[i][j]->getRenderingComponent());
 		}
 	}
 }
@@ -168,20 +168,19 @@ void ChunkManager::rebuildChunks() {
 }
 
 void ChunkManager::updateRenderableChunks() {
-	m_renderableChunks.clear();
 	lockHP();
 	for (int i = 0; i < CHUNK_ARRAY_WIDTH; i++) {
 		for (int j = 0; j < CHUNK_ARRAY_DEPTH; j++) {
 			if (m_chunkMatrix[i][j]->state == Chunk::ChunkState::MESHLOADED || m_chunkMatrix[i][j]->canDraw) {
-				 m_renderableChunks.push_back(&m_chunkMatrix[i][j]->getChunkRenderData());
+				 m_chunkMatrix[i][j]->getRenderingComponent()->m_enabled = true;
 			}
 		}
 	}
 	unlockHP();
 }
 
-std::vector<ChunkRenderData*>* ChunkManager::getRenderableChunks() {
-	return &m_renderableChunks;
+std::vector<RenderingComponent*>* ChunkManager::getChunkRenderingComponents() {
+	return &m_chunksRenderingComponents;
 }
 
 void ChunkManager::computeAdjacentCubes(Cube*** adjacentCubes, GameObject* gameObject, int radius) {

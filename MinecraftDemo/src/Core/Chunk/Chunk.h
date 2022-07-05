@@ -3,14 +3,7 @@
 #include <Boost/log/trivial.hpp>
 #include "Core/Services/Atlas/Atlas.h"
 #include "Core/Services/BiomeManager/BiomeManager.h"
-
-struct ChunkRenderData {
-	GLuint VAO;
-	unsigned int indexCount;
-	glm::vec3 position;
-};
-
-class CoreServiceLocator;
+#include "Core/Components/RenderingComponent.h"
 
 class Chunk {
 public:
@@ -48,7 +41,7 @@ public:
 	Cube* getCubeByCoords(glm::f64vec3 coords);
 	Cube* findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int width, int depth);
 	Cube* findNeighbourBlock(Cube::FaceSide neighbourSide, Cube* cube);
-	ChunkRenderData& getChunkRenderData();
+	RenderingComponent* getRenderingComponent();
 private:
 
 	static const float blockSideSize;
@@ -65,7 +58,8 @@ private:
 	GLuint* indexes;
 	GLint* vertexesTexIndexesCompact;
 	GLint* vertexesTexIndexes;
-	ChunkRenderData renderData;
+	RenderingComponent m_renderingComponent;
+
 	Atlas* m_atlas;
 	BiomeManager* m_biomeManager;
 	int chunkHeight;

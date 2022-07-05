@@ -1,5 +1,4 @@
 #include "Chunk.h"
-#include "Core/Services/CoreServiceLocator.h"
 
 const float Chunk::blockSideSize = 1.0f;
 
@@ -14,7 +13,6 @@ Chunk::Chunk(BiomeManager* biomeManager, Atlas* atlas, int chunkHeight, int chun
 	init(false),
 	state(ChunkState::SHOULDREGENERATE),
 	canDraw(false),
-	renderData({ 0, 0, glm::vec3(0.0f, 0.0f, 0.0f) }),
 	m_atlas(atlas),
 	m_biomeManager(biomeManager) {
 
@@ -40,16 +38,15 @@ Chunk::Chunk(BiomeManager* biomeManager, Atlas* atlas, Cube*** blockMatrix, int 
 	state(ChunkState::SHOULDREGENERATE),
 	canDraw(false),
 	m_blockMatrix(blockMatrix),
-	renderData({ 0, 0, glm::vec3(0.0f, 0.0f, 0.0f) }),
 	m_atlas(atlas),
 	m_biomeManager(biomeManager) {
 
 	renderingSetup();
 }
 
-ChunkRenderData& Chunk::getChunkRenderData() {
+RenderingComponent* Chunk::getRenderingComponent() {
 	//BOOST_LOG_TRIVIAL(info) << "Pos: " << renderData.position.x << renderData.position.y << renderData.position.z << " count: " << renderData.indexCount;
-	return renderData;
+	return &m_renderingComponent;
 }
 
 void Chunk::initEmptyBlockMatrix() {
@@ -95,7 +92,9 @@ void Chunk::renderingSetup() {
 	glVertexAttribIPointer(2, 1, GL_INT, 2 * sizeof(GLint), (void*)(sizeof(GLint)));
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-	renderData.VAO = VAO;
+	m_renderingComponent.m_modelData.VAO = VAO;
+	m_renderingComponent.m_shaderType = ShaderType::WORLD;
+	m_renderingComponent.m_shaderData = nullptr;
 	init = true;
 }
 
@@ -112,8 +111,8 @@ void Chunk::loadMesh() {
 	meshIndexesCount = newMeshIndexesCount;
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * (meshIndexesCount), indexesCompact, GL_STATIC_DRAW);
 	glBindVertexArray(0);
-	renderData.indexCount = meshIndexesCount;
-	renderData.position = chunkPosition;
+	m_renderingComponent.m_modelData.indexCount = meshIndexesCount;
+	m_renderingComponent.m_modelData.position = chunkPosition;
 	cleanVerticesArrays();
 }
 

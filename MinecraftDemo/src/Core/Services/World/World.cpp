@@ -38,8 +38,8 @@ void World::updateGenerationOrigin(glm::vec3& position) {
 	m_chunkManager->updateGenerationOrigin(position);
 }
 
-std::vector<ChunkRenderData*>* World::getRenderableChunks() {
-	return m_chunkManager->getRenderableChunks();
+std::vector<RenderingComponent*>* World::getChunkComponents() {
+	return m_chunkManager->getChunkRenderingComponents();
 }
 
 void World::getCubesInRay(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength, std::vector<Cube*>& cubes) {
