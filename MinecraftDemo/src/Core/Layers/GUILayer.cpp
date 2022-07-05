@@ -3,24 +3,32 @@
 GUILayer::GUILayer(CoreServiceLocator* coreServiceLocator) : 
 	Layer("GUI Layer"), 
 	m_coreServiceLocator(coreServiceLocator),
-	m_debugPanel(nullptr) {
+	m_debugPanel(nullptr),
+	m_itemBar(nullptr) {
 
 }
 
 void GUILayer::onAdd() {
 	m_debugPanel = new DebugPanel();
 	m_crosshair = new Crosshair(m_coreServiceLocator);
+	m_itemBar = new ItemBar(m_coreServiceLocator, 12);
 }
 
 void GUILayer::onRemove() {
 	delete m_debugPanel;
 	delete m_crosshair;
+	delete m_itemBar;
 }
 
 void GUILayer::update() {
 	updateDebugPanel();
 	m_coreServiceLocator->getGraphics()->submitGUIElement(m_debugPanel);
 	m_coreServiceLocator->getGraphics()->submitGUIElement(m_crosshair);
+	m_coreServiceLocator->getGraphics()->submitGUIElement(m_itemBar);
+}
+
+void GUILayer::updateItemBar() {
+	Player* player = m_coreServiceLocator->getGameObjectManager()->getPlayer();
 }
 
 void GUILayer::updateDebugPanel() {

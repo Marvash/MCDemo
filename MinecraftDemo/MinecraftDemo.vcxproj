@@ -145,7 +145,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Components\MovementComponent.cpp" />
+    <ClCompile Include="src\Core\Components\RenderingComponent.cpp" />
     <ClCompile Include="src\Core\GUI\Crosshair.cpp" />
+    <ClCompile Include="src\Core\GUI\ItemBar.cpp" />
+    <ClCompile Include="src\Core\InventoryManager\InventoryManager.cpp" />
+    <ClCompile Include="src\Core\InventoryManager\Item.cpp" />
+    <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\ScreenShaderConfig.cpp" />
+    <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\WorldShaderConfig.cpp" />
+    <ClCompile Include="src\Core\Services\Renderer\Shader\ShaderLibrary.cpp" />
     <ClCompile Include="src\Core\Services\MovementSystem\MovementModes\FlyMovementMode.cpp" />
     <ClCompile Include="src\Core\Services\MovementSystem\MovementModes\FlyNoClipMovementMode.cpp" />
     <ClCompile Include="src\Core\Application\Application.cpp" />
@@ -213,7 +220,7 @@
     <ClCompile Include="src\Core\Cube\Cube.cpp" />
     <ClCompile Include="src\glad\glad.c" />
     <ClCompile Include="src\main_old.cpp" />
-    <ClCompile Include="src\Core\Shaders\Shader.cpp" />
+    <ClCompile Include="src\Core\Services\Renderer\Shader\Shader.cpp" />
     <ClCompile Include="src\Utils\Random\PerlinGenerator\PerlinNoiseGenerator.cpp" />
     <ClCompile Include="src\Core\TerrainGenerator\TerrainGenerator.cpp" />
     <ClCompile Include="src\Core\TerrainGenerator\TreeBuilder.cpp" />
@@ -238,7 +245,17 @@
     <None Include="shaders\vShader.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\Components\RenderingComponent.h" />
     <ClInclude Include="src\Core\GUI\Crosshair.h" />
+    <ClInclude Include="src\Core\GUI\ItemBar.h" />
+    <ClInclude Include="src\Core\InventoryManager\InventoryManager.h" />
+    <ClInclude Include="src\Core\InventoryManager\Item.h" />
+    <ClInclude Include="src\Core\Services\Renderer\RendererStructs.h" />
+    <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\ScreenShaderConfig.h" />
+    <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\WorldShaderConfig.h" />
+    <ClInclude Include="src\Core\Services\Renderer\ShaderData\ShaderData.h" />
+    <ClInclude Include="src\Core\Services\Renderer\Shader\ShaderEnum.h" />
+    <ClInclude Include="src\Core\Services\Renderer\Shader\ShaderLibrary.h" />
     <ClInclude Include="src\Core\Services\MovementSystem\MovementModes\FlyMovementMode.h" />
     <ClInclude Include="src\Core\Services\MovementSystem\MovementModes\FlyNoClipMovementMode.h" />
     <ClInclude Include="src\Core\Application\Application.h" />
@@ -264,6 +281,7 @@
     <ClInclude Include="src\Core\Services\MovementSystem\AABBCollider.h" />
     <ClInclude Include="src\Core\Services\MovementSystem\MovementSystem.h" />
     <ClInclude Include="src\Core\Services\MovementSystem\MovementModeEnum.h" />
+    <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\ShaderConfig.h" />
     <ClInclude Include="src\Core\Services\World\World.h" />
     <ClInclude Include="src\Core\States\ApplicationCoreState.h" />
     <ClInclude Include="src\Core\Textures\AtlasTexture.h" />
@@ -320,7 +338,7 @@
     <ClInclude Include="src\Core\Cube\Cube.h" />
     <ClInclude Include="src\Utils\Builder\SpecializedBuilder.h" />
     <ClInclude Include="src\Utils\Random\PerlinGenerator\PerlinNoiseGenerator.h" />
-    <ClInclude Include="src\Core\Shaders\Shader.h" />
+    <ClInclude Include="src\Core\Services\Renderer\Shader\Shader.h" />
     <ClInclude Include="src\stb_image.h" />
     <ClInclude Include="src\Core\TerrainGenerator\TerrainGenerator.h" />
     <ClInclude Include="src\Core\TerrainGenerator\TreeBuilder.h" />

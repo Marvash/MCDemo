@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include "Core/GUI/GUIElement.h"
 #include "imgui/imgui.h"
 #include "Core/Services/CoreServiceLocator.h"

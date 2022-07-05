@@ -55,15 +55,14 @@ void Core::initializeCoreServices() {
 	m_serviceLocator->getWindow()->init();
 	m_biomeManager->init();
 	m_atlas->init();
+	m_renderer->setAtlas(m_atlas);
+	m_renderer->setBiomeManager(m_biomeManager);
 	m_renderer->init();
 	m_chunkManager->init(m_biomeManager, m_atlas);
 	m_serviceLocator->getMovementSystem()->init(m_chunkManager);
 	m_serviceLocator->getWorld()->init(m_chunkManager);
 	m_serviceLocator->getGraphics()->init(m_renderer);
 	m_serviceLocator->getGraphics()->setCameraRenderingData(m_serviceLocator->getCameraSystem()->getCameraRenderingData());
-
-	m_renderer->setAtlas(m_atlas);
-	m_renderer->setBiomeManager(m_biomeManager);
 }
 
 void Core::shutdownCoreServices() {
