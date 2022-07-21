@@ -1,8 +1,8 @@
 #include "DebugPanel.h"
 #include <boost/log/trivial.hpp>
 
-DebugPanel::DebugPanel() :
-    GUIElement(),
+DebugPanel::DebugPanel(CoreServiceLocator* coreServiceLocator) :
+    GUIElement(coreServiceLocator),
     m_windowFlags(0),
 	m_deltaTime(0.0),
     m_playerPosition(0.0f, 0.0f, 0.0f),

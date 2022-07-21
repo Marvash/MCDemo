@@ -30,6 +30,10 @@ float Graphics::getViewportHeight() {
 	return m_renderer->getViewportHeight();
 }
 
+unsigned char* Graphics::drawOffScreen(OffScreenRenderData* renderData) {
+	return m_renderer->drawOffScreen(renderData);
+}
+
 void Graphics::onNotify(Event& newEvent) {
 
 }

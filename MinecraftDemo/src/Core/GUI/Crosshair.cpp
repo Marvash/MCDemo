@@ -2,7 +2,7 @@
 #include <boost/log/trivial.hpp>
 
 Crosshair::Crosshair(CoreServiceLocator* coreServiceLocator) : 
-    GUIElement(),
+    GUIElement(coreServiceLocator),
     m_windowFlags(0),
     m_coreServiceLocator(coreServiceLocator),
     m_graphics(coreServiceLocator->getGraphics()) {

@@ -6,7 +6,7 @@
 
 class DebugPanel : public GUIElement {
 public:
-	DebugPanel();
+	DebugPanel(CoreServiceLocator* coreServiceLocator);
 	void draw() override;
 	void setDeltaTime(double deltaTime);
 	void setPlayerPosition(glm::vec3 position);

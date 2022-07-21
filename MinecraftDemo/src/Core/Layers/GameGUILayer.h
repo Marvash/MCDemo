@@ -4,10 +4,11 @@
 #include "Core/GUI/DebugGUI/DebugPanel.h"
 #include "Core/GUI/Crosshair.h"
 #include "Core/GUI/ItemBar.h"
+#include "Core/IconManager/IconManager.h"
 
-class GUILayer : public Layer {
+class GameGUILayer : public Layer {
 public:
-	GUILayer(CoreServiceLocator* coreServiceLocator);
+	GameGUILayer(CoreServiceLocator* coreServiceLocator);
 	void onAdd() override;
 	void onRemove() override;
 	void update() override;
@@ -21,4 +22,5 @@ private:
 	DebugPanel* m_debugPanel;
 	Crosshair* m_crosshair;
 	ItemBar* m_itemBar;
+	IconManager* m_iconManager;
 };

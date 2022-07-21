@@ -1,37 +1,39 @@
-#include "GUILayer.h"
+#include "GameGUILayer.h"
 
-GUILayer::GUILayer(CoreServiceLocator* coreServiceLocator) : 
+GameGUILayer::GameGUILayer(CoreServiceLocator* coreServiceLocator) :
 	Layer("GUI Layer"), 
 	m_coreServiceLocator(coreServiceLocator),
 	m_debugPanel(nullptr),
-	m_itemBar(nullptr) {
+	m_itemBar(nullptr),
+	m_iconManager(nullptr) {
 
 }
 
-void GUILayer::onAdd() {
-	m_debugPanel = new DebugPanel();
+void GameGUILayer::onAdd() {
+	m_debugPanel = new DebugPanel(m_coreServiceLocator);
 	m_crosshair = new Crosshair(m_coreServiceLocator);
-	m_itemBar = new ItemBar(m_coreServiceLocator, 12);
+	m_iconManager = new IconManager(m_coreServiceLocator);
+	m_itemBar = new ItemBar(m_coreServiceLocator, 12, m_iconManager);
 }
 
-void GUILayer::onRemove() {
+void GameGUILayer::onRemove() {
 	delete m_debugPanel;
 	delete m_crosshair;
 	delete m_itemBar;
 }
 
-void GUILayer::update() {
+void GameGUILayer::update() {
 	updateDebugPanel();
 	m_coreServiceLocator->getGraphics()->submitGUIElement(m_debugPanel);
 	m_coreServiceLocator->getGraphics()->submitGUIElement(m_crosshair);
 	m_coreServiceLocator->getGraphics()->submitGUIElement(m_itemBar);
 }
 
-void GUILayer::updateItemBar() {
+void GameGUILayer::updateItemBar() {
 	Player* player = m_coreServiceLocator->getGameObjectManager()->getPlayer();
 }
 
-void GUILayer::updateDebugPanel() {
+void GameGUILayer::updateDebugPanel() {
 	Player* player = m_coreServiceLocator->getGameObjectManager()->getPlayer();
 	CameraSystem* cameraSystem = m_coreServiceLocator->getCameraSystem();
 	if (player != nullptr) {
@@ -50,6 +52,6 @@ void GUILayer::updateDebugPanel() {
 	}
 }
 
-void GUILayer::onNotify(Event& newEvent) {
+void GameGUILayer::onNotify(Event& newEvent) {
 
 }

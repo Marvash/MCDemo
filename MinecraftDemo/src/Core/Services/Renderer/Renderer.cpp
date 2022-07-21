@@ -20,7 +20,9 @@ void Renderer::init() {
 	glGenFramebuffers(1, &m_intermediateFBO);
 	glGenFramebuffers(1, &m_offScreenFramebuffer);
 	glGenRenderbuffers(1, &m_offScreenRbo);
+	glGenFramebuffers(1, &m_offScreenPPFramebuffer);
 	m_offScreenTexture = new ImageTexture2D(m_screenWidth, m_screenHeight, GL_RGBA, GL_RGBA);
+	m_offScreenPPTexture = new ImageTexture2D(m_screenWidth, m_screenHeight, GL_RGBA, GL_RGBA);
 	m_msaaFBColorTexture = new MultisampleTexture2D(m_screenWidth, m_screenHeight, GL_RGBA16F, m_msaaSamples);
 	m_screenTexture = new ImageTexture2D(m_screenWidth, m_screenHeight, GL_RGBA16F, GL_RGBA);
 
@@ -32,6 +34,11 @@ void Renderer::init() {
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_offScreenRbo);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 		BOOST_LOG_TRIVIAL(error) << "ERROR::FRAMEBUFFER:: Offscreen framebuffer is not complete! " << glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, m_offScreenPPFramebuffer);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_offScreenPPTexture->m_id, 0);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		BOOST_LOG_TRIVIAL(error) << "ERROR::FRAMEBUFFER:: Offscreen PP framebuffer is not complete! " << glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -50,16 +57,17 @@ void Renderer::init() {
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
-	m_shaderLibrary.loadShader("shaders/vDefaultShader.vs", "shaders/fDefaultShader.fs", ShaderType::WORLD);
-	m_shaderLibrary.loadShader("shaders/vScreenShader.vs", "shaders/fScreenShader.fs", ShaderType::SCREEN);
-	m_shaderLibrary.loadShader("shaders/vShader.vs", "shaders/fShader.fs", ShaderType::ITEMICON);
+	m_shaderLibrary.loadShader("shaders/vDefaultShader.vert", "shaders/fDefaultShader.frag", ShaderType::WORLD);
+	m_shaderLibrary.loadShader("shaders/vScreenShader.vert", "shaders/fScreenShader.frag", ShaderType::SCREEN);
+	m_shaderLibrary.loadShader("shaders/vOffScreenPPShader.vert", "shaders/fOffScreenPPShader.frag", ShaderType::OFFSCREENPP);
 
 	ScreenShaderConfig* screenShaderConfig = new ScreenShaderConfig(m_shaderLibrary.getShader(ShaderType::SCREEN), m_screenTexture);
 	WorldShaderConfig* worldShaderConfig = new WorldShaderConfig(m_shaderLibrary.getShader(ShaderType::WORLD), m_atlas->getAtlasTexture(), m_atlas->getTexCoordsBuffer(), m_biomeManager->getBiomeColorsBuffer());
+	OffScreenPPShaderConfig* offScreenPPShaderConfig = new OffScreenPPShaderConfig(m_shaderLibrary.getShader(ShaderType::OFFSCREENPP), m_offScreenTexture);
 
 	m_shaderSetups.insert(std::make_pair<ShaderType, ShaderConfig*>(ShaderType::SCREEN, static_cast<ShaderConfig*>(screenShaderConfig)));
 	m_shaderSetups.insert(std::make_pair<ShaderType, ShaderConfig*>(ShaderType::WORLD, static_cast<ShaderConfig*>(worldShaderConfig)));
-	m_shaderSetups.insert(std::make_pair<ShaderType, ShaderConfig*>(ShaderType::ITEMICON, static_cast<ShaderConfig*>(worldShaderConfig)));
+	m_shaderSetups.insert(std::make_pair<ShaderType, ShaderConfig*>(ShaderType::OFFSCREENPP, static_cast<ShaderConfig*>(offScreenPPShaderConfig)));
 
 	BOOST_LOG_TRIVIAL(trace) << "Renderer initialized!";
 
@@ -134,6 +142,12 @@ void Renderer::offscreenTextureResize(int width, int height) {
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 		BOOST_LOG_TRIVIAL(error) << "ERROR::FRAMEBUFFER:: Offscreen framebuffer is not complete! " << glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	}
+	m_offScreenPPTexture->resetTexture(width, height, GL_RGBA, GL_RGBA);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_offScreenPPFramebuffer);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_offScreenPPTexture->m_id, 0);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		BOOST_LOG_TRIVIAL(error) << "ERROR::FRAMEBUFFER:: Offscreen PP framebuffer is not complete! " << glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -165,8 +179,8 @@ void Renderer::submitTexture(Texture* texture) {
 	m_loadedTextures.insert(std::make_pair(texture->m_id, texture));
 }
 
-void Renderer::setClearColor(const glm::vec3& color) {
-	glClearColor(color.r, color.g, color.b, 1.0f);
+void Renderer::setClearColor(const glm::vec4& color) {
+	glClearColor(color.r, color.g, color.b, color.a);
 }
 
 void Renderer::setCameraRenderingData(CameraRenderingData* cameraRenderingData) {
@@ -211,7 +225,12 @@ void Renderer::drawChunks() {
 			worldShaderConfig->setProjectionMatrix(&projection);
 			worldShaderConfig->prepareShader(modelData, nullptr);
 			glBindVertexArray(component->m_modelData.VAO);
-			glDrawElements(GL_TRIANGLES, component->m_modelData.indexCount, GL_UNSIGNED_INT, 0);
+			if (modelData->isIndexed) {
+				glDrawElements(GL_TRIANGLES, component->m_modelData.indexCount, GL_UNSIGNED_INT, 0);
+			}
+			else {
+				glDrawArrays(GL_TRIANGLES, 0, component->m_modelData.vertexCount);
+			}
 			glBindVertexArray(0);
 		}
 	}
@@ -254,10 +273,14 @@ void Renderer::draw() {
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Renderer::drawOffScreen(OffScreenRenderData* renderData) {
-	offscreenTextureResize(renderData->width, renderData->height);
+unsigned char* Renderer::drawOffScreen(OffScreenRenderData* renderData) {
+	offscreenTextureResize(renderData->renderingWidth, renderData->renderingHeight);
+	glViewport(0, 0, renderData->renderingWidth, renderData->renderingHeight);
+	unsigned char* result = new unsigned char[renderData->renderingWidth * renderData->renderingHeight * 4];
 	glBindFramebuffer(GL_FRAMEBUFFER, m_offScreenFramebuffer);
-	setClearColor(m_offScreenClearColor);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	setClearColor(renderData->clearColor);
 	clear();
 	switch (renderData->shaderType) {
 		case ShaderType::WORLD: {
@@ -280,14 +303,35 @@ void Renderer::drawOffScreen(OffScreenRenderData* renderData) {
 			worldShaderConfig->setProjectionMatrix(&projection);
 			worldShaderConfig->useShaderConfig();
 			worldShaderConfig->prepareShader(&renderData->modelData, renderData->shaderData);
+			BOOST_LOG_TRIVIAL(info) << "Shader prepared";
 			glBindVertexArray(renderData->modelData.VAO);
-			glDrawElements(GL_TRIANGLES, renderData->modelData.indexCount, GL_UNSIGNED_INT, 0); 
+			if (renderData->modelData.isIndexed) {
+				glDrawElements(GL_TRIANGLES, renderData->modelData.indexCount, GL_UNSIGNED_INT, 0);
+			}
+			else {
+				BOOST_LOG_TRIVIAL(info) << "about to render";
+				glDrawArrays(GL_TRIANGLES, 0, renderData->modelData.vertexCount);
+			}
 			glBindVertexArray(0);
 			break;
 		}
 	}
-}
+	glBindFramebuffer(GL_FRAMEBUFFER, m_offScreenPPFramebuffer);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	setClearColor(SCREEN_CLEAR_COLOR);
+	clear();
+	OffScreenPPShaderConfig* offScreenPPShaderConfig = static_cast<OffScreenPPShaderConfig*>(m_shaderSetups[ShaderType::OFFSCREENPP]);
+	offScreenPPShaderConfig->useShaderConfig();
+	offScreenPPShaderConfig->prepareShader(nullptr, nullptr);
+	glBindVertexArray(m_screenQuadVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 
-void Renderer::setOffScreenClearColor(glm::vec3& clearColor) {
-	m_offScreenClearColor = clearColor;
+	m_offScreenPPTexture->bind(0);
+	BOOST_LOG_TRIVIAL(info) << "rendered, copying image";
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, result);
+	BOOST_LOG_TRIVIAL(info) << "image copied";
+
+	setViewport(0, 0, m_screenWidth, m_screenHeight);
+	return result;
 }

@@ -20,6 +20,8 @@ Core::Core() :
 	m_serviceLocator->provide(new Graphics(m_eventDispatcher));
 	m_serviceLocator->provide(new CameraSystem(m_eventDispatcher));
 	m_serviceLocator->provide(new GameObjectManager(m_eventDispatcher));
+	m_serviceLocator->provide(new AtlasService(m_eventDispatcher));
+	m_serviceLocator->provide(new BiomeService(m_eventDispatcher));
 	m_eventDispatcher->addSubService(m_serviceLocator->getWindow());
 	m_eventDispatcher->addSubService(m_renderer);
 	m_eventDispatcher->addSubService(m_serviceLocator->getInput());
@@ -63,6 +65,8 @@ void Core::initializeCoreServices() {
 	m_serviceLocator->getWorld()->init(m_chunkManager);
 	m_serviceLocator->getGraphics()->init(m_renderer);
 	m_serviceLocator->getGraphics()->setCameraRenderingData(m_serviceLocator->getCameraSystem()->getCameraRenderingData());
+	m_serviceLocator->getAtlasService()->init(m_atlas);
+	m_serviceLocator->getBiomeService()->init(m_biomeManager);
 }
 
 void Core::shutdownCoreServices() {

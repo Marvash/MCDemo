@@ -93,6 +93,7 @@ void Chunk::renderingSetup() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	m_renderingComponent.m_modelData.VAO = VAO;
+	m_renderingComponent.m_modelData.isIndexed = true;
 	m_renderingComponent.m_shaderType = ShaderType::WORLD;
 	m_renderingComponent.m_shaderData = nullptr;
 	init = true;
@@ -280,7 +281,7 @@ void Chunk::buildMesh() {
 				//BOOST_LOG_TRIVIAL(info) << "tex: " << texCoordsIndex << "color: " << colorsIndex;
 				// TOP
 				Cube* neighbourCube = findNeighbourBlock(Cube::FaceSide::TOP, i, j, w);
-				if (neighbourCube != nullptr && neighbourCube->isTransparent()) {
+				if (neighbourCube != nullptr && Cube::isTransparent(neighbourCube->getCubeId())) {
 					
 					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::TOP, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
@@ -296,7 +297,7 @@ void Chunk::buildMesh() {
 				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BOTTOM);
 				// BOTTOM
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::BOTTOM, i, j, w);
-				if (neighbourCube != nullptr && neighbourCube->isTransparent()) {
+				if (neighbourCube != nullptr && Cube::isTransparent(neighbourCube->getCubeId())) {
 
 					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::BOTTOM, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
@@ -312,7 +313,7 @@ void Chunk::buildMesh() {
 				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::RIGHT);
 				// RIGHT
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::RIGHT, i, j, w);
-				if (neighbourCube != nullptr && neighbourCube->isTransparent()) {
+				if (neighbourCube != nullptr && Cube::isTransparent(neighbourCube->getCubeId())) {
 
 					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::RIGHT, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
@@ -328,7 +329,7 @@ void Chunk::buildMesh() {
 				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::LEFT);
 				// LEFT
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::LEFT, i, j, w);
-				if (neighbourCube != nullptr && neighbourCube->isTransparent()) {
+				if (neighbourCube != nullptr && Cube::isTransparent(neighbourCube->getCubeId())) {
 
 					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::LEFT, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
@@ -344,7 +345,7 @@ void Chunk::buildMesh() {
 				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::FRONT);
 				// FRONT
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::FRONT, i, j, w);
-				if (neighbourCube != nullptr && neighbourCube->isTransparent()) {
+				if (neighbourCube != nullptr && Cube::isTransparent(neighbourCube->getCubeId())) {
 
 					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::FRONT, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
@@ -360,7 +361,7 @@ void Chunk::buildMesh() {
 				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BACK);
 				// BACK
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::BACK, i, j, w);
-				if (neighbourCube != nullptr && neighbourCube->isTransparent()) {
+				if (neighbourCube != nullptr && Cube::isTransparent(neighbourCube->getCubeId())) {
 
 					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::BACK, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);

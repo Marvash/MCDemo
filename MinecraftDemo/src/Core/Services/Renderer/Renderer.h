@@ -9,6 +9,7 @@
 #include "Core/Services/Renderer/Shader/ShaderLibrary.h"
 #include "Core/Services/Renderer/ShaderConfig/WorldShaderConfig.h"
 #include "Core/Services/Renderer/ShaderConfig/ScreenShaderConfig.h"
+#include "Core/Services/Renderer/ShaderConfig/OffScreenPPShaderConfig.h"
 #include "Core/Components/RenderingComponent.h"
 #include "Core/Services/Atlas/Atlas.h"
 #include "Core/Services/BiomeManager/BiomeManager.h"
@@ -41,7 +42,7 @@ public:
 	void drawChunks();
 	void drawGUI();
 	void clearSubmittedGUIElements();
-	void setClearColor(const glm::vec3& color);
+	void setClearColor(const glm::vec4& color);
 	void clear();
 	void submitGUIElement(GUIElement* element);
 	void setCameraRenderingData(CameraRenderingData* cameraRenderingData);
@@ -51,8 +52,7 @@ public:
 	void registerComponent(RenderingComponent* renderingComponent);
 	float getViewportWidth();
 	float getViewportHeight();
-	void drawOffScreen(OffScreenRenderData* renderData);
-	void setOffScreenClearColor(glm::vec3& clearColor);
+	unsigned char* drawOffScreen(OffScreenRenderData* renderData);
 	
 private:
 	void setViewport(int posX, int posY, unsigned int width, unsigned int height);
@@ -72,8 +72,10 @@ private:
 	GLuint m_testCubeVAO, m_testCubeVBO;
 	CameraRenderingData* m_cameraRenderingData;
 	ImageTexture2D* m_offScreenTexture;
+	ImageTexture2D* m_offScreenPPTexture;
 	GLuint m_offScreenFramebuffer;
 	GLuint m_offScreenRbo;
+	GLuint m_offScreenPPFramebuffer;
 	float m_screenQuadVertices[24] = {
 		-1.0f,  1.0f,  0.0f, 1.0f,
 		-1.0f, -1.0f,  0.0f, 0.0f,
@@ -82,59 +84,16 @@ private:
 		 1.0f, -1.0f,  1.0f, 0.0f,
 		 1.0f,  1.0f,  1.0f, 1.0f
 	};
-	float vertices[180] = {
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-	};
+	
 	unsigned int m_screenWidth, m_screenHeight;
 	std::map<GLuint, Texture*> m_loadedTextures;
 	std::vector<GUIElement*> m_submittedGUIElements;
 	std::map<ShaderType, ShaderConfig*> m_shaderSetups;
 	std::map<ShaderType, std::vector<RenderingComponent*>> m_componentsByType;
-	glm::vec3 m_offScreenClearColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	unsigned int m_msaaSamples;
 	bool m_msaaEnabled;
-	const glm::vec3 GAME_CLEAR_COLOR = glm::vec3(0.08f, 0.9f, 0.95f);
-	const glm::vec3 SCREEN_CLEAR_COLOR = glm::vec3(1.0f, 1.0f, 1.0f);
+	const glm::vec4 GAME_CLEAR_COLOR = glm::vec4(0.08f, 0.9f, 0.95f, 1.0f);
+	const glm::vec4 SCREEN_CLEAR_COLOR = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	const glm::vec3 WORLD_UP = glm::vec3(0.0f, 1.0f, 0.0f);
 };
