@@ -2,7 +2,6 @@
 #include "Core/Services/CoreServiceLocator.h"
 
 Player::Player(CoreServiceLocator* coreServiceLocator) : GameObject(coreServiceLocator, GameObjectType::DYNAMIC),
-	m_selectedCubeId(Cube::CubeId::DIRT_BLOCK),
 	m_jumpForce(9.0f), // 8.2f
 	m_targetCube(nullptr),
 	m_targetCubeRayLength(10.0f),
@@ -20,6 +19,11 @@ Player::Player(CoreServiceLocator* coreServiceLocator) : GameObject(coreServiceL
 	registerComponents();
 	m_coreServiceLocator->getMovementSystem()->setMovementMode(this, MovementMode::FLY);
 	m_coreServiceLocator->getGameObjectManager()->setPlayerId(m_id);
+
+	m_inventoryManager.addItemInInventorySlot(Cube::CubeId::DIRT_BLOCK, 10, m_inventoryManager.getItemBarSlotOffset());
+	m_inventoryManager.addItemInInventorySlot(Cube::CubeId::STONE_BLOCK, 10, m_inventoryManager.getItemBarSlotOffset() + 1);
+	m_inventoryManager.addItemInInventorySlot(Cube::CubeId::SAND_BLOCK, 10, m_inventoryManager.getItemBarSlotOffset() + 2);
+	m_inventoryManager.setItemBarSelectedSlot(0);
 }
 
 void Player::onNotify(Event& newEvent) {
@@ -117,41 +121,35 @@ void Player::processKeyinput() {
 		}
 	}
 	m_movementComponent->setTargetVelocity(targetVelocity);
-	std::stringstream ss;
 	if (inputManager->getInputStatePressed(InputKey::KEY_1)) {
-		m_selectedCubeId = Cube::CubeId::SAND_BLOCK;
-		std::string cubeId(std::to_string((int)m_selectedCubeId));
-		std::string displayName(Cube::getDisplayName(Cube::CubeId::SAND_BLOCK));
-		ss << cubeId << " " << displayName;
-		std::string finalString(ss.str());
+		m_inventoryManager.setItemBarSelectedSlot(0);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_2)) {
-		m_selectedCubeId = Cube::CubeId::DIRT_BLOCK;
-		std::string cubeId(std::to_string((int)m_selectedCubeId));
-		std::string displayName(Cube::getDisplayName(Cube::CubeId::DIRT_BLOCK));
-		ss << cubeId << " " << displayName;
-		std::string finalString(ss.str());
+		m_inventoryManager.setItemBarSelectedSlot(1);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_3)) {
-		m_selectedCubeId = Cube::CubeId::STONE_BLOCK;
-		std::string cubeId(std::to_string((int)m_selectedCubeId));
-		std::string displayName(Cube::getDisplayName(Cube::CubeId::STONE_BLOCK));
-		ss << cubeId << " " << displayName;
-		std::string finalString(ss.str());
+		m_inventoryManager.setItemBarSelectedSlot(2);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_4)) {
-		m_selectedCubeId = Cube::CubeId::OAK_LOG_BLOCK;
-		std::string cubeId(std::to_string((int)m_selectedCubeId));
-		std::string displayName(Cube::getDisplayName(Cube::CubeId::OAK_LOG_BLOCK));
-		ss << cubeId << " " << displayName;
-		std::string finalString(ss.str());
+		m_inventoryManager.setItemBarSelectedSlot(3);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_5)) {
-		m_selectedCubeId = Cube::CubeId::LEAVES_BLOCK;
-		std::string cubeId(std::to_string((int)m_selectedCubeId));
-		std::string displayName(Cube::getDisplayName(Cube::CubeId::LEAVES_BLOCK));
-		ss << cubeId << " " << displayName;
-		std::string finalString(ss.str());
+		m_inventoryManager.setItemBarSelectedSlot(4);
+	}
+	if (inputManager->getInputStatePressed(InputKey::KEY_6)) {
+		m_inventoryManager.setItemBarSelectedSlot(5);
+	}
+	if (inputManager->getInputStatePressed(InputKey::KEY_7)) {
+		m_inventoryManager.setItemBarSelectedSlot(6);
+	}
+	if (inputManager->getInputStatePressed(InputKey::KEY_8)) {
+		m_inventoryManager.setItemBarSelectedSlot(7);
+	}
+	if (inputManager->getInputStatePressed(InputKey::KEY_9)) {
+		m_inventoryManager.setItemBarSelectedSlot(8);
+	}
+	if (inputManager->getInputStatePressed(InputKey::KEY_0)) {
+		m_inventoryManager.setItemBarSelectedSlot(9);
 	}
 	if (inputManager->getInputState(InputKey::KEY_LEFT_CTRL)) {
 		m_movementComponent->setFlySpeed(30.0f);
@@ -170,12 +168,16 @@ void Player::processKeyinput() {
 	}
 }
 
-Cube::CubeId Player::getSelectedCube() {
-	return m_selectedCubeId;
+Item* Player::getSelectedItem() {
+	return m_inventoryManager.getSelectedItem();
 }
 
 Cube* Player::getTargetCube() {
 	return m_targetCube;
+}
+
+InventoryManager* Player::getInventoryManager() {
+	return &m_inventoryManager;
 }
 
 void Player::processMouseInput() {
@@ -183,10 +185,19 @@ void Player::processMouseInput() {
 	static bool rightMousePressed = false;
 	InputManager* inputManager = m_coreServiceLocator->getInput();
 	if (inputManager->getInputStatePressed(InputMouseButton::MOUSE_LEFT)) {
+		Cube::CubeId targetCubeId = m_targetCube->getCubeId();
 		m_coreServiceLocator->getWorld()->destroyBlock(m_targetCube);
+		if (targetCubeId != Cube::CubeId::AIR_BLOCK) {
+			m_inventoryManager.addItem(targetCubeId, 1);
+		}
 	}
-	if (inputManager->getInputStatePressed(InputMouseButton::MOUSE_RIGHT)) {                                        
-		m_coreServiceLocator->getWorld()->placeBlock(getLastPlaceableCube(), m_selectedCubeId);
+	if (inputManager->getInputStatePressed(InputMouseButton::MOUSE_RIGHT)) {
+		Item* selectedItem = m_inventoryManager.getSelectedItem();
+		if (selectedItem != nullptr && selectedItem->getItemType() == Item::ItemType::CUBE) {
+			CubeItem* cubeItem = static_cast<CubeItem*>(selectedItem);
+			m_coreServiceLocator->getWorld()->placeBlock(getLastPlaceableCube(), cubeItem->getCubeId());
+			m_inventoryManager.removeItemInInventorySlot(cubeItem->getCubeId(), 1, m_inventoryManager.getItemBarSelectedSlotAbs());
+		}
 	}
 }
 

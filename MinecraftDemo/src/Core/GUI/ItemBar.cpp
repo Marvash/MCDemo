@@ -1,10 +1,8 @@
 #include "ItemBar.h"
 
-ItemBar::ItemBar(CoreServiceLocator* coreServiceLocator, unsigned int numSlots, IconManager* iconManager) :
+ItemBar::ItemBar(CoreServiceLocator* coreServiceLocator, IconManager* iconManager) :
 	GUIElement(coreServiceLocator),
 	m_itemSlotSize(20.0f),
-	m_numSlots(numSlots),
-	m_selectedSlot(0),
 	m_graphics(m_coreServiceLocator->getGraphics()),
 	m_iconManager(iconManager) {
 	m_windowFlags |= ImGuiWindowFlags_NoTitleBar;
@@ -20,17 +18,16 @@ ItemBar::ItemBar(CoreServiceLocator* coreServiceLocator, unsigned int numSlots, 
 	//m_windowFlags |= ImGuiWindowFlags_UnsavedDocument;
 }
 
-void ItemBar::setSelectedSlot(unsigned int index) {
-	m_selectedSlot = index;
-}
-
 void ItemBar::draw() {
+	Player* player = m_coreServiceLocator->getGameObjectManager()->getPlayer();
+	InventoryManager* inventoryManager = player->getInventoryManager();
+	unsigned int numSlots = inventoryManager->ITEMBAR_SLOTS;
 	float viewportWidth = m_graphics->getViewportWidth();
 	float viewportHeight = m_graphics->getViewportHeight();
 	m_itemSlotSize = glm::round(viewportHeight / SLOT_SIZE_VIEWPORT_DENOM);
 	float widthPadding = glm::round(m_itemSlotSize * SLOT_BORDER_SIZE_PERCENTAGE * 4.0f);
 	float heightPadding = glm::round(m_itemSlotSize * SLOT_BORDER_SIZE_PERCENTAGE);
-	float windowWidth = m_numSlots * m_itemSlotSize;
+	float windowWidth = numSlots * m_itemSlotSize;
 	float paddedWindowWidth = windowWidth + widthPadding;
 	float windowHeight = m_itemSlotSize;
 	float paddedWindowHeight = windowHeight + heightPadding;
@@ -45,16 +42,26 @@ void ItemBar::draw() {
 	windowP1 = ImVec2(windowP0.x + windowSize.x, windowP0.y + windowSize.y);
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 	drawList->AddRectFilled(windowP0, windowP1, ImColor(0.0f, 0.0f, 0.0f, 0.3f));
-	for (int i = 0; i < m_numSlots; i++) {
+	Item** itemBar = inventoryManager->getItemBar();
+	unsigned int selectedSlot = inventoryManager->getItemBarSelectedSlot();
+	for (int i = 0; i < numSlots; i++) {
 		drawSlot(i, m_itemSlotSize, windowP0, windowP1);
-		if ((i % 2) == 0) {
-			drawIcon(i, m_itemSlotSize, windowP0, windowP1, m_iconManager->getIcon(Cube::CubeId::SAND_BLOCK));
-		}
-		else {
-			drawIcon(i, m_itemSlotSize, windowP0, windowP1, m_iconManager->getIcon(Cube::CubeId::DIRT_BLOCK));
+		Item* currentItem = itemBar[i];
+		if (currentItem != nullptr) {
+			Item::ItemType type = currentItem->getItemType();
+			switch (type) {
+				case Item::ItemType::CUBE: {
+					CubeItem* currentCubeItem = static_cast<CubeItem*>(currentItem);
+					drawIcon(i, m_itemSlotSize, windowP0, windowP1, m_iconManager->getIcon(currentCubeItem->getCubeId()));
+					break;
+				}
+			}
+			if (currentItem->getCount() > 1) {
+				drawItemCount(i, m_itemSlotSize, windowP0, windowP1, currentItem->getCount());
+			}
 		}
 	}
-	drawSelectedSlot(m_selectedSlot, m_itemSlotSize, windowP0, windowP1);
+	drawSelectedSlot(selectedSlot, m_itemSlotSize, windowP0, windowP1);
 	ImGui::End();
 }
 
@@ -109,4 +116,12 @@ void ItemBar::drawIcon(int index, float slotSize, ImVec2& windowP0, ImVec2& wind
 	iconSize = ImVec2(slotSize - (rectWidth * 2.0f), slotSize - (rectWidth * 2.0f));
 	ImGui::SetCursorScreenPos(p0);
 	ImGui::Image((void*)(intptr_t)imageTexture->m_id, iconSize);
+}
+
+void ItemBar::drawItemCount(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, int count) {
+	float rectWidth = glm::round(slotSize * SLOT_BORDER_SIZE_PERCENTAGE);
+	float indexOffset = glm::round(index * slotSize);
+	ImVec2 p0(windowP0.x + indexOffset + slotSize - (rectWidth*4), windowP0.y + slotSize - (rectWidth * 4));
+	ImGui::SetCursorScreenPos(p0);
+	ImGui::Text("%d", count);
 }

@@ -149,6 +149,7 @@
     <ClCompile Include="src\Core\GUI\Crosshair.cpp" />
     <ClCompile Include="src\Core\GUI\ItemBar.cpp" />
     <ClCompile Include="src\Core\IconManager\IconManager.cpp" />
+    <ClCompile Include="src\Core\InventoryManager\CubeItem.cpp" />
     <ClCompile Include="src\Core\InventoryManager\InventoryManager.cpp" />
     <ClCompile Include="src\Core\InventoryManager\Item.cpp" />
     <ClCompile Include="src\Core\Services\Atlas\AtlasService.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="src\Core\GUI\Crosshair.h" />
     <ClInclude Include="src\Core\GUI\ItemBar.h" />
     <ClInclude Include="src\Core\IconManager\IconManager.h" />
+    <ClInclude Include="src\Core\InventoryManager\CubeItem.h" />
     <ClInclude Include="src\Core\InventoryManager\InventoryManager.h" />
     <ClInclude Include="src\Core\InventoryManager\Item.h" />
     <ClInclude Include="src\Core\Services\Atlas\AtlasService.h" />

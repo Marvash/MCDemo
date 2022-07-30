@@ -13,7 +13,7 @@ void GameGUILayer::onAdd() {
 	m_debugPanel = new DebugPanel(m_coreServiceLocator);
 	m_crosshair = new Crosshair(m_coreServiceLocator);
 	m_iconManager = new IconManager(m_coreServiceLocator);
-	m_itemBar = new ItemBar(m_coreServiceLocator, 12, m_iconManager);
+	m_itemBar = new ItemBar(m_coreServiceLocator, m_iconManager);
 }
 
 void GameGUILayer::onRemove() {
@@ -29,27 +29,9 @@ void GameGUILayer::update() {
 	m_coreServiceLocator->getGraphics()->submitGUIElement(m_itemBar);
 }
 
-void GameGUILayer::updateItemBar() {
-	Player* player = m_coreServiceLocator->getGameObjectManager()->getPlayer();
-}
 
 void GameGUILayer::updateDebugPanel() {
-	Player* player = m_coreServiceLocator->getGameObjectManager()->getPlayer();
-	CameraSystem* cameraSystem = m_coreServiceLocator->getCameraSystem();
-	if (player != nullptr) {
-		m_debugPanel->setPlayerPosition(player->m_position);
-		m_debugPanel->setPlayerLook(cameraSystem->m_front);
-		m_debugPanel->setPlayerVelocity(player->m_movementComponent->getVelocity());
-		std::string cubeName = Cube::getDisplayName(player->getSelectedCube());
-		m_debugPanel->setSelectedCubeName(cubeName);
-		cubeName = "None";
-		if (player->getTargetCube() != nullptr) {
-			cubeName = Cube::getDisplayName(player->getTargetCube()->getCubeId());
-		}
-		m_debugPanel->setTargetCubeName(cubeName);
-		std::string movementModeName = m_coreServiceLocator->getMovementSystem()->getMovementModeDisplayName(player->m_movementComponent->getMovementMode());
-		m_debugPanel->setSelectedMovementModeName(movementModeName);
-	}
+
 }
 
 void GameGUILayer::onNotify(Event& newEvent) {
