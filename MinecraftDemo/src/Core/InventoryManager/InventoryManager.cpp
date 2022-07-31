@@ -2,11 +2,11 @@
 
 InventoryManager::InventoryManager() :
 	m_itemBarSelectedSlot(0),
-	m_inventory(new Item*[INVENTORY_SLOTS]) {
-	for (int i = 0; i < INVENTORY_SLOTS; i++) {
+	m_inventory(new Item*[TOTAL_SLOTS]) {
+	for (int i = 0; i < TOTAL_SLOTS; i++) {
 		m_inventory[i] = nullptr;
 	}
-	m_itemBar = &m_inventory[INVENTORY_SLOTS - ITEMBAR_SLOTS];
+	m_itemBar = &m_inventory[TOTAL_SLOTS - ITEMBAR_SLOTS];
 }
 
 InventoryManager::~InventoryManager() {
@@ -15,7 +15,7 @@ InventoryManager::~InventoryManager() {
 
 int InventoryManager::queryItemSpace(Cube::CubeId cubeId) {
 	int spaceAvailable = 0;
-	for (int i = 0; i < INVENTORY_SLOTS; i++) {
+	for (int i = 0; i < TOTAL_SLOTS; i++) {
 		if (m_inventory[i] == nullptr) {
 			spaceAvailable += MAX_ITEM_STACK;
 		} else if(m_inventory[i]->getItemType() == Item::ItemType::CUBE) {
@@ -30,7 +30,7 @@ int InventoryManager::queryItemSpace(Cube::CubeId cubeId) {
 
 int InventoryManager::queryItem(Cube::CubeId cubeId) {
 	int itemCount = 0;
-	for (int i = 0; i < INVENTORY_SLOTS; i++) {
+	for (int i = 0; i < TOTAL_SLOTS; i++) {
 		if (m_inventory[i] != nullptr && m_inventory[i]->getItemType() == Item::ItemType::CUBE) {
 			CubeItem* item = static_cast<CubeItem*>(m_inventory[i]);
 			if (item->getCubeId() == cubeId) {
@@ -44,7 +44,7 @@ int InventoryManager::queryItem(Cube::CubeId cubeId) {
 void InventoryManager::addItem(Cube::CubeId cubeId, unsigned int count) {
 	int itemsLeft = (int)count;
 	if (itemsLeft > 0) {
-		for (int i = 0; (i < INVENTORY_SLOTS) && (itemsLeft > 0); i++) {
+		for (int i = 0; (i < TOTAL_SLOTS) && (itemsLeft > 0); i++) {
 			if (m_inventory[i] != nullptr && m_inventory[i]->getItemType() == Item::ItemType::CUBE) {
 				CubeItem* item = static_cast<CubeItem*>(m_inventory[i]);
 				if (item->getCubeId() == cubeId) {
@@ -54,7 +54,7 @@ void InventoryManager::addItem(Cube::CubeId cubeId, unsigned int count) {
 				}
 			}
 		}
-		for (int i = 0; (i < INVENTORY_SLOTS) && (itemsLeft > 0); i++) {
+		for (int i = 0; (i < TOTAL_SLOTS) && (itemsLeft > 0); i++) {
 			if (m_inventory[i] == nullptr) {
 				m_inventory[i] = new CubeItem(cubeId, glm::min(MAX_ITEM_STACK, (unsigned int)itemsLeft));
 				itemsLeft -= m_inventory[i]->getCount();
@@ -65,7 +65,7 @@ void InventoryManager::addItem(Cube::CubeId cubeId, unsigned int count) {
 
 void InventoryManager::removeItem(Cube::CubeId cubeId, unsigned int count) {
 	if (count > 0) {
-		for (int i = 0; (i < INVENTORY_SLOTS) && (count > 0); i++) {
+		for (int i = 0; (i < TOTAL_SLOTS) && (count > 0); i++) {
 			if (m_inventory[i] != nullptr && m_inventory[i]->getItemType() == Item::ItemType::CUBE) {
 				CubeItem* item = static_cast<CubeItem*>(m_inventory[i]);
 				if (item->getCubeId() == cubeId) {
@@ -86,7 +86,7 @@ void InventoryManager::removeItem(Cube::CubeId cubeId, unsigned int count) {
 }
 
 void InventoryManager::addItemInInventorySlot(Cube::CubeId cubeId, unsigned int count, unsigned int slot) {
-	if (count > 0 && slot < INVENTORY_SLOTS) {
+	if (count > 0 && slot < TOTAL_SLOTS) {
 		if(m_inventory[slot] == nullptr) {
 			m_inventory[slot] = new CubeItem(cubeId, glm::min(MAX_ITEM_STACK, count));
 		} else if (m_inventory[slot] != nullptr && m_inventory[slot]->getItemType() == Item::ItemType::CUBE) {
@@ -100,7 +100,7 @@ void InventoryManager::addItemInInventorySlot(Cube::CubeId cubeId, unsigned int 
 }
 
 void InventoryManager::removeItemInInventorySlot(Cube::CubeId cubeId, unsigned int count, unsigned int slot) {
-	if (count > 0 && slot < INVENTORY_SLOTS) {
+	if (count > 0 && slot < TOTAL_SLOTS) {
 		if (m_inventory[slot] != nullptr && m_inventory[slot]->getItemType() == Item::ItemType::CUBE) {
 			CubeItem* item = static_cast<CubeItem*>(m_inventory[slot]);
 			if (item->getCubeId() == cubeId) {
@@ -129,30 +129,30 @@ Item** InventoryManager::getItemBar() {
 
 Item* InventoryManager::getItemInSlot(unsigned int slot) {
 	Item* item = nullptr;
-	if (slot < INVENTORY_SLOTS) {
+	if (slot < TOTAL_SLOTS) {
 		item = m_inventory[slot];
 	}
 	return item;
 }
 
 Item* InventoryManager::getSelectedItem() {
-	return m_inventory[getItemBarSlotOffset() + getItemBarSelectedSlot()];
+	return m_inventory[getInventorySlots() + getItemBarSelectedSlot()];
 }
 
 unsigned int InventoryManager::getItemBarSelectedSlot() {
-	return m_itemBarSelectedSlot - getItemBarSlotOffset();
+	return m_itemBarSelectedSlot - getInventorySlots();
 }
 
 void InventoryManager::setItemBarSelectedSlot(unsigned int itemBarSlot) {
-	if ((getItemBarSlotOffset() + itemBarSlot) < INVENTORY_SLOTS) {
-		m_itemBarSelectedSlot = getItemBarSlotOffset() + itemBarSlot;
+	if ((getInventorySlots() + itemBarSlot) < TOTAL_SLOTS) {
+		m_itemBarSelectedSlot = getInventorySlots() + itemBarSlot;
 	}
 }
 
-unsigned int InventoryManager::getItemBarSlotOffset() {
-	return INVENTORY_SLOTS - ITEMBAR_SLOTS;
+unsigned int InventoryManager::getItemBarSelectedSlotAbs() {
+	return getInventorySlots() + getItemBarSelectedSlot();
 }
 
-unsigned int InventoryManager::getItemBarSelectedSlotAbs() {
-	return getItemBarSlotOffset() + getItemBarSelectedSlot();
+unsigned int InventoryManager::getInventorySlots() {
+	return TOTAL_SLOTS - ITEMBAR_SLOTS;
 }

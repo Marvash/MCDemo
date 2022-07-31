@@ -19,12 +19,16 @@ public:
 	Item* getSelectedItem();
 	Cube* getTargetCube();
 	InventoryManager* getInventoryManager();
+	bool getIsOpenInventory();
 
 private:
 	void processKeyinput();
 	void processMouseInput();
 	void processMousePosition();
 	void processMouseScroll();
+	void processInventoryKeyInput();
+	void handleGameplayInput();
+	void handleInventoryInput();
 	Cube* getFirstSolidCube();
 	Cube* getLastPlaceableCube();
 	Cube* m_targetCube;
@@ -34,5 +38,6 @@ private:
 	float m_targetCubeRayLength;
 	float m_lookSensitivity;
 	int m_movementModeIndex;
+	bool m_isOpenInventory;
 };
 

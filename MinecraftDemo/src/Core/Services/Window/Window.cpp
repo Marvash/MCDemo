@@ -39,8 +39,6 @@ void Window::init() {
 	}
 	WindowInitEvent event{ m_glfwWindow, m_windowWidth, m_windowHeight };
 	notify(event);
-	// tell GLFW to capture our mouse
-	glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	BOOST_LOG_TRIVIAL(trace) << "Window intialized! Window Size is " << m_windowWidth << " " << m_windowHeight;
 }

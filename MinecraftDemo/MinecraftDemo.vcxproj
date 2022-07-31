@@ -147,6 +147,7 @@
     <ClCompile Include="src\Core\Components\MovementComponent.cpp" />
     <ClCompile Include="src\Core\Components\RenderingComponent.cpp" />
     <ClCompile Include="src\Core\GUI\Crosshair.cpp" />
+    <ClCompile Include="src\Core\GUI\Inventory.cpp" />
     <ClCompile Include="src\Core\GUI\ItemBar.cpp" />
     <ClCompile Include="src\Core\IconManager\IconManager.cpp" />
     <ClCompile Include="src\Core\InventoryManager\CubeItem.cpp" />
@@ -244,6 +245,7 @@
   <ItemGroup>
     <ClInclude Include="src\Core\Components\RenderingComponent.h" />
     <ClInclude Include="src\Core\GUI\Crosshair.h" />
+    <ClInclude Include="src\Core\GUI\Inventory.h" />
     <ClInclude Include="src\Core\GUI\ItemBar.h" />
     <ClInclude Include="src\Core\IconManager\IconManager.h" />
     <ClInclude Include="src\Core\InventoryManager\CubeItem.h" />

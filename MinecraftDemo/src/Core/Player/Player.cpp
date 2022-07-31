@@ -6,7 +6,8 @@ Player::Player(CoreServiceLocator* coreServiceLocator) : GameObject(coreServiceL
 	m_targetCube(nullptr),
 	m_targetCubeRayLength(10.0f),
 	m_lookSensitivity(0.02f),
-	m_movementModeIndex((int)MovementMode::FLY) {
+	m_movementModeIndex((int)MovementMode::FLY),
+	m_isOpenInventory(false) {
 	setMovementComponent(new MovementComponent());
 	m_position = glm::vec3(112.5f, 2.5f, -44.5f);
 	//m_position = glm::vec3(0.0f, 2.0f, 0.0f);
@@ -20,9 +21,9 @@ Player::Player(CoreServiceLocator* coreServiceLocator) : GameObject(coreServiceL
 	m_coreServiceLocator->getMovementSystem()->setMovementMode(this, MovementMode::FLY);
 	m_coreServiceLocator->getGameObjectManager()->setPlayerId(m_id);
 
-	m_inventoryManager.addItemInInventorySlot(Cube::CubeId::DIRT_BLOCK, 10, m_inventoryManager.getItemBarSlotOffset());
-	m_inventoryManager.addItemInInventorySlot(Cube::CubeId::STONE_BLOCK, 10, m_inventoryManager.getItemBarSlotOffset() + 1);
-	m_inventoryManager.addItemInInventorySlot(Cube::CubeId::SAND_BLOCK, 10, m_inventoryManager.getItemBarSlotOffset() + 2);
+	m_inventoryManager.addItemInInventorySlot(Cube::CubeId::DIRT_BLOCK, 10, m_inventoryManager.getInventorySlots());
+	m_inventoryManager.addItemInInventorySlot(Cube::CubeId::STONE_BLOCK, 10, m_inventoryManager.getInventorySlots() + 1);
+	m_inventoryManager.addItemInInventorySlot(Cube::CubeId::SAND_BLOCK, 10, m_inventoryManager.getInventorySlots() + 2);
 	m_inventoryManager.setItemBarSelectedSlot(0);
 }
 
@@ -39,7 +40,18 @@ void Player::processMousePosition() {
 void Player::processMouseScroll() {
 	InputManager* inputManager = m_coreServiceLocator->getInput();
 	float yoffset = (float)inputManager->getScrollYDelta();
-	m_coreServiceLocator->getCameraSystem()->processMouseScroll(yoffset);
+	if (yoffset != 0.0f) {
+		unsigned int selectedSlot = m_inventoryManager.getItemBarSelectedSlot();
+		if (selectedSlot == 0 && glm::sign(yoffset) > 0.0f) {
+			selectedSlot = m_inventoryManager.ITEMBAR_SLOTS - 1;
+		}
+		else {
+			selectedSlot -= (unsigned int)glm::sign(yoffset);
+			selectedSlot = selectedSlot % m_inventoryManager.ITEMBAR_SLOTS;
+		}
+		m_inventoryManager.setItemBarSelectedSlot(selectedSlot);
+	}
+	//m_coreServiceLocator->getCameraSystem()->processMouseScroll(yoffset);
 }
 
 void Player::processKeyinput() {
@@ -163,8 +175,21 @@ void Player::processKeyinput() {
 		}
 		m_coreServiceLocator->getMovementSystem()->setMovementMode(this, (MovementMode)m_movementModeIndex);
 	}
+	if (inputManager->getInputStatePressed(InputKey::KEY_E)) {
+		BOOST_LOG_TRIVIAL(info) << "E PRESSED SWITCHING";
+		m_isOpenInventory = true;
+		m_coreServiceLocator->getInput()->setMouseCapture(false);
+	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_ESC)) {
 		m_coreServiceLocator->getApplicationManager()->requestCoreStateChange(CoreState::QUIT);
+	}
+}
+
+void Player::processInventoryKeyInput() {
+	InputManager* inputManager = m_coreServiceLocator->getInput();
+	if (inputManager->getInputStatePressed(InputKey::KEY_E)) {
+		m_isOpenInventory = false;
+		m_coreServiceLocator->getInput()->setMouseCapture(true);
 	}
 }
 
@@ -180,15 +205,22 @@ InventoryManager* Player::getInventoryManager() {
 	return &m_inventoryManager;
 }
 
+bool Player::getIsOpenInventory() {
+	return m_isOpenInventory;
+}
+
+
 void Player::processMouseInput() {
 	static bool leftMousePressed = false;
 	static bool rightMousePressed = false;
 	InputManager* inputManager = m_coreServiceLocator->getInput();
 	if (inputManager->getInputStatePressed(InputMouseButton::MOUSE_LEFT)) {
-		Cube::CubeId targetCubeId = m_targetCube->getCubeId();
-		m_coreServiceLocator->getWorld()->destroyBlock(m_targetCube);
-		if (targetCubeId != Cube::CubeId::AIR_BLOCK) {
-			m_inventoryManager.addItem(targetCubeId, 1);
+		if (m_targetCube != nullptr) {
+			Cube::CubeId targetCubeId = m_targetCube->getCubeId();
+			m_coreServiceLocator->getWorld()->destroyBlock(m_targetCube);
+			if (targetCubeId != Cube::CubeId::AIR_BLOCK) {
+				m_inventoryManager.addItem(targetCubeId, 1);
+			}
 		}
 	}
 	if (inputManager->getInputStatePressed(InputMouseButton::MOUSE_RIGHT)) {
@@ -201,11 +233,25 @@ void Player::processMouseInput() {
 	}
 }
 
-void Player::update() {
+void Player::handleGameplayInput() {
 	processMousePosition();
 	processMouseScroll();
 	processMouseInput();
 	processKeyinput();
+}
+
+void Player::handleInventoryInput() {
+	processInventoryKeyInput();
+}
+
+void Player::update() {
+	if (!m_isOpenInventory) {
+		handleGameplayInput();
+	}
+	else {
+		BOOST_LOG_TRIVIAL(info) << "INVENTORY INPUT";
+		handleInventoryInput();
+	}
 	m_coreServiceLocator->getCameraSystem()->setPlayerPosition(m_position);
 	m_coreServiceLocator->getWorld()->updateGenerationOrigin(m_position);
 	m_targetCube = getFirstSolidCube();

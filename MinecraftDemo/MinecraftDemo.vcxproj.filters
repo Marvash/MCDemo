@@ -303,6 +303,9 @@
     <ClCompile Include="src\Core\InventoryManager\CubeItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\GUI\Inventory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\Random\PerlinGenerator\PerlinNoiseGenerator.h">
@@ -651,6 +654,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\InventoryManager\CubeItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\GUI\Inventory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

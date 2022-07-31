@@ -31,6 +31,7 @@ public:
 	double getScrollYDelta();
 	void dispatchInputEvents();
 	void resetInputManager();
+	void setMouseCapture(bool capture);
 	
 	void onNotify(Event& newEvent) override;
 private:
@@ -66,5 +67,7 @@ private:
 	static double mouseLastXPos, mouseLastYPos;
 	static double mouseXOffset, mouseYOffset;
 	static double scrollXOffset, scrollYOffset;
+
+	bool m_isCapturingMouse;
 };
 

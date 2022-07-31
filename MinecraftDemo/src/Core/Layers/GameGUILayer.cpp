@@ -5,6 +5,7 @@ GameGUILayer::GameGUILayer(CoreServiceLocator* coreServiceLocator) :
 	m_coreServiceLocator(coreServiceLocator),
 	m_debugPanel(nullptr),
 	m_itemBar(nullptr),
+	m_inventory(nullptr),
 	m_iconManager(nullptr) {
 
 }
@@ -14,24 +15,21 @@ void GameGUILayer::onAdd() {
 	m_crosshair = new Crosshair(m_coreServiceLocator);
 	m_iconManager = new IconManager(m_coreServiceLocator);
 	m_itemBar = new ItemBar(m_coreServiceLocator, m_iconManager);
+	m_inventory = new Inventory(m_coreServiceLocator, m_iconManager);
 }
 
 void GameGUILayer::onRemove() {
 	delete m_debugPanel;
 	delete m_crosshair;
 	delete m_itemBar;
+	delete m_inventory;
 }
 
 void GameGUILayer::update() {
-	updateDebugPanel();
 	m_coreServiceLocator->getGraphics()->submitGUIElement(m_debugPanel);
 	m_coreServiceLocator->getGraphics()->submitGUIElement(m_crosshair);
 	m_coreServiceLocator->getGraphics()->submitGUIElement(m_itemBar);
-}
-
-
-void GameGUILayer::updateDebugPanel() {
-
+	m_coreServiceLocator->getGraphics()->submitGUIElement(m_inventory);
 }
 
 void GameGUILayer::onNotify(Event& newEvent) {

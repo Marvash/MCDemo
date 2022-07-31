@@ -22,10 +22,10 @@ public:
 	Item** getItemBar();
 	unsigned int getItemBarSelectedSlot();
 	void setItemBarSelectedSlot(unsigned int slot);
-	unsigned int getItemBarSlotOffset();
 	unsigned int getItemBarSelectedSlotAbs();
+	unsigned int getInventorySlots();
 
-	const unsigned int INVENTORY_SLOTS = 50;
+	const unsigned int TOTAL_SLOTS = 50;
 	const unsigned int ITEMBAR_SLOTS = 10;
 private:
 	const unsigned int MAX_ITEM_STACK = 64;

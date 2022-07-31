@@ -13,6 +13,7 @@ enum class InputKey {
 	KEY_S,
 	KEY_D,
 	KEY_F,
+	KEY_E,
 	KEY_0,
 	KEY_1,
 	KEY_2,
