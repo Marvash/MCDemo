@@ -67,6 +67,7 @@ private:
 	static double mouseLastXPos, mouseLastYPos;
 	static double mouseXOffset, mouseYOffset;
 	static double scrollXOffset, scrollYOffset;
+	static bool firstMouseInput;
 
 	bool m_isCapturingMouse;
 };

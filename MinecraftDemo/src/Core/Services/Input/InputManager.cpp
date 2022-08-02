@@ -11,7 +11,7 @@ double InputManager::mouseLastXPos = 0.0;
 double InputManager::mouseLastYPos = 0.0;
 double InputManager::scrollXOffset = 0.0;
 double InputManager::scrollYOffset = 0.0;
-
+bool InputManager::firstMouseInput = true;
 
 InputManager::InputManager(CoreEventDispatcher* eventDispatcher) : 
 	CoreService(eventDispatcher), 
@@ -29,9 +29,10 @@ InputManager::InputManager(CoreEventDispatcher* eventDispatcher) :
 
 void InputManager::setMouseCapture(bool capture) {
 	m_isCapturingMouse = capture;
-	int captureMode = GLFW_CURSOR_DISABLED;
-	if (!m_isCapturingMouse) {
-		captureMode = GLFW_CURSOR_NORMAL;
+	int captureMode = GLFW_CURSOR_NORMAL;
+	if (m_isCapturingMouse) {
+		captureMode = GLFW_CURSOR_DISABLED;
+		firstMouseInput = true;
 	}
 	glfwSetInputMode(window, GLFW_CURSOR, captureMode);
 }
@@ -207,7 +208,6 @@ void InputManager::framebufferSizeCallback(GLFWwindow* window, int width, int he
 }
 
 void InputManager::mousePosCallback(GLFWwindow* window, double xpos, double ypos) {
-	static bool firstMouseInput = true;
 	if (firstMouseInput) {
 		mouseLastXPos = xpos;
 		mouseLastYPos = ypos;

@@ -76,8 +76,6 @@ void Renderer::init() {
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
-	ImGui::GetIO().IniFilename = nullptr;
-
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
 	ImGui::StyleColorsClassic();
@@ -252,6 +250,7 @@ void Renderer::draw() {
 	drawChunks();
 	drawGUI();
 	clearSubmittedGUIElements();
+	//ImGui::ShowDemoWindow();
 
 	if (m_msaaEnabled) {
 		glDisable(GL_DEPTH_TEST);
@@ -326,7 +325,7 @@ unsigned char* Renderer::drawOffScreen(OffScreenRenderData* renderData) {
 	offScreenPPShaderConfig->prepareShader(nullptr, nullptr);
 	glBindVertexArray(m_screenQuadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	m_offScreenPPTexture->bind(0);
 	BOOST_LOG_TRIVIAL(info) << "rendered, copying image";
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, result);

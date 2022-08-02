@@ -428,6 +428,7 @@ void FlyMovementMode::stepPhysicalMovement() {
 
 	mc->m_currentPosition = targetPosition;
 	mc->m_currentVelocity = mc->m_velocity;
+	mc->m_targetVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 void FlyMovementMode::computeInterpolatedPosition(double alpha, GameObject* gameObject, MovementComponent* movementComponent) {

@@ -10,7 +10,8 @@ public:
 	Inventory(CoreServiceLocator* coreServiceLocator, IconManager* iconManager);
 	void draw() override;
 private:
-	void drawSlot(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1);
+	void drawSlot(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, ImColor sideColor);
+	void drawDNDBox(int index, int targetId, float slotSize, ImVec2& windowP0, ImVec2& windowP1, ImageTexture2D* imageTexture = nullptr);
 	void drawIcon(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, ImageTexture2D* imageTexture);
 	void drawItemCount(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, int count);
 
@@ -20,6 +21,7 @@ private:
 	const unsigned int INVENTORY_STRIDE_SLOTS = 10;
 
 	float m_itemSlotSize;
+	float m_inventoryToolbarPadding;
 	ImGuiWindowFlags m_windowFlags;
 	Graphics* m_graphics;
 	IconManager* m_iconManager;

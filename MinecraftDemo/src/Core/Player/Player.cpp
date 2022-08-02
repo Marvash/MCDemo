@@ -176,7 +176,6 @@ void Player::processKeyinput() {
 		m_coreServiceLocator->getMovementSystem()->setMovementMode(this, (MovementMode)m_movementModeIndex);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_E)) {
-		BOOST_LOG_TRIVIAL(info) << "E PRESSED SWITCHING";
 		m_isOpenInventory = true;
 		m_coreServiceLocator->getInput()->setMouseCapture(false);
 	}
@@ -190,6 +189,9 @@ void Player::processInventoryKeyInput() {
 	if (inputManager->getInputStatePressed(InputKey::KEY_E)) {
 		m_isOpenInventory = false;
 		m_coreServiceLocator->getInput()->setMouseCapture(true);
+	}
+	if (inputManager->getInputStatePressed(InputKey::KEY_ESC)) {
+		m_coreServiceLocator->getApplicationManager()->requestCoreStateChange(CoreState::QUIT);
 	}
 }
 
@@ -249,7 +251,6 @@ void Player::update() {
 		handleGameplayInput();
 	}
 	else {
-		BOOST_LOG_TRIVIAL(info) << "INVENTORY INPUT";
 		handleInventoryInput();
 	}
 	m_coreServiceLocator->getCameraSystem()->setPlayerPosition(m_position);

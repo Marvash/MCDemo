@@ -46,6 +46,7 @@ void ItemBar::draw() {
 	unsigned int selectedSlot = inventoryManager->getItemBarSelectedSlot();
 	for (int i = 0; i < numSlots; i++) {
 		drawSlot(i, m_itemSlotSize, windowP0, windowP1);
+		
 		Item* currentItem = itemBar[i];
 		if (currentItem != nullptr) {
 			Item::ItemType type = currentItem->getItemType();
@@ -115,12 +116,12 @@ void ItemBar::drawIcon(int index, float slotSize, ImVec2& windowP0, ImVec2& wind
 	p0 = ImVec2(windowP0.x + indexOffset + rectWidth, windowP0.y + rectWidth);
 	iconSize = ImVec2(slotSize - (rectWidth * 2.0f), slotSize - (rectWidth * 2.0f));
 	ImGui::SetCursorScreenPos(p0);
-	ImGui::Image((void*)(intptr_t)imageTexture->m_id, iconSize);
+	ImGui::Image((void*)(intptr_t)imageTexture->m_id, iconSize, ImVec2(0, 1), ImVec2(1, 0));
 }
 
 void ItemBar::drawItemCount(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, int count) {
 	float rectWidth = glm::round(slotSize * SLOT_BORDER_SIZE_PERCENTAGE);
-	float indexOffset = glm::round(index * slotSize);
+	float indexOffset = glm::round(index * slotSize);         
 	ImVec2 p0(windowP0.x + indexOffset + slotSize - (rectWidth*4), windowP0.y + slotSize - (rectWidth * 4));
 	ImGui::SetCursorScreenPos(p0);
 	ImGui::Text("%d", count);

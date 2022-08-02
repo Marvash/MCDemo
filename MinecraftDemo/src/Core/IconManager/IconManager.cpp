@@ -1,5 +1,6 @@
 #include "IconManager.h"
-
+#include <iostream>
+#include <fstream>
 IconManager::IconManager(CoreServiceLocator* coreServiceLocator) :
 	m_coreServiceLocator(coreServiceLocator) {
 	m_verticesTexIndexes = new GLint[(2 * 6 * 6)];
