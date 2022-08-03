@@ -230,7 +230,7 @@ void Player::processMouseInput() {
 		if (selectedItem != nullptr && selectedItem->getItemType() == Item::ItemType::CUBE) {
 			CubeItem* cubeItem = static_cast<CubeItem*>(selectedItem);
 			m_coreServiceLocator->getWorld()->placeBlock(getLastPlaceableCube(), cubeItem->getCubeId());
-			m_inventoryManager.removeItemInInventorySlot(cubeItem->getCubeId(), 1, m_inventoryManager.getItemBarSelectedSlotAbs());
+			m_inventoryManager.removeItemInInventorySlotCount(cubeItem->getCubeId(), 1, m_inventoryManager.getItemBarSelectedSlotAbs());
 		}
 	}
 }

@@ -99,7 +99,7 @@ void InventoryManager::addItemInInventorySlot(Cube::CubeId cubeId, unsigned int 
 	}
 }
 
-void InventoryManager::removeItemInInventorySlot(Cube::CubeId cubeId, unsigned int count, unsigned int slot) {
+void InventoryManager::removeItemInInventorySlotCount(Cube::CubeId cubeId, unsigned int count, unsigned int slot) {
 	if (count > 0 && slot < TOTAL_SLOTS) {
 		if (m_inventory[slot] != nullptr && m_inventory[slot]->getItemType() == Item::ItemType::CUBE) {
 			CubeItem* item = static_cast<CubeItem*>(m_inventory[slot]);
@@ -117,10 +117,37 @@ void InventoryManager::removeItemInInventorySlot(Cube::CubeId cubeId, unsigned i
 	}
 }
 
+void InventoryManager::removeItemInInventorySlot(unsigned int slot) {
+	if (slot < TOTAL_SLOTS) {
+		if (m_inventory[slot] != nullptr) {
+			Item* item = m_inventory[slot];
+			delete item;
+			m_inventory[slot] = nullptr;
+		}
+	}
+}
+
 void InventoryManager::swapItems(unsigned int source, unsigned int destination) {
 	Item* tmp = m_inventory[destination];
 	m_inventory[destination] = m_inventory[source];
 	m_inventory[source] = tmp;
+}
+
+bool InventoryManager::isItemCompatible(Item* source, Item* target) {
+	bool compatible = false;
+	if (source != nullptr && target != nullptr && source->getItemType() == target->getItemType()) {
+		switch (source->getItemType()) {
+		case Item::ItemType::CUBE: {
+			CubeItem* sourceCubeItem = static_cast<CubeItem*>(source);
+			CubeItem* targetCubeItem = static_cast<CubeItem*>(target);
+			if (sourceCubeItem->getCubeId() == targetCubeItem->getCubeId()) {
+				compatible = true;
+			}
+			break;
+		}
+		}
+	}
+	return compatible;
 }
 
 Item** InventoryManager::getItemBar() {

@@ -15,8 +15,10 @@ public:
 	void addItem(Cube::CubeId cubeId, unsigned int count);
 	void removeItem(Cube::CubeId cubeId, unsigned int count);
 	void addItemInInventorySlot(Cube::CubeId cubeId, unsigned int count, unsigned int slot);
-	void removeItemInInventorySlot(Cube::CubeId cubeId, unsigned int count, unsigned int slot);
+	void removeItemInInventorySlotCount(Cube::CubeId cubeId, unsigned int count, unsigned int slot);
+	void removeItemInInventorySlot(unsigned int slot);
 	void swapItems(unsigned int source, unsigned int destination);
+	bool isItemCompatible(Item* source, Item* target);
 	Item* getItemInSlot(unsigned int slot);
 	Item* getSelectedItem();
 	Item** getItemBar();
@@ -27,9 +29,8 @@ public:
 
 	const unsigned int TOTAL_SLOTS = 50;
 	const unsigned int ITEMBAR_SLOTS = 10;
-private:
 	const unsigned int MAX_ITEM_STACK = 64;
-
+private:
 	unsigned int m_itemBarSelectedSlot;
 	Item** m_inventory;
 	Item** m_itemBar;
