@@ -18,8 +18,12 @@ Cube::Cube(CubeId cubeId, Chunk* chunkRef, Biome* biomeRef, float xOffset, float
 Cube::~Cube() {
 }
 
-bool Cube::isTransparent() {
-	return this->m_cubeId == CubeId::AIR_BLOCK || this->m_cubeId == CubeId::LEAVES_BLOCK;
+bool Cube::isTransparent(CubeId cubeId) {
+	return cubeId == CubeId::AIR_BLOCK || cubeId == CubeId::LEAVES_BLOCK || cubeId == CubeId::UNGENERATED_BLOCK;
+}
+
+bool Cube::canBeRendered(CubeId cubeId) {
+	return !(cubeId == CubeId::AIR_BLOCK || cubeId == CubeId::UNGENERATED_BLOCK);
 }
 
 glm::vec3 Cube::getCubeCoordsOffset() {

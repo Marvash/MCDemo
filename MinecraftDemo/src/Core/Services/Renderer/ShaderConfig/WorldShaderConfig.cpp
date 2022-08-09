@@ -20,7 +20,7 @@ void WorldShaderConfig::useShaderConfig() {
 void WorldShaderConfig::prepareShader(ModelData* modelData, ShaderData* shaderData) {
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, modelData->position);
-	glm::mat4 mvp = *m_projectionMatrix * *m_viewMatrix * model * glm::mat4(1.0f);
+	glm::mat4 mvp = (*m_projectionMatrix) * (*m_viewMatrix) * model * glm::mat4(1.0f);
 	m_shader->setMat4("mvp", mvp);
 }
 

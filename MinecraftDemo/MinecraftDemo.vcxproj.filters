@@ -168,7 +168,7 @@
     <ClCompile Include="src\Core\Layers\GameLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Layers\GUILayer.cpp">
+    <ClCompile Include="src\Core\Layers\GameGUILayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Layers\PauseMenuLayer.cpp">
@@ -288,14 +288,24 @@
     <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\WorldShaderConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="shaders\fDefaultShader.fs" />
-    <None Include="shaders\fScreenShader.fs" />
-    <None Include="shaders\vDefaultShader.vs" />
-    <None Include="shaders\vScreenShader.vs" />
-    <None Include="shaders\fShader.fs" />
-    <None Include="shaders\vShader.vs" />
+    <ClCompile Include="src\Core\IconManager\IconManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\Atlas\AtlasService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\BiomeManager\BiomeService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\OffScreenPPShaderConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\InventoryManager\CubeItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\GUI\Inventory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\Random\PerlinGenerator\PerlinNoiseGenerator.h">
@@ -487,7 +497,7 @@
     <ClInclude Include="src\Core\Layers\GameLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Layers\GUILayer.h">
+    <ClInclude Include="src\Core\Layers\GameGUILayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Layers\PauseMenuLayer.h">
@@ -631,5 +641,31 @@
     <ClInclude Include="src\Core\Services\Renderer\RendererStructs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Core\IconManager\IconManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\Atlas\AtlasService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\BiomeManager\BiomeService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\OffScreenPPShaderConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\InventoryManager\CubeItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\GUI\Inventory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\fDefaultShader.frag" />
+    <None Include="shaders\fOffScreenPPShader.frag" />
+    <None Include="shaders\fScreenShader.frag" />
+    <None Include="shaders\vDefaultShader.vert" />
+    <None Include="shaders\vOffScreenPPShader.vert" />
+    <None Include="shaders\vScreenShader.vert" />
   </ItemGroup>
 </Project>

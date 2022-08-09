@@ -7,6 +7,8 @@
 #include "Core/Services/Graphics/Graphics.h"
 #include "Core/Services/CameraSystem/CameraSystem.h"
 #include "Core/Services/GameObjectManager/GameObjectManager.h"
+#include "Core/Services/Atlas/AtlasService.h"
+#include "Core/Services/BiomeManager/BiomeService.h"
 
 class CoreServiceLocator {
 public:
@@ -17,9 +19,11 @@ public:
 	ApplicationManager* getApplicationManager();
 	MovementSystem* getMovementSystem();
 	World* getWorld();
+	AtlasService* getAtlasService();
 	Graphics* getGraphics();
 	CameraSystem* getCameraSystem();
 	GameObjectManager* getGameObjectManager();
+	BiomeService* getBiomeService();
 
 	void provide(InputManager* input);
 	void provide(Window* window);
@@ -29,6 +33,8 @@ public:
 	void provide(Graphics* biomeManager);
 	void provide(CameraSystem* cameraSystem);
 	void provide(GameObjectManager* gameObjectManager);
+	void provide(AtlasService* atlasService);
+	void provide(BiomeService* biomeService);
 
 private:
 	InputManager* m_input;
@@ -39,5 +45,7 @@ private:
 	World* m_world;
 	CameraSystem* m_cameraSystem;
 	GameObjectManager* m_gameObjectManager;
+	AtlasService* m_atlasService;
+	BiomeService* m_biomeService;
 };
 

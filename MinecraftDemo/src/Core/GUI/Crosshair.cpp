@@ -2,7 +2,7 @@
 #include <boost/log/trivial.hpp>
 
 Crosshair::Crosshair(CoreServiceLocator* coreServiceLocator) : 
-    GUIElement(),
+    GUIElement(coreServiceLocator),
     m_windowFlags(0),
     m_coreServiceLocator(coreServiceLocator),
     m_graphics(coreServiceLocator->getGraphics()) {
@@ -20,6 +20,10 @@ Crosshair::Crosshair(CoreServiceLocator* coreServiceLocator) :
 }
 
 void Crosshair::draw() {
+    Player* player = m_coreServiceLocator->getGameObjectManager()->getPlayer();
+    if (player->getIsOpenInventory()) {
+        return;
+    }
     float halfViewportWidth = m_graphics->getViewportWidth() / 2.0f;
     float halfViewportHeight = m_graphics->getViewportHeight() / 2.0f;
     float halfWindowWidth = 75;

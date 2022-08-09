@@ -6,6 +6,7 @@
 #include "Core/Cube/Cube.h"
 #include "Core/Services/MovementSystem/MovementModeEnum.h"
 #include "Core/Components/MovementComponent.h"
+#include "Core/InventoryManager/InventoryManager.h"
 #include <glm/glm.hpp>
 
 class CoreServiceLocator;
@@ -15,22 +16,28 @@ public:
 	Player(CoreServiceLocator* coreServiceLocator);
 	void onNotify(Event& newEvent) override;
 	void update() override;
-	Cube::CubeId getSelectedCube();
+	Item* getSelectedItem();
 	Cube* getTargetCube();
+	InventoryManager* getInventoryManager();
+	bool getIsOpenInventory();
 
 private:
 	void processKeyinput();
 	void processMouseInput();
 	void processMousePosition();
 	void processMouseScroll();
+	void processInventoryKeyInput();
+	void handleGameplayInput();
+	void handleInventoryInput();
 	Cube* getFirstSolidCube();
 	Cube* getLastPlaceableCube();
-	Cube::CubeId m_selectedCubeId;
 	Cube* m_targetCube;
+	InventoryManager m_inventoryManager;
 
 	float m_jumpForce;
 	float m_targetCubeRayLength;
 	float m_lookSensitivity;
 	int m_movementModeIndex;
+	bool m_isOpenInventory;
 };
 

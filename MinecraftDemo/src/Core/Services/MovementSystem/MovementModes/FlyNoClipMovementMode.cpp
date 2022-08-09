@@ -13,4 +13,5 @@ void FlyNoClipMovementMode::execute() {
 	MovementComponent* mc = m_mc;
 	mc->m_velocity = mc->m_targetVelocity;
 	go->m_position += (mc->m_velocity * m_deltaTime);
+	mc->m_targetVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
 }

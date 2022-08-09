@@ -15,7 +15,9 @@ enum class ProjectionType {
 
 struct ModelData {
 	GLuint VAO;
+	bool isIndexed;
 	unsigned int indexCount;
+	unsigned int vertexCount;
 	glm::vec3 position;
 };
 
@@ -44,6 +46,7 @@ struct OffScreenRenderData {
 	glm::vec3 cameraPos;
 	ProjectionType projectionType;
 	ProjectionData* projectionData;
-	float width;
-	float height;
+	float renderingWidth;
+	float renderingHeight;
+	glm::vec4 clearColor;
 };

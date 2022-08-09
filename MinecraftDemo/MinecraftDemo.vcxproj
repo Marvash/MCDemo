@@ -147,9 +147,15 @@
     <ClCompile Include="src\Core\Components\MovementComponent.cpp" />
     <ClCompile Include="src\Core\Components\RenderingComponent.cpp" />
     <ClCompile Include="src\Core\GUI\Crosshair.cpp" />
+    <ClCompile Include="src\Core\GUI\Inventory.cpp" />
     <ClCompile Include="src\Core\GUI\ItemBar.cpp" />
+    <ClCompile Include="src\Core\IconManager\IconManager.cpp" />
+    <ClCompile Include="src\Core\InventoryManager\CubeItem.cpp" />
     <ClCompile Include="src\Core\InventoryManager\InventoryManager.cpp" />
     <ClCompile Include="src\Core\InventoryManager\Item.cpp" />
+    <ClCompile Include="src\Core\Services\Atlas\AtlasService.cpp" />
+    <ClCompile Include="src\Core\Services\BiomeManager\BiomeService.cpp" />
+    <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\OffScreenPPShaderConfig.cpp" />
     <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\ScreenShaderConfig.cpp" />
     <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\WorldShaderConfig.cpp" />
     <ClCompile Include="src\Core\Services\Renderer\Shader\ShaderLibrary.cpp" />
@@ -163,7 +169,7 @@
     <ClCompile Include="src\Core\Services\BiomeManager\BiomeManager.cpp" />
     <ClCompile Include="src\Core\GUI\DebugGUI\DebugPanel.cpp" />
     <ClCompile Include="src\Core\Layers\GameLayer.cpp" />
-    <ClCompile Include="src\Core\Layers\GUILayer.cpp" />
+    <ClCompile Include="src\Core\Layers\GameGUILayer.cpp" />
     <ClCompile Include="src\Core\Layers\PauseMenuLayer.cpp" />
     <ClCompile Include="src\Core\LayerStack.cpp" />
     <ClCompile Include="src\Core\Atlas\AtlasTexCoordinates.cpp" />
@@ -237,20 +243,18 @@
     <ClCompile Include="src\Utils\Strategy\Strategy.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fDefaultShader.fs" />
-    <None Include="shaders\fScreenShader.fs" />
-    <None Include="shaders\fShader.fs" />
-    <None Include="shaders\vDefaultShader.vs" />
-    <None Include="shaders\vScreenShader.vs" />
-    <None Include="shaders\vShader.vs" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="src\Core\Components\RenderingComponent.h" />
     <ClInclude Include="src\Core\GUI\Crosshair.h" />
+    <ClInclude Include="src\Core\GUI\Inventory.h" />
     <ClInclude Include="src\Core\GUI\ItemBar.h" />
+    <ClInclude Include="src\Core\IconManager\IconManager.h" />
+    <ClInclude Include="src\Core\InventoryManager\CubeItem.h" />
     <ClInclude Include="src\Core\InventoryManager\InventoryManager.h" />
     <ClInclude Include="src\Core\InventoryManager\Item.h" />
+    <ClInclude Include="src\Core\Services\Atlas\AtlasService.h" />
+    <ClInclude Include="src\Core\Services\BiomeManager\BiomeService.h" />
     <ClInclude Include="src\Core\Services\Renderer\RendererStructs.h" />
+    <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\OffScreenPPShaderConfig.h" />
     <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\ScreenShaderConfig.h" />
     <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\WorldShaderConfig.h" />
     <ClInclude Include="src\Core\Services\Renderer\ShaderData\ShaderData.h" />
@@ -268,7 +272,7 @@
     <ClInclude Include="src\Core\GUI\DebugGUI\DebugPanel.h" />
     <ClInclude Include="src\Core\GUI\GUIElement.h" />
     <ClInclude Include="src\Core\Layers\GameLayer.h" />
-    <ClInclude Include="src\Core\Layers\GUILayer.h" />
+    <ClInclude Include="src\Core\Layers\GameGUILayer.h" />
     <ClInclude Include="src\Core\Layers\PauseMenuLayer.h" />
     <ClInclude Include="src\Core\LayerStack.h" />
     <ClInclude Include="src\Core\Atlas\AtlasTexCoordinates.h" />
@@ -356,6 +360,14 @@
     <ClInclude Include="src\Core\Services\MovementSystem\MovementModes\StandardMovementMode.h" />
     <ClInclude Include="src\Utils\Strategy\StrategyContext.h" />
     <ClInclude Include="src\Utils\Strategy\Strategy.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\fDefaultShader.frag" />
+    <None Include="shaders\fOffScreenPPShader.frag" />
+    <None Include="shaders\fScreenShader.frag" />
+    <None Include="shaders\vDefaultShader.vert" />
+    <None Include="shaders\vOffScreenPPShader.vert" />
+    <None Include="shaders\vScreenShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -10,7 +10,7 @@ GameCoreState::GameCoreState(Core* core, CoreState id, std::string name) :
 void GameCoreState::enter() {
 	BOOST_LOG_TRIVIAL(info) << "---GAME STATE ENTER---";
 	m_gameLayer = new GameLayer(m_core->getServiceLocator());
-	m_GUILayer = new GUILayer(m_core->getServiceLocator());
+	m_GUILayer = new GameGUILayer(m_core->getServiceLocator());
 	m_layerStack->addLayer(m_gameLayer);
 	m_layerStack->addOverlay(m_GUILayer);
 }

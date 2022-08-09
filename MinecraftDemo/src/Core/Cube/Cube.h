@@ -19,7 +19,6 @@ public:
 	};
 
 	enum class CubeId {
-		UNGENERATED_BLOCK,
 		AIR_BLOCK,
 		DIRT_BLOCK,
 		GRASS_BLOCK,
@@ -27,7 +26,8 @@ public:
 		SAND_BLOCK,
 		SNOWY_GRASS_BLOCK,
 		OAK_LOG_BLOCK,
-		LEAVES_BLOCK
+		LEAVES_BLOCK,
+		UNGENERATED_BLOCK
 	};
 
 	
@@ -39,6 +39,8 @@ public:
 	
 	static std::string getDisplayName(CubeId cubeId);
 	static int getNumericId(CubeId cubeId);
+	static bool isTransparent(CubeId cubeId);
+	static bool canBeRendered(CubeId cubeId);
 
 	CubeId getCubeId();
 	void setCubeId(CubeId cubeId);
@@ -46,7 +48,6 @@ public:
 	void setChunkRef(Chunk* chunk);
 	Biome* getBiomeRef();
 	void setBiomeRef(Biome* biome);
-	bool isTransparent();
 	glm::vec3 getCubeCoordsOffset();
 	void getCubeIndexesOffset(int& height, int& width, int& depth);
 

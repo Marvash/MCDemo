@@ -11,9 +11,12 @@ double InputManager::mouseLastXPos = 0.0;
 double InputManager::mouseLastYPos = 0.0;
 double InputManager::scrollXOffset = 0.0;
 double InputManager::scrollYOffset = 0.0;
+bool InputManager::firstMouseInput = true;
 
-
-InputManager::InputManager(CoreEventDispatcher* eventDispatcher) : CoreService(eventDispatcher), window(nullptr) {
+InputManager::InputManager(CoreEventDispatcher* eventDispatcher) : 
+	CoreService(eventDispatcher), 
+	window(nullptr),
+	m_isCapturingMouse(false) {
 	for (int i = 0; i <= (int)InputMouseButton::MOUSE_RIGHT; i++) {
 		m_inputMouseMap[(InputMouseButton)i] = InputAction::RELEASE;
 		m_previousInputMouseMap[(InputMouseButton)i] = m_inputMouseMap[(InputMouseButton)i];
@@ -24,12 +27,24 @@ InputManager::InputManager(CoreEventDispatcher* eventDispatcher) : CoreService(e
 	}
 }
 
+void InputManager::setMouseCapture(bool capture) {
+	m_isCapturingMouse = capture;
+	int captureMode = GLFW_CURSOR_NORMAL;
+	if (m_isCapturingMouse) {
+		captureMode = GLFW_CURSOR_DISABLED;
+		firstMouseInput = true;
+	}
+	glfwSetInputMode(window, GLFW_CURSOR, captureMode);
+}
+
 void InputManager::onNotify(Event& newEvent) {
 	switch (newEvent.getEventType()) {
 	case EventType::WINDOW_INIT:
 		WindowInitEvent* windowInitEvent = static_cast<WindowInitEvent*>(&newEvent);
 		window = windowInitEvent->m_window;
 		setupGlfwCallbacks(window);
+		// tell GLFW to capture our mouse
+		setMouseCapture(true);
 		break;
 	}
 }
@@ -134,6 +149,8 @@ InputKey InputManager::glfwKeyToInputKey(int key) {
 		return InputKey::KEY_D;
 	case GLFW_KEY_F:
 		return InputKey::KEY_F;
+	case GLFW_KEY_E:
+		return InputKey::KEY_E;
 	case GLFW_KEY_0:
 		return InputKey::KEY_0;
 	case GLFW_KEY_1:
@@ -191,7 +208,6 @@ void InputManager::framebufferSizeCallback(GLFWwindow* window, int width, int he
 }
 
 void InputManager::mousePosCallback(GLFWwindow* window, double xpos, double ypos) {
-	static bool firstMouseInput = true;
 	if (firstMouseInput) {
 		mouseLastXPos = xpos;
 		mouseLastYPos = ypos;

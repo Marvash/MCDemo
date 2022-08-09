@@ -36,6 +36,14 @@ GameObjectManager* CoreServiceLocator::getGameObjectManager() {
 	return m_gameObjectManager;
 }
 
+AtlasService* CoreServiceLocator::getAtlasService() {
+	return m_atlasService;
+}
+
+BiomeService* CoreServiceLocator::getBiomeService() {
+	return m_biomeService;
+}
+
 void CoreServiceLocator::provide(InputManager* input) {
 	m_input = input;
 }
@@ -66,4 +74,12 @@ void CoreServiceLocator::provide(CameraSystem* cameraSystem) {
 
 void CoreServiceLocator::provide(GameObjectManager* gameObjectManager) {
 	m_gameObjectManager = gameObjectManager;
+}
+
+void CoreServiceLocator::provide(AtlasService* atlasService) {
+	m_atlasService = atlasService;
+}
+
+void CoreServiceLocator::provide(BiomeService* biomeService) {
+	m_biomeService = biomeService;
 }

@@ -19,8 +19,7 @@
 class BiomeManager : public CoreService {
 public:
 	BiomeManager(CoreEventDispatcher* coreEventDispatcher);
-	void initBiomesArray();
-
+	
 	unsigned int getBiomesCount();
 	TextureBuffer* getBiomeColorsBuffer();
 	int getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId, Cube::FaceSide faceSide);
@@ -31,6 +30,8 @@ public:
 
 	const unsigned int SEA_LEVEL = 90;
 private:
+	void initBiomesArray();
+
 	Biome** m_biomes;
 	unsigned int m_biomesCount;
 	BiomeColors m_biomeColors;

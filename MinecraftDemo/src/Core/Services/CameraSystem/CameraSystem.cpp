@@ -25,6 +25,8 @@ void CameraSystem::updateRenderingData() {
 
 void CameraSystem::setPlayerPosition(glm::vec3& position) {
 	m_cameraPosition = position + m_cameraOffset;
+    updateCameraVectors();
+    updateRenderingData();
 }
 
 void CameraSystem::setCameraOffset(glm::vec3& offset) {

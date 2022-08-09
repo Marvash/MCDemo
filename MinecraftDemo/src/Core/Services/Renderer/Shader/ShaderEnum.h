@@ -2,6 +2,6 @@
 
 enum class ShaderType {
 	WORLD,
-	ITEMICON,
+	OFFSCREENPP,
 	SCREEN
 };
