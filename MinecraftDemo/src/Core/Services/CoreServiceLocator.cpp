@@ -44,6 +44,14 @@ BiomeService* CoreServiceLocator::getBiomeService() {
 	return m_biomeService;
 }
 
+Inventory* CoreServiceLocator::getInventory() {
+	return m_inventory;
+}
+
+ItemLibrary* CoreServiceLocator::getItemLibrary() {
+	return m_itemLibrary;
+}
+
 void CoreServiceLocator::provide(InputManager* input) {
 	m_input = input;
 }
@@ -82,4 +90,12 @@ void CoreServiceLocator::provide(AtlasService* atlasService) {
 
 void CoreServiceLocator::provide(BiomeService* biomeService) {
 	m_biomeService = biomeService;
+}
+
+void CoreServiceLocator::provide(Inventory* inventoryService) {
+	m_inventory = inventoryService;
+}
+
+void CoreServiceLocator::provide(ItemLibrary* itemLibraryService) {
+	m_itemLibrary = itemLibraryService;
 }

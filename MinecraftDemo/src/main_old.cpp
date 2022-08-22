@@ -29,7 +29,7 @@
 //
 //float exposure = 1.0f;
 //
-//Cube::CubeId selectedCubeId(Cube::CubeId::DIRT_BLOCK);
+//CubeId selectedCubeId(CubeId::DIRT_BLOCK);
 //
 //int main() {
 //
@@ -247,19 +247,19 @@
 //	}
 //
 //	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-//		selectedCubeId = Cube::CubeId::SAND_BLOCK;
+//		selectedCubeId = CubeId::SAND_BLOCK;
 //	}
 //	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
-//		selectedCubeId = Cube::CubeId::DIRT_BLOCK;
+//		selectedCubeId = CubeId::DIRT_BLOCK;
 //	}
 //	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
-//		selectedCubeId = Cube::CubeId::STONE_BLOCK;
+//		selectedCubeId = CubeId::STONE_BLOCK;
 //	}
 //	if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
-//		selectedCubeId = Cube::CubeId::OAK_LOG;
+//		selectedCubeId = CubeId::OAK_LOG;
 //	}
 //	if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS) {
-//		selectedCubeId = Cube::CubeId::LEAVES;
+//		selectedCubeId = CubeId::LEAVES;
 //	}
 //
 //	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {

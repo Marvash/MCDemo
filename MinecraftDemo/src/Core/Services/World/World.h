@@ -18,7 +18,7 @@ public:
 	Cube* getCubeByCoords(glm::vec3 coords);
 	glm::vec3 getCubeAbsCoords(Cube* cube);
 	void destroyBlock(Cube* toDestroy);
-	void placeBlock(Cube* toPlace, Cube::CubeId cubeId);
+	void placeBlock(Cube* toPlace, CubeId cubeId);
 
 private:
 

@@ -1,14 +1,14 @@
-#include "BiomeManager.h"
+#include "BiomeLibrary.h"
 
-BiomeManager::BiomeManager(CoreEventDispatcher* coreEventDispatcher) : CoreService(coreEventDispatcher) {
+BiomeLibrary::BiomeLibrary(CoreEventDispatcher* coreEventDispatcher) : CoreService(coreEventDispatcher) {
 }
 
-void BiomeManager::init() {
+void BiomeLibrary::init() {
 	initBiomesArray();
 	m_biomeColorsBuffer = new TextureBuffer(m_biomeColors.m_biomeColorsArray, m_biomeColors.TEX_COLORS_SIZE);
 }
 
-void BiomeManager::initBiomesArray() {
+void BiomeLibrary::initBiomesArray() {
 	if (m_biomesCount == 0) {
 
 		m_biomesCount = 9;
@@ -38,31 +38,31 @@ void BiomeManager::initBiomesArray() {
 	}
 }
 
-Biome** BiomeManager::getBiomes() {
+Biome** BiomeLibrary::getBiomes() {
 	return m_biomes;
 }
 
-unsigned int BiomeManager::getBiomesCount() {
+unsigned int BiomeLibrary::getBiomesCount() {
 	return m_biomesCount;
 }
 
-TextureBuffer* BiomeManager::getBiomeColorsBuffer() {
+TextureBuffer* BiomeLibrary::getBiomeColorsBuffer() {
 	return m_biomeColorsBuffer;
 }
 
-void BiomeManager::onNotify(Event& newEvent) {
+void BiomeLibrary::onNotify(Event& newEvent) {
 
 }
 
-void BiomeManager::notify(Event& newEvent) {
+void BiomeLibrary::notify(Event& newEvent) {
 
 }
 
-int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId, Cube::FaceSide faceSide) {
+int BiomeLibrary::getBiomeCubeColors(Biome::BiomeId biomeId, CubeId cubeId, Cube::FaceSide faceSide) {
 	switch (biomeId) {
 	case Biome::BiomeId::TUNDRA:
 		switch (cubeId) {
-		case Cube::CubeId::SNOWY_GRASS_BLOCK:
+		case CubeId::SNOWY_GRASS_BLOCK:
 			switch (faceSide) {
 			case Cube::FaceSide::RIGHT:
 			case Cube::FaceSide::LEFT:
@@ -75,13 +75,13 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 216;
 			}
 			break;
-		case Cube::CubeId::LEAVES_BLOCK:
+		case CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
 	case Biome::BiomeId::TAIGA:
 		switch (cubeId) {
-		case Cube::CubeId::SNOWY_GRASS_BLOCK:
+		case CubeId::SNOWY_GRASS_BLOCK:
 			switch (faceSide) {
 			case Cube::FaceSide::RIGHT:
 			case Cube::FaceSide::LEFT:
@@ -94,7 +94,7 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 243;
 			}
 			break;
-		case Cube::CubeId::GRASS_BLOCK:
+		case CubeId::GRASS_BLOCK:
 			switch (faceSide) {
 			case Cube::FaceSide::RIGHT:
 			case Cube::FaceSide::LEFT:
@@ -107,13 +107,13 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 54;
 			}
 			break;
-		case Cube::CubeId::LEAVES_BLOCK:
+		case CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
 	case Biome::BiomeId::SAVANA:
 		switch (cubeId) {
-		case Cube::CubeId::GRASS_BLOCK:
+		case CubeId::GRASS_BLOCK:
 			switch (faceSide) {
 			case Cube::FaceSide::RIGHT:
 			case Cube::FaceSide::LEFT:
@@ -126,7 +126,7 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 108;
 			}
 			break;
-		case Cube::CubeId::LEAVES_BLOCK:
+		case CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
@@ -134,7 +134,7 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 		break;
 	case Biome::BiomeId::MOUNTAINS:
 		switch (cubeId) {
-		case Cube::CubeId::GRASS_BLOCK:
+		case CubeId::GRASS_BLOCK:
 			switch (faceSide) {
 			case Cube::FaceSide::RIGHT:
 			case Cube::FaceSide::LEFT:
@@ -147,13 +147,13 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 135;
 			}
 			break;
-		case Cube::CubeId::LEAVES_BLOCK:
+		case CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
 	case Biome::BiomeId::HILLS:
 		switch (cubeId) {
-		case Cube::CubeId::GRASS_BLOCK:
+		case CubeId::GRASS_BLOCK:
 			switch (faceSide) {
 			case Cube::FaceSide::RIGHT:
 			case Cube::FaceSide::LEFT:
@@ -166,13 +166,13 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 162;
 			}
 			break;
-		case Cube::CubeId::LEAVES_BLOCK:
+		case CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
 	case Biome::BiomeId::PLAINS:
 		switch (cubeId) {
-		case Cube::CubeId::GRASS_BLOCK:
+		case CubeId::GRASS_BLOCK:
 			switch (faceSide) {
 			case Cube::FaceSide::RIGHT:
 			case Cube::FaceSide::LEFT:
@@ -185,13 +185,13 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 27;
 			}
 			break;
-		case Cube::CubeId::LEAVES_BLOCK:
+		case CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
 	case Biome::BiomeId::FOREST:
 		switch (cubeId) {
-		case Cube::CubeId::GRASS_BLOCK:
+		case CubeId::GRASS_BLOCK:
 			switch (faceSide) {
 			case Cube::FaceSide::RIGHT:
 			case Cube::FaceSide::LEFT:
@@ -204,13 +204,13 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 81;
 			}
 			break;
-		case Cube::CubeId::LEAVES_BLOCK:
+		case CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;
 	case Biome::BiomeId::JUNGLE:
 		switch (cubeId) {
-		case Cube::CubeId::GRASS_BLOCK:
+		case CubeId::GRASS_BLOCK:
 			switch (faceSide) {
 			case Cube::FaceSide::RIGHT:
 			case Cube::FaceSide::LEFT:
@@ -223,7 +223,7 @@ int BiomeManager::getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId
 				return 189;
 			}
 			break;
-		case Cube::CubeId::LEAVES_BLOCK:
+		case CubeId::LEAVES_BLOCK:
 			return 252;
 		}
 		break;

@@ -5,8 +5,7 @@
 #include "Core/TerrainGenerator/TerrainGenerator.h"
 #include "Core/Services/CoreService.h"
 #include "Core/Services/Atlas/Atlas.h"
-#include "Core/Services/BiomeManager/BiomeManager.h"
-#include "BiomeManager.h"
+#include "BiomeLibrary.h"
 #include <Boost/log/trivial.hpp>
 
 class CoreServiceLocator;
@@ -14,12 +13,12 @@ class CoreServiceLocator;
 class BiomeService : public CoreService {
 public:
 	BiomeService(CoreEventDispatcher* coreEventDispatcher);
-	void init(BiomeManager* biomeManager);
+	void init(BiomeLibrary* biomeLibrary);
 	void onNotify(Event& newEvent) override;
 	unsigned int getBiomesCount();
 	TextureBuffer* getBiomeColorsBuffer();
-	int getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId, Cube::FaceSide faceSide);
+	int getBiomeCubeColors(Biome::BiomeId biomeId, CubeId cubeId, Cube::FaceSide faceSide);
 	Biome** getBiomes();
 private:
-	BiomeManager* m_biomeManager;
+	BiomeLibrary* m_biomeLibrary;
 };

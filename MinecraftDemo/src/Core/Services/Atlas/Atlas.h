@@ -15,7 +15,7 @@ public:
 	Atlas(CoreEventDispatcher* coreEventDispatcher);
 	~Atlas();
 
-	int getAtlasTexIndex(Cube::CubeId cubeId, Cube::FaceSide faceSide);
+	int getAtlasTexIndex(CubeId cubeId, Cube::FaceSide faceSide);
 	AtlasTexture* getAtlasTexture();
 	TextureBuffer* getTexCoordsBuffer();
 	void init();

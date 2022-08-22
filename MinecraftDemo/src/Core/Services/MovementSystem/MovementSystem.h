@@ -16,7 +16,7 @@ class MovementSystem : public CoreService {
 public:
 	MovementSystem(CoreEventDispatcher* coreEventDispatcher);
 	~MovementSystem();
-	void init( ChunkManager* chunkManager);
+	void init(ChunkManager* chunkManager);
 	void onNotify(Event& newEvent) override;
 	void registerObject(GameObject* gameObject, MovementComponent* movementComponent);
 	void update(double deltaTime);

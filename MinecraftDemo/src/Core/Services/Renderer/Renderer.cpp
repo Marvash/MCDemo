@@ -193,7 +193,7 @@ void Renderer::setAtlas(Atlas* atlas) {
 	m_atlas = atlas;
 }
 
-void Renderer::setBiomeManager(BiomeManager* biomeManager) {
+void Renderer::setBiomeManager(BiomeLibrary* biomeManager) {
 	m_biomeManager = biomeManager;
 }
 

@@ -30,7 +30,7 @@ void StandardMovementMode::stepPhysicalMovement() {
 	GameObject* go = m_go;
 	MovementComponent* mc = m_mc;
 	AABBCollider collider;
-	if (m_chunkManager->getCubeByCoords(go->m_position) == nullptr || m_chunkManager->getCubeByCoords(go->m_position)->getCubeId() == Cube::CubeId::UNGENERATED_BLOCK) {
+	if (m_chunkManager->getCubeByCoords(go->m_position) == nullptr || m_chunkManager->getCubeByCoords(go->m_position)->getCubeId() == CubeId::UNGENERATED_BLOCK) {
 		return;
 	}
 
@@ -92,7 +92,7 @@ void StandardMovementMode::stepPhysicalMovement() {
 	bool frontCollision = false;
 	bool leftCollision = false;
 	bool rightCollision = false;
-	Cube::CubeId cubeId;
+	CubeId cubeId;
 	double nearestCubes = 0.0;
 	// Bottom side
 	if (mc->m_velocity.y < 0.0) {
@@ -127,7 +127,7 @@ void StandardMovementMode::stepPhysicalMovement() {
 						Cube* cube = m_chunkManager->getCubeByCoords(colliderVertexPosition);
 						//BOOST_LOG_TRIVIAL(info) << "CUBE1: " << m_chunkManager->getCubeAbsCoords(cube).y;
 						cubeId = m_chunkManager->getCubeByCoords(colliderVertexPosition)->getCubeId();
-						if (cubeId != Cube::CubeId::AIR_BLOCK) {
+						if (cubeId != CubeId::AIR_BLOCK) {
 							targetPosition.y = glm::ceil(colliderVertexPosition.y) + mc->m_colliderHalfHeight + COLLISION_OFFSET;
 							//BOOST_LOG_TRIVIAL(info) << "Final pos: " << targetPosition.y;
 							bottomCollision = true;
@@ -138,9 +138,9 @@ void StandardMovementMode::stepPhysicalMovement() {
 						/*
 						cubeId = getAdjacentCubeByCoord(adjacentCubes, centralCubeCoords, position, radius)->getCubeId();
 						glm::vec3 lowerCubeCoords(position.x, position.y - 1.0f, position.z);
-						Cube::CubeId lowerCubeId = getAdjacentCubeByCoord(adjacentCubes, centralCubeCoords, lowerCubeCoords, radius)->getCubeId();
+						CubeId lowerCubeId = getAdjacentCubeByCoord(adjacentCubes, centralCubeCoords, lowerCubeCoords, radius)->getCubeId();
 						float delta = position.y - nearestBottomFaceDistance;
-						if (((position.y < nearestBottomFaceDistance && cubeId != Cube::CubeId::AIR_BLOCK) || (delta >= 0.0f && delta < 0.001f) && lowerCubeId != Cube::CubeId::AIR_BLOCK)) {
+						if (((position.y < nearestBottomFaceDistance && cubeId != CubeId::AIR_BLOCK) || (delta >= 0.0f && delta < 0.001f) && lowerCubeId != CubeId::AIR_BLOCK)) {
 							mc->m_currentPosition.y = nearestBottomFaceDistance + mc->m_colliderHalfHeight + 0.00001f;
 							mc->m_velocity.y = 0.0f;
 							mc->m_isGrounded = true;
@@ -188,7 +188,7 @@ void StandardMovementMode::stepPhysicalMovement() {
 							horizontal = false;
 						}
 						cubeId = m_chunkManager->getCubeByCoords(colliderVertexPosition)->getCubeId();
-						if (cubeId != Cube::CubeId::AIR_BLOCK) {
+						if (cubeId != CubeId::AIR_BLOCK) {
 							targetPosition.y = glm::floor(colliderVertexPosition.y) - mc->m_colliderHalfHeight - COLLISION_OFFSET;
 							topCollision = true;
 							horizontal = false;
@@ -242,7 +242,7 @@ void StandardMovementMode::stepPhysicalMovement() {
 						}
 						Cube* cube = m_chunkManager->getCubeByCoords(colliderVertexPosition);
 						cubeId = m_chunkManager->getCubeByCoords(colliderVertexPosition)->getCubeId();
-						if (cubeId != Cube::CubeId::AIR_BLOCK) {
+						if (cubeId != CubeId::AIR_BLOCK) {
 							targetPosition.z = glm::ceil(colliderVertexPosition.z) + mc->m_colliderHalfWidth + COLLISION_OFFSET;
 							backCollision = true;
 							horizontal = false;
@@ -288,7 +288,7 @@ void StandardMovementMode::stepPhysicalMovement() {
 							horizontal = false;
 						}
 						cubeId = m_chunkManager->getCubeByCoords(colliderVertexPosition)->getCubeId();
-						if (cubeId != Cube::CubeId::AIR_BLOCK) {
+						if (cubeId != CubeId::AIR_BLOCK) {
 							targetPosition.z = glm::floor(colliderVertexPosition.z) - mc->m_colliderHalfWidth - COLLISION_OFFSET;
 							frontCollision = true;
 							horizontal = false;
@@ -340,7 +340,7 @@ void StandardMovementMode::stepPhysicalMovement() {
 							horizontal = false;
 						}
 						cubeId = m_chunkManager->getCubeByCoords(colliderVertexPosition)->getCubeId();
-						if (cubeId != Cube::CubeId::AIR_BLOCK) {
+						if (cubeId != CubeId::AIR_BLOCK) {
 							targetPosition.x = glm::ceil(colliderVertexPosition.x) + mc->m_colliderHalfWidth + COLLISION_OFFSET;
 							leftCollision = true;
 							horizontal = false;
@@ -386,7 +386,7 @@ void StandardMovementMode::stepPhysicalMovement() {
 							horizontal = false;
 						}
 						cubeId = m_chunkManager->getCubeByCoords(colliderVertexPosition)->getCubeId();
-						if (cubeId != Cube::CubeId::AIR_BLOCK) {
+						if (cubeId != CubeId::AIR_BLOCK) {
 							targetPosition.x = glm::floor(colliderVertexPosition.x) - mc->m_colliderHalfWidth - COLLISION_OFFSET;
 							//BOOST_LOG_TRIVIAL(info) << "r: " << go->m_position.x << " " << go->m_position.y << " " << go->m_position.z;
 							rightCollision = true;

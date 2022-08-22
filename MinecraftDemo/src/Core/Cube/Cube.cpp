@@ -36,6 +36,26 @@ void Cube::getCubeIndexesOffset(int& height, int& width, int& depth) {
 	depth = int(m_offset.z);
 }
 
+ItemId Cube::getItemId(CubeId cubeId) {
+	switch (cubeId) {
+	case CubeId::DIRT_BLOCK:
+		return ItemId::DIRT_BLOCK_ITEM;
+	case CubeId::GRASS_BLOCK:
+		return ItemId::GRASS_BLOCK_ITEM;
+	case CubeId::LEAVES_BLOCK:
+		return ItemId::LEAVES_BLOCK_ITEM;
+	case CubeId::OAK_LOG_BLOCK:
+		return ItemId::OAK_LOG_BLOCK_ITEM;
+	case CubeId::SAND_BLOCK:
+		return ItemId::SAND_BLOCK_ITEM;
+	case CubeId::SNOWY_GRASS_BLOCK:
+		return ItemId::SNOWY_GRASS_BLOCK_ITEM;
+	case CubeId::STONE_BLOCK:
+		return ItemId::STONE_BLOCK_ITEM;
+	}
+	return ItemId::NONE;
+}
+
 std::string Cube::getDisplayName(CubeId cubeId) {
 	switch (cubeId) {
 	case CubeId::AIR_BLOCK:
@@ -64,7 +84,7 @@ int Cube::getNumericId(CubeId cubeId) {
 	return 0;
 }
 
-Cube::CubeId Cube::getCubeId() {
+CubeId Cube::getCubeId() {
 	return m_cubeId;
 }
 

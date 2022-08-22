@@ -2,12 +2,11 @@
 #include "Core/GUI/GUIElement.h"
 #include "Core/Services/CoreServiceLocator.h"
 #include "Core/Services/Graphics/Graphics.h"
-#include "Core/IconManager/IconManager.h"
 #include <vector>
 
-class Inventory : public GUIElement {
+class InventoryGUI : public GUIElement {
 public:
-	Inventory(CoreServiceLocator* coreServiceLocator, IconManager* iconManager);
+	InventoryGUI(CoreServiceLocator* coreServiceLocator);
 	void draw() override;
 private:
 	void drawSlot(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, ImColor sideColor);
@@ -28,5 +27,5 @@ private:
 	ImGuiWindowFlags m_windowFlags;
 	ImGuiWindowFlags m_draggedWindowFlags;
 	Graphics* m_graphics;
-	IconManager* m_iconManager;
+	Inventory* m_inventory;
 };

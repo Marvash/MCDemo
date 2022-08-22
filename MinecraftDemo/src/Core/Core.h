@@ -9,8 +9,8 @@
 #include "Core/Services/CoreServiceLocator.h"
 #include "CoreEventDispatcher.h"
 #include "Core/Services/ChunkManager/ChunkManager.h"
-#include "Core/Services/BiomeManager/BiomeManager.h"
-#include "Core/Services/BiomeManager/BiomeService.h"
+#include "Core/Services/Biome/BiomeLibrary.h"
+#include "Core/Services/Biome/BiomeService.h"
 #include "Core/Services/Atlas/Atlas.h"
 #include "Core/Services/Atlas/AtlasService.h"
 #include "Core/Services/Renderer/Renderer.h"
@@ -19,6 +19,8 @@
 #include "Core/Services/Window/Window.h"
 #include "Core/Services/Input/InputManager.h"
 #include "Core/Services/CameraSystem/CameraSystem.h"
+#include "Core/Services/ItemLibrary/ItemLibrary.h"
+#include "Core/Services/Inventory/Inventory.h"
 #include "LayerStack.h"
 #include <Boost/log/trivial.hpp>
 
@@ -50,7 +52,7 @@ private:
 	CoreEventDispatcher* m_eventDispatcher;
 	LayerStack* m_currentLayerStack;
 	ChunkManager* m_chunkManager;
-	BiomeManager* m_biomeManager;
+	BiomeLibrary* m_biomeManager;
 	Atlas* m_atlas;
 	Renderer* m_renderer;
 };

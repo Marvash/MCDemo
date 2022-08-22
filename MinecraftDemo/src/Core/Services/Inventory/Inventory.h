@@ -1,21 +1,24 @@
 #pragma once
 #include "Core/Cube/Cube.h"
-#include "Item.h"
-#include "CubeItem.h"
+#include "Core/Services/CoreService.h"
+#include "Core/Services/ItemLibrary/ItemLibrary.h"
+#include "Core/Services/ItemLibrary/Item.h"
 #include <glm/glm.hpp>
 #include <vector>
 
-class InventoryManager {
+class Inventory : public CoreService {
 public:
-	InventoryManager();
-	~InventoryManager();
+	Inventory(CoreEventDispatcher* coreEventDispatcher);
+	~Inventory();
 
-	int queryItemSpace(Cube::CubeId cubeId);
-	int queryItem(Cube::CubeId cubeId);
-	void addItem(Cube::CubeId cubeId, unsigned int count);
-	void removeItem(Cube::CubeId cubeId, unsigned int count);
-	void addItemInInventorySlot(Cube::CubeId cubeId, unsigned int count, unsigned int slot);
-	void removeItemInInventorySlotCount(Cube::CubeId cubeId, unsigned int count, unsigned int slot);
+	void init(ItemLibrary* itemLibrary);
+	void onNotify(Event& newEvent) override;
+	int queryAvailableSpaceForItemId(ItemId itemId);
+	int queryItemCount(ItemId itemId);
+	void addItem(ItemId itemId, int count);
+	void removeItem(ItemId itemId, int count);
+	void addItemInInventorySlot(ItemId itemId, int count, unsigned int slot);
+	void decreaseItemCountInSlot(int count, unsigned int slot);
 	void removeItemInInventorySlot(unsigned int slot);
 	void swapItems(unsigned int source, unsigned int destination);
 	bool isItemCompatible(Item* source, Item* target);
@@ -29,9 +32,9 @@ public:
 
 	const unsigned int TOTAL_SLOTS = 50;
 	const unsigned int ITEMBAR_SLOTS = 10;
-	const unsigned int MAX_ITEM_STACK = 64;
 private:
 	unsigned int m_itemBarSelectedSlot;
 	Item** m_inventory;
 	Item** m_itemBar;
+	ItemLibrary* m_itemLibrary;
 };

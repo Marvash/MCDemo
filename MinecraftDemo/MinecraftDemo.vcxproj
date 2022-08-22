@@ -146,15 +146,20 @@
   <ItemGroup>
     <ClCompile Include="src\Core\Components\MovementComponent.cpp" />
     <ClCompile Include="src\Core\Components\RenderingComponent.cpp" />
+    <ClCompile Include="src\Core\Services\Crafting\Crafting.cpp" />
+    <ClCompile Include="src\Core\GUI\CraftingTable.cpp" />
     <ClCompile Include="src\Core\GUI\Crosshair.cpp" />
-    <ClCompile Include="src\Core\GUI\Inventory.cpp" />
+    <ClCompile Include="src\Core\GUI\InventoryGUI.cpp" />
     <ClCompile Include="src\Core\GUI\ItemBar.cpp" />
-    <ClCompile Include="src\Core\IconManager\IconManager.cpp" />
-    <ClCompile Include="src\Core\InventoryManager\CubeItem.cpp" />
-    <ClCompile Include="src\Core\InventoryManager\InventoryManager.cpp" />
-    <ClCompile Include="src\Core\InventoryManager\Item.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\IconLibrary\IconLibrary.cpp" />
+    <ClCompile Include="src\Core\Services\Inventory\Inventory.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\Item.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemSpecification.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemLibrary.cpp" />
     <ClCompile Include="src\Core\Services\Atlas\AtlasService.cpp" />
-    <ClCompile Include="src\Core\Services\BiomeManager\BiomeService.cpp" />
+    <ClCompile Include="src\Core\Services\Biome\BiomeService.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\NullItemSpecification.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\PlaceableItemSpecification.cpp" />
     <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\OffScreenPPShaderConfig.cpp" />
     <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\ScreenShaderConfig.cpp" />
     <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\WorldShaderConfig.cpp" />
@@ -166,7 +171,7 @@
     <ClCompile Include="src\Core\Biomes\BiomeBuilder.cpp" />
     <ClCompile Include="src\Core\Biomes\BiomeColors.cpp" />
     <ClCompile Include="src\Core\Layers\Layer.cpp" />
-    <ClCompile Include="src\Core\Services\BiomeManager\BiomeManager.cpp" />
+    <ClCompile Include="src\Core\Services\Biome\BiomeLibrary.cpp" />
     <ClCompile Include="src\Core\GUI\DebugGUI\DebugPanel.cpp" />
     <ClCompile Include="src\Core\Layers\GameLayer.cpp" />
     <ClCompile Include="src\Core\Layers\GameGUILayer.cpp" />
@@ -244,15 +249,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Components\RenderingComponent.h" />
+    <ClInclude Include="src\Core\Services\Crafting\Crafting.h" />
+    <ClInclude Include="src\Core\Cube\CubeIdEnum.h" />
+    <ClInclude Include="src\Core\GUI\CraftingTable.h" />
     <ClInclude Include="src\Core\GUI\Crosshair.h" />
-    <ClInclude Include="src\Core\GUI\Inventory.h" />
+    <ClInclude Include="src\Core\GUI\InventoryGUI.h" />
     <ClInclude Include="src\Core\GUI\ItemBar.h" />
-    <ClInclude Include="src\Core\IconManager\IconManager.h" />
-    <ClInclude Include="src\Core\InventoryManager\CubeItem.h" />
-    <ClInclude Include="src\Core\InventoryManager\InventoryManager.h" />
-    <ClInclude Include="src\Core\InventoryManager\Item.h" />
+    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipes.h" />
+    <ClInclude Include="src\Core\Services\Crafting\Recipe.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\IconLibrary\IconLibrary.h" />
+    <ClInclude Include="src\Core\Services\Inventory\Inventory.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\Item.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemSpecification.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemIdEnum.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemLibrary.h" />
+    <ClInclude Include="src\Core\Inventory\ItemUsageStrategySelector.h" />
     <ClInclude Include="src\Core\Services\Atlas\AtlasService.h" />
-    <ClInclude Include="src\Core\Services\BiomeManager\BiomeService.h" />
+    <ClInclude Include="src\Core\Services\Biome\BiomeService.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\NullItemSpecification.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\PlaceableItemSpecification.h" />
     <ClInclude Include="src\Core\Services\Renderer\RendererStructs.h" />
     <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\OffScreenPPShaderConfig.h" />
     <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\ScreenShaderConfig.h" />
@@ -268,7 +283,7 @@
     <ClInclude Include="src\Core\Biomes\BiomeBuilder.h" />
     <ClInclude Include="src\Core\Biomes\BiomeColors.h" />
     <ClInclude Include="src\Core\Layers\Layer.h" />
-    <ClInclude Include="src\Core\Services\BiomeManager\BiomeManager.h" />
+    <ClInclude Include="src\Core\Services\Biome\BiomeLibrary.h" />
     <ClInclude Include="src\Core\GUI\DebugGUI\DebugPanel.h" />
     <ClInclude Include="src\Core\GUI\GUIElement.h" />
     <ClInclude Include="src\Core\Layers\GameLayer.h" />

@@ -23,20 +23,17 @@ DebugPanel::DebugPanel(CoreServiceLocator* coreServiceLocator) :
 void DebugPanel::draw() {
     Player* player = m_coreServiceLocator->getGameObjectManager()->getPlayer();
     CameraSystem* cameraSystem = m_coreServiceLocator->getCameraSystem();
+    Inventory* inventory = m_coreServiceLocator->getInventory();
     if (player != nullptr) {
         setPlayerPosition(player->m_position);
         setPlayerLook(cameraSystem->m_front);
         setPlayerVelocity(player->m_movementComponent->getVelocity());
-        Item* selectedItem = player->getSelectedItem();
+        Item* selectedItem = inventory->getSelectedItem();
+        std::stringstream stringBuilder;
         std::string itemName = "";
         if (selectedItem != nullptr) {
-            switch (selectedItem->getItemType()) {
-                case Item::ItemType::CUBE: {
-                    CubeItem* cubeItem = static_cast<CubeItem*>(selectedItem);
-                    itemName = Cube::getDisplayName(cubeItem->getCubeId());
-                    break;
-                }
-            }
+            stringBuilder << (int)selectedItem->getItemId();
+            itemName = stringBuilder.str();
         }
         else {
             itemName = "None";

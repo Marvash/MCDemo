@@ -159,7 +159,7 @@
     <ClCompile Include="src\Core\Biomes\BiomeColors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Services\BiomeManager\BiomeManager.cpp">
+    <ClCompile Include="src\Core\Services\Biome\BiomeLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\GUI\DebugGUI\DebugPanel.cpp">
@@ -270,10 +270,10 @@
     <ClCompile Include="src\Core\GUI\ItemBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\InventoryManager\InventoryManager.cpp">
+    <ClCompile Include="src\Core\Services\Inventory\Inventory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\InventoryManager\Item.cpp">
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemSpecification.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Services\Renderer\Shader\ShaderLibrary.cpp">
@@ -288,22 +288,37 @@
     <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\WorldShaderConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\IconManager\IconManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Core\Services\Atlas\AtlasService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Services\BiomeManager\BiomeService.cpp">
+    <ClCompile Include="src\Core\Services\Biome\BiomeService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\OffScreenPPShaderConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\InventoryManager\CubeItem.cpp">
+    <ClCompile Include="src\Core\GUI\InventoryGUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\GUI\Inventory.cpp">
+    <ClCompile Include="src\Core\GUI\CraftingTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\Crafting\Crafting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemLibrary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\ItemLibrary\IconLibrary\IconLibrary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\ItemLibrary\PlaceableItemSpecification.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\ItemLibrary\NullItemSpecification.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\ItemLibrary\Item.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -485,7 +500,7 @@
     <ClInclude Include="src\Core\Biomes\BiomeColors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Services\BiomeManager\BiomeManager.h">
+    <ClInclude Include="src\Core\Services\Biome\BiomeLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\GUI\DebugGUI\DebugPanel.h">
@@ -611,10 +626,10 @@
     <ClInclude Include="src\Core\GUI\ItemBar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\InventoryManager\InventoryManager.h">
+    <ClInclude Include="src\Core\Services\Inventory\Inventory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\InventoryManager\Item.h">
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemSpecification.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Services\Renderer\Shader\ShaderLibrary.h">
@@ -641,22 +656,52 @@
     <ClInclude Include="src\Core\Services\Renderer\RendererStructs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\IconManager\IconManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Core\Services\Atlas\AtlasService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Services\BiomeManager\BiomeService.h">
+    <ClInclude Include="src\Core\Services\Biome\BiomeService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\OffScreenPPShaderConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\InventoryManager\CubeItem.h">
+    <ClInclude Include="src\Core\GUI\InventoryGUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\GUI\Inventory.h">
+    <ClInclude Include="src\Core\GUI\CraftingTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\Crafting\Crafting.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemLibrary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemIdEnum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\IconLibrary\IconLibrary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Inventory\ItemUsageStrategySelector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\PlaceableItemSpecification.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\NullItemSpecification.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Cube\CubeIdEnum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\Item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\Crafting\Recipe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

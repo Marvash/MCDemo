@@ -5,7 +5,7 @@
 #include "Core/TerrainGenerator/TerrainGenerator.h"
 #include "Core/Services/CoreService.h"
 #include "Core/Services/Atlas/Atlas.h"
-#include "Core/Services/BiomeManager/BiomeManager.h"
+#include "Core/Services/Biome/BiomeLibrary.h"
 #include <Boost/log/trivial.hpp>
 
 class CoreServiceLocator;
@@ -33,11 +33,11 @@ public:
 	void stopBuilderThreads();
 	void stopGeneratorThreads();
 	void destroyBlock(Cube* toDestroy);
-	void placeBlock(Cube* toPlace, Cube::CubeId cubeId);
+	void placeBlock(Cube* toPlace, CubeId cubeId);
 	void updateGenerationOrigin(glm::vec3& playerPos);
 	Cube* getCubeByCoords(glm::f64vec3 coords);
 	void convertToCenteredCubeCoordinates(glm::vec3& coords);
-	void init(BiomeManager* biomeManager, Atlas* atlas);
+	void init(BiomeLibrary* biomeManager, Atlas* atlas);
 	void computeAdjacentCubes(Cube*** adjacentCubes, GameObject* gameObject, int radius);
 	void onNotify(Event& newEvent) override;
 	void notify(Event& newEvent) override;

@@ -1,10 +1,11 @@
-#include "Inventory.h"
+#include "InventoryGUI.h"
 #include <imgui/imgui_internal.h>
-Inventory::Inventory(CoreServiceLocator* coreServiceLocator, IconManager* iconManager) : 
+
+InventoryGUI::InventoryGUI(CoreServiceLocator* coreServiceLocator) :
 	GUIElement(coreServiceLocator),
 	m_itemSlotSize(20.0f),
 	m_graphics(m_coreServiceLocator->getGraphics()),
-	m_iconManager(iconManager),
+	m_inventory(m_coreServiceLocator->getInventory()),
 	m_windowFlags(0),
 	m_draggedWindowFlags(0),
 	m_isDraggingItem(false),
@@ -33,14 +34,13 @@ Inventory::Inventory(CoreServiceLocator* coreServiceLocator, IconManager* iconMa
 	//m_draggedWindowFlags |= ImGuiWindowFlags_UnsavedDocument; {
 }
 
-void Inventory::draw() {
+void InventoryGUI::draw() {
 	Player* player = m_coreServiceLocator->getGameObjectManager()->getPlayer();
 	if (!player->getIsOpenInventory()) {
 		m_isDraggingItem = false;
 		return;
 	}
-	InventoryManager* inventoryManager = player->getInventoryManager();
-	unsigned int numSlots = inventoryManager->TOTAL_SLOTS;
+	unsigned int numSlots = m_inventory->TOTAL_SLOTS;
 	float viewportWidth = m_graphics->getViewportWidth();
 	float viewportHeight = m_graphics->getViewportHeight();
 	m_itemSlotSize = glm::round(viewportHeight / SLOT_SIZE_VIEWPORT_SCALING_FACTOR);
@@ -69,22 +69,15 @@ void Inventory::draw() {
 	for (int i = 0; i < numSlots; i++) {
 		drawDNDBox(strideIndex, i, m_itemSlotSize, inventoryP0, inventoryP1);
 		drawSlot(strideIndex, m_itemSlotSize, inventoryP0, inventoryP1, ImColor(0.4f, 0.4f, 0.4f, 1.0f));
-		Item* currentItem = inventoryManager->getItemInSlot(i);
+		Item* currentItem = m_inventory->getItemInSlot(i);
 		ImageTexture2D* icon = nullptr;
 		int itemCount = 0;
 		if (!(currentItem == nullptr || (m_isDraggingItem && i == m_draggedItemIndex))) {
-			Item::ItemType type = currentItem->getItemType();
-			itemCount = currentItem->getCount();
-			switch (type) {
-				case Item::ItemType::CUBE: {
-					CubeItem* currentCubeItem = static_cast<CubeItem*>(currentItem);
-					icon = m_iconManager->getIcon(currentCubeItem->getCubeId());
-					drawIcon(strideIndex, m_itemSlotSize, inventoryP0, inventoryP1, icon);
-					break;
-				}
-			}
+			icon = currentItem->getItemIcon();
+			itemCount = currentItem->getItemCount();
+			drawIcon(strideIndex, m_itemSlotSize, inventoryP0, inventoryP1, icon);
 			if (itemCount > 1) {
-				drawItemCount(strideIndex, m_itemSlotSize, inventoryP0, inventoryP1, currentItem->getCount());
+				drawItemCount(strideIndex, m_itemSlotSize, inventoryP0, inventoryP1, itemCount);
 			}
 		}
 		strideIndex++;
@@ -93,33 +86,26 @@ void Inventory::draw() {
 			inventoryP0.y += m_itemSlotSize;
 			inventoryP1.y += m_itemSlotSize;
 		}
-		if (i == inventoryManager->getInventorySlots() - 1) {
+		if (i == m_inventory->getInventorySlots() - 1) {
 			inventoryP0.y += inventoryToolbarPadding;
 			inventoryP1.y += inventoryToolbarPadding;
 		}
 	}
 	ImGui::End();
 	if (m_isDraggingItem) {
-		Item* draggedItem = inventoryManager->getItemInSlot(m_draggedItemIndex);
+		Item* draggedItem = m_inventory->getItemInSlot(m_draggedItemIndex);
 		ImageTexture2D* icon = nullptr;
 		int itemCount = 0;
 		if (draggedItem != nullptr) {
-			Item::ItemType type = draggedItem->getItemType();
-			itemCount = draggedItem->getCount();
-			switch (type) {
-			case Item::ItemType::CUBE: {
-				CubeItem* currentCubeItem = static_cast<CubeItem*>(draggedItem);
-				icon = m_iconManager->getIcon(currentCubeItem->getCubeId());
-				break;
-			}
-			}
+			icon = draggedItem->getItemIcon();
+			itemCount = draggedItem->getItemCount();
+			drawDraggedItem(m_itemSlotSize, icon, itemCount);
 		}
-		drawDraggedItem(m_itemSlotSize, icon, itemCount);
 	}
 	style.WindowPadding = windowPaddingBackup;
 }
 
-void Inventory::drawSlot(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, ImColor sideColor) {
+void InventoryGUI::drawSlot(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, ImColor sideColor) {
 	float windowWidth = windowP1.x - windowP0.x;
 	float windowHeight = windowP1.y - windowP0.y;
 	float rectWidth = glm::round(slotSize * SLOT_BORDER_SIZE_PERCENTAGE);
@@ -140,9 +126,8 @@ void Inventory::drawSlot(int index, float slotSize, ImVec2& windowP0, ImVec2& wi
 	drawList->AddRectFilled(rectP0, rectP1, sideColor);
 }
 
-void Inventory::drawDNDBox(int index, int targetId, float slotSize, ImVec2& windowP0, ImVec2& windowP1) {
+void InventoryGUI::drawDNDBox(int index, int targetId, float slotSize, ImVec2& windowP0, ImVec2& windowP1) {
 	Player* player = m_coreServiceLocator->getGameObjectManager()->getPlayer();
-	InventoryManager* inventoryManager = player->getInventoryManager();
 	ImGuiStyle& style = ImGui::GetStyle();
 	ImVec4 popupColorBackup = style.Colors[4];
 	ImVec4 buttonColorBackup = style.Colors[22];
@@ -166,27 +151,27 @@ void Inventory::drawDNDBox(int index, int targetId, float slotSize, ImVec2& wind
 	ImGui::Button("##DNDButton", targetSize);
 	if (ImGui::IsItemActivated()) {
 		if (!m_isDraggingItem) {
-			if (inventoryManager->getItemInSlot(targetId) != nullptr) {
+			if (m_inventory->getItemInSlot(targetId) != nullptr) {
 				m_isDraggingItem = true;
 				m_draggedItemIndex = targetId;
 			}
 		}
 		else {
-			Item* itemInTargetSlot = inventoryManager->getItemInSlot(targetId);
-			Item* itemInSourceSlot = inventoryManager->getItemInSlot(m_draggedItemIndex);
-			if (itemInTargetSlot != itemInSourceSlot && inventoryManager->isItemCompatible(itemInSourceSlot, itemInTargetSlot)) {
-				int countToMax = inventoryManager->MAX_ITEM_STACK - itemInTargetSlot->getCount();
-				if (countToMax >= itemInSourceSlot->getCount()) {
-					itemInTargetSlot->setCount(itemInTargetSlot->getCount() + itemInSourceSlot->getCount());
-					inventoryManager->removeItemInInventorySlot(m_draggedItemIndex);
+			Item* itemInTargetSlot = m_inventory->getItemInSlot(targetId);
+			Item* itemInSourceSlot = m_inventory->getItemInSlot(m_draggedItemIndex);
+			if (itemInTargetSlot != itemInSourceSlot && m_inventory->isItemCompatible(itemInSourceSlot, itemInTargetSlot) && itemInTargetSlot->getItemCount() < itemInTargetSlot->getItemMaxStackCount()) {
+				int countToMax = itemInTargetSlot->getItemMaxStackCount() - itemInTargetSlot->getItemCount();
+				if (countToMax >= itemInSourceSlot->getItemCount()) {
+					itemInTargetSlot->setItemCount(itemInTargetSlot->getItemCount() + itemInSourceSlot->getItemCount());
+					m_inventory->removeItemInInventorySlot(m_draggedItemIndex);
 				}
 				else {
-					itemInSourceSlot->setCount(itemInSourceSlot->getCount() - countToMax);
-					itemInTargetSlot->setCount(inventoryManager->MAX_ITEM_STACK);
+					itemInSourceSlot->setItemCount(itemInSourceSlot->getItemCount() - countToMax);
+					itemInTargetSlot->setItemCount(itemInTargetSlot->getItemMaxStackCount());
 				}
 			}
 			else {
-				inventoryManager->swapItems(m_draggedItemIndex, targetId);
+				m_inventory->swapItems(m_draggedItemIndex, targetId);
 			}
 			m_isDraggingItem = false;
 		}
@@ -200,9 +185,9 @@ void Inventory::drawDNDBox(int index, int targetId, float slotSize, ImVec2& wind
 	style.Colors[23] = buttonActiveColorBackup;
 }
 
-void Inventory::drawDraggedItem(float slotSize, ImageTexture2D* imageTexture, int count) {
+void InventoryGUI::drawDraggedItem(float slotSize, ImageTexture2D* imageTexture, int count) {
 	float rectWidth = glm::round(slotSize * SLOT_BORDER_SIZE_PERCENTAGE);
-	ImVec2 mousePos(ImGui::GetIO().MousePos);
+	ImVec2 mousePos(ImGui::GetIO().MousePos); 
 	ImVec2 windowSize(slotSize - (rectWidth * 2), slotSize - (rectWidth * 2));
 	ImVec2 windowP0(mousePos.x - (windowSize.x / 2.0f), mousePos.y - (windowSize.y / 2.0f));
 	ImVec2 itemCountP0(windowP0.x + slotSize - (rectWidth * 4), windowP0.y + slotSize - (rectWidth * 4));
@@ -210,11 +195,13 @@ void Inventory::drawDraggedItem(float slotSize, ImageTexture2D* imageTexture, in
 	ImGui::Begin("DraggedWindow", nullptr, m_draggedWindowFlags);
 	ImGui::Image((void*)(intptr_t)imageTexture->m_id, windowSize, ImVec2(0, 1), ImVec2(1, 0));
 	ImGui::SetCursorScreenPos(itemCountP0);
-	ImGui::Text("%d", count);
+	if (count > 1) {
+		ImGui::Text("%d", count);
+	}
 	ImGui::End();
 }
 
-void Inventory::drawIcon(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, ImageTexture2D* imageTexture) {
+void InventoryGUI::drawIcon(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, ImageTexture2D* imageTexture) {
 	float rectWidth = glm::round(slotSize * SLOT_BORDER_SIZE_PERCENTAGE);
 	float indexOffset = glm::round(index * slotSize);
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
@@ -225,7 +212,7 @@ void Inventory::drawIcon(int index, float slotSize, ImVec2& windowP0, ImVec2& wi
 	ImGui::Image((void*)(intptr_t)imageTexture->m_id, iconSize, ImVec2(0, 1), ImVec2(1, 0));
 }
 
-void Inventory::drawItemCount(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, int count) {
+void InventoryGUI::drawItemCount(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, int count) {
 	float rectWidth = glm::round(slotSize * SLOT_BORDER_SIZE_PERCENTAGE);
 	float indexOffset = glm::round(index * slotSize);
 	ImVec2 p0(windowP0.x + indexOffset + slotSize - (rectWidth * 4), windowP0.y + slotSize - (rectWidth * 4));

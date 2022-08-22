@@ -2,12 +2,12 @@
 #include "Core/GUI/GUIElement.h"
 #include "Core/Services/CoreServiceLocator.h"
 #include "Core/Services/Graphics/Graphics.h"
-#include "Core/IconManager/IconManager.h"
+#include "Core/Services/ItemLibrary/IconLibrary/IconLibrary.h"
 #include <vector>
 
 class ItemBar : public GUIElement {
 public:
-	ItemBar(CoreServiceLocator* coreServiceLocator, IconManager* iconManager);
+	ItemBar(CoreServiceLocator* coreServiceLocator);
 	void draw() override;
 private:
 	void drawSlot(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1);
@@ -22,5 +22,5 @@ private:
 	float m_itemSlotSize;
 	ImGuiWindowFlags m_windowFlags;
 	Graphics* m_graphics;
-	IconManager* m_iconManager;
+	IconLibrary* m_iconLibrary;
 };

@@ -12,7 +12,7 @@
 #include "Core/Services/Renderer/ShaderConfig/OffScreenPPShaderConfig.h"
 #include "Core/Components/RenderingComponent.h"
 #include "Core/Services/Atlas/Atlas.h"
-#include "Core/Services/BiomeManager/BiomeManager.h"
+#include "Core/Services/Biome/BiomeLibrary.h"
 #include "Core/Exceptions/RendererException.h"
 #include "Core/Textures/ImageTexture2D.h"
 #include "Core/Textures/MultisampleTexture2D.h"
@@ -38,7 +38,7 @@ public:
 	void onNotify(Event& newEvent) override;
 	void submitTexture(Texture* texture);
 	void setAtlas(Atlas* atlas);
-	void setBiomeManager(BiomeManager* biomeManager);
+	void setBiomeManager(BiomeLibrary* biomeManager);
 	void drawChunks();
 	void drawGUI();
 	void clearSubmittedGUIElements();
@@ -62,7 +62,7 @@ private:
 	GLFWwindow* m_glfwWindow;
 	ShaderLibrary m_shaderLibrary;
 	Atlas* m_atlas;
-	BiomeManager* m_biomeManager;
+	BiomeLibrary* m_biomeManager;
 	ImageTexture2D* m_screenTexture;
 	GLuint m_intermediateFBO;
 	MultisampleTexture2D* m_msaaFBColorTexture;

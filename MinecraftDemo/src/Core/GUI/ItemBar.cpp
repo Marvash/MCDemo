@@ -1,10 +1,9 @@
 #include "ItemBar.h"
 
-ItemBar::ItemBar(CoreServiceLocator* coreServiceLocator, IconManager* iconManager) :
+ItemBar::ItemBar(CoreServiceLocator* coreServiceLocator) :
 	GUIElement(coreServiceLocator),
 	m_itemSlotSize(20.0f),
-	m_graphics(m_coreServiceLocator->getGraphics()),
-	m_iconManager(iconManager) {
+	m_graphics(m_coreServiceLocator->getGraphics()) {
 	m_windowFlags |= ImGuiWindowFlags_NoTitleBar;
 	m_windowFlags |= ImGuiWindowFlags_NoScrollbar;
 	m_windowFlags |= ImGuiWindowFlags_NoInputs;
@@ -20,8 +19,8 @@ ItemBar::ItemBar(CoreServiceLocator* coreServiceLocator, IconManager* iconManage
 
 void ItemBar::draw() {
 	Player* player = m_coreServiceLocator->getGameObjectManager()->getPlayer();
-	InventoryManager* inventoryManager = player->getInventoryManager();
-	unsigned int numSlots = inventoryManager->ITEMBAR_SLOTS;
+	Inventory* inventory = m_coreServiceLocator->getInventory();
+	unsigned int numSlots = inventory->ITEMBAR_SLOTS;
 	float viewportWidth = m_graphics->getViewportWidth();
 	float viewportHeight = m_graphics->getViewportHeight();
 	m_itemSlotSize = glm::round(viewportHeight / SLOT_SIZE_VIEWPORT_SCALING_FACTOR);
@@ -42,23 +41,15 @@ void ItemBar::draw() {
 	windowP1 = ImVec2(windowP0.x + windowSize.x, windowP0.y + windowSize.y);
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 	drawList->AddRectFilled(windowP0, windowP1, ImColor(0.0f, 0.0f, 0.0f, 0.3f));
-	Item** itemBar = inventoryManager->getItemBar();
-	unsigned int selectedSlot = inventoryManager->getItemBarSelectedSlot();
+	Item** itemBar = inventory->getItemBar();
+	unsigned int selectedSlot = inventory->getItemBarSelectedSlot();
 	for (int i = 0; i < numSlots; i++) {
 		drawSlot(i, m_itemSlotSize, windowP0, windowP1);
-		
-		Item* currentItem = itemBar[i];
+		Item* currentItem = itemBar[i];	
 		if (currentItem != nullptr) {
-			Item::ItemType type = currentItem->getItemType();
-			switch (type) {
-				case Item::ItemType::CUBE: {
-					CubeItem* currentCubeItem = static_cast<CubeItem*>(currentItem);
-					drawIcon(i, m_itemSlotSize, windowP0, windowP1, m_iconManager->getIcon(currentCubeItem->getCubeId()));
-					break;
-				}
-			}
-			if (currentItem->getCount() > 1) {
-				drawItemCount(i, m_itemSlotSize, windowP0, windowP1, currentItem->getCount());
+			drawIcon(i, m_itemSlotSize, windowP0, windowP1, currentItem->getItemIcon());
+			if (currentItem->getItemCount() > 1) {
+				drawItemCount(i, m_itemSlotSize, windowP0, windowP1, currentItem->getItemCount());
 			}
 		}
 	}

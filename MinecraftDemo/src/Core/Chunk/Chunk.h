@@ -2,7 +2,7 @@
 #include "Core/Cube/Cube.h"
 #include <Boost/log/trivial.hpp>
 #include "Core/Services/Atlas/Atlas.h"
-#include "Core/Services/BiomeManager/BiomeManager.h"
+#include "Core/Services/Biome/BiomeLibrary.h"
 #include "Core/Components/RenderingComponent.h"
 
 class Chunk {
@@ -29,8 +29,8 @@ public:
 	bool canDraw;
 	ChunkState state;
 
-	Chunk(BiomeManager* biomeManager, Atlas* atlas, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition);
-	Chunk(BiomeManager* biomeManager, Atlas* atlas, Cube*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition);
+	Chunk(BiomeLibrary* biomeManager, Atlas* atlas, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition);
+	Chunk(BiomeLibrary* biomeManager, Atlas* atlas, Cube*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition);
 	~Chunk();
 	void buildMesh();
 	void loadMesh();
@@ -61,7 +61,7 @@ private:
 	RenderingComponent m_renderingComponent;
 
 	Atlas* m_atlas;
-	BiomeManager* m_biomeManager;
+	BiomeLibrary* m_biomeManager;
 	int chunkHeight;
 	int chunkSideSize;
 
