@@ -146,14 +146,18 @@
   <ItemGroup>
     <ClCompile Include="src\Core\Components\MovementComponent.cpp" />
     <ClCompile Include="src\Core\Components\RenderingComponent.cpp" />
-    <ClCompile Include="src\Core\Services\Crafting\Crafting.cpp" />
-    <ClCompile Include="src\Core\GUI\CraftingTable.cpp" />
+    <ClCompile Include="src\Core\Services\Crafting\CraftingRecipeBuilder.cpp" />
+    <ClCompile Include="src\Core\Services\Crafting\CraftingRecipeContract.cpp" />
+    <ClCompile Include="src\Core\Services\Crafting\CraftingTable.cpp" />
     <ClCompile Include="src\Core\GUI\Crosshair.cpp" />
     <ClCompile Include="src\Core\GUI\InventoryGUI.cpp" />
     <ClCompile Include="src\Core\GUI\ItemBar.cpp" />
+    <ClCompile Include="src\Core\Services\Crafting\CraftingRecipeLibrary.cpp" />
+    <ClCompile Include="src\Core\Services\Crafting\CraftingRecipe.cpp" />
     <ClCompile Include="src\Core\Services\ItemLibrary\IconLibrary\IconLibrary.cpp" />
     <ClCompile Include="src\Core\Services\Inventory\Inventory.cpp" />
     <ClCompile Include="src\Core\Services\ItemLibrary\Item.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemSlot.cpp" />
     <ClCompile Include="src\Core\Services\ItemLibrary\ItemSpecification.cpp" />
     <ClCompile Include="src\Core\Services\ItemLibrary\ItemLibrary.cpp" />
     <ClCompile Include="src\Core\Services\Atlas\AtlasService.cpp" />
@@ -249,17 +253,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Components\RenderingComponent.h" />
-    <ClInclude Include="src\Core\Services\Crafting\Crafting.h" />
+    <ClInclude Include="src\Core\Exceptions\GameLogicException.h" />
+    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipeBuilder.h" />
+    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipeContract.h" />
+    <ClInclude Include="src\Core\Services\Crafting\CraftingTable.h" />
     <ClInclude Include="src\Core\Cube\CubeIdEnum.h" />
-    <ClInclude Include="src\Core\GUI\CraftingTable.h" />
     <ClInclude Include="src\Core\GUI\Crosshair.h" />
     <ClInclude Include="src\Core\GUI\InventoryGUI.h" />
     <ClInclude Include="src\Core\GUI\ItemBar.h" />
-    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipes.h" />
-    <ClInclude Include="src\Core\Services\Crafting\Recipe.h" />
+    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipeLibrary.h" />
+    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipe.h" />
     <ClInclude Include="src\Core\Services\ItemLibrary\IconLibrary\IconLibrary.h" />
     <ClInclude Include="src\Core\Services\Inventory\Inventory.h" />
     <ClInclude Include="src\Core\Services\ItemLibrary\Item.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemSlot.h" />
     <ClInclude Include="src\Core\Services\ItemLibrary\ItemSpecification.h" />
     <ClInclude Include="src\Core\Services\ItemLibrary\ItemIdEnum.h" />
     <ClInclude Include="src\Core\Services\ItemLibrary\ItemLibrary.h" />

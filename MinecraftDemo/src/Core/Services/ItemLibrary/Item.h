@@ -12,6 +12,8 @@ public:
 	int getItemCount();
 	ImageTexture2D* getItemIcon();
 	void setItemCount(int count);
+	bool isCompatibleWith(Item* target);
+	Item* clone();
 private:
 	ItemSpecification* m_itemSpecification;
 	int m_count;

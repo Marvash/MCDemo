@@ -55,5 +55,6 @@ private:
 	BiomeLibrary* m_biomeManager;
 	Atlas* m_atlas;
 	Renderer* m_renderer;
+	CraftingRecipeLibrary* m_craftingRecipeLibrary;
 };
 

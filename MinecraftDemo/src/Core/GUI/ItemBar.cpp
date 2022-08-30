@@ -41,11 +41,11 @@ void ItemBar::draw() {
 	windowP1 = ImVec2(windowP0.x + windowSize.x, windowP0.y + windowSize.y);
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 	drawList->AddRectFilled(windowP0, windowP1, ImColor(0.0f, 0.0f, 0.0f, 0.3f));
-	Item** itemBar = inventory->getItemBar();
+	ItemSlot** itemBar = inventory->getItemBar();
 	unsigned int selectedSlot = inventory->getItemBarSelectedSlot();
 	for (int i = 0; i < numSlots; i++) {
 		drawSlot(i, m_itemSlotSize, windowP0, windowP1);
-		Item* currentItem = itemBar[i];	
+		Item* currentItem = itemBar[i]->getItem();
 		if (currentItem != nullptr) {
 			drawIcon(i, m_itemSlotSize, windowP0, windowP1, currentItem->getItemIcon());
 			if (currentItem->getItemCount() > 1) {

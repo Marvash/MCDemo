@@ -52,6 +52,10 @@ ItemLibrary* CoreServiceLocator::getItemLibrary() {
 	return m_itemLibrary;
 }
 
+CraftingTable* CoreServiceLocator::getCraftingTable() {
+	return m_craftingTable;
+}
+
 void CoreServiceLocator::provide(InputManager* input) {
 	m_input = input;
 }
@@ -98,4 +102,8 @@ void CoreServiceLocator::provide(Inventory* inventoryService) {
 
 void CoreServiceLocator::provide(ItemLibrary* itemLibraryService) {
 	m_itemLibrary = itemLibraryService;
+}
+
+void CoreServiceLocator::provide(CraftingTable* craftingTable) {
+	m_craftingTable = craftingTable;
 }

@@ -300,10 +300,7 @@
     <ClCompile Include="src\Core\GUI\InventoryGUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\GUI\CraftingTable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\Services\Crafting\Crafting.cpp">
+    <ClCompile Include="src\Core\Services\Crafting\CraftingTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Services\ItemLibrary\ItemLibrary.cpp">
@@ -319,6 +316,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Services\ItemLibrary\Item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\Crafting\CraftingRecipeLibrary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\Crafting\CraftingRecipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\Crafting\CraftingRecipeBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemSlot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\Crafting\CraftingRecipeContract.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -668,10 +680,7 @@
     <ClInclude Include="src\Core\GUI\InventoryGUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\GUI\CraftingTable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Core\Services\Crafting\Crafting.h">
+    <ClInclude Include="src\Core\Services\Crafting\CraftingTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Services\ItemLibrary\ItemLibrary.h">
@@ -698,10 +707,22 @@
     <ClInclude Include="src\Core\Services\ItemLibrary\Item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipes.h">
+    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipeLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Services\Crafting\Recipe.h">
+    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipeBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Exceptions\GameLogicException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemSlot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipeContract.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

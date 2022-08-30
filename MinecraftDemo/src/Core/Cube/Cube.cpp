@@ -52,6 +52,8 @@ ItemId Cube::getItemId(CubeId cubeId) {
 		return ItemId::SNOWY_GRASS_BLOCK_ITEM;
 	case CubeId::STONE_BLOCK:
 		return ItemId::STONE_BLOCK_ITEM;
+	case CubeId::PLANK_BLOCK:
+		return ItemId::PLANK_BLOCK_ITEM;
 	}
 	return ItemId::NONE;
 }
@@ -74,6 +76,8 @@ std::string Cube::getDisplayName(CubeId cubeId) {
 		return std::string("Snowy Grass Block");
 	case CubeId::STONE_BLOCK:
 		return std::string("Stone Block");
+	case CubeId::PLANK_BLOCK:
+		return std::string("Plank Block");
 	case CubeId::UNGENERATED_BLOCK:
 		return std::string("Ungenerated Block");
 	}

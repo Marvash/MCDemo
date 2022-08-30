@@ -7,13 +7,19 @@
 class InventoryGUI : public GUIElement {
 public:
 	InventoryGUI(CoreServiceLocator* coreServiceLocator);
+	~InventoryGUI();
 	void draw() override;
 private:
-	void drawSlot(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, ImColor sideColor);
-	void drawDNDBox(int index, int targetId, float slotSize, ImVec2& windowP0, ImVec2& windowP1);
-	void drawIcon(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, ImageTexture2D* imageTexture);
-	void drawItemCount(int index, float slotSize, ImVec2& windowP0, ImVec2& windowP1, int count);
+	void drawInventory();
+	void drawCraftingTable();
+	void drawSlot(float slotSize, ImVec2& windowP0, ImColor sideColor);
+	void drawInventoryDNDBox(int targetId, float slotSize, ImVec2& windowP0);
+	void drawCraftingTableDNDBox(int targetId, float slotSize, ImVec2& windowP0);
+	void drawResultDNDBox(float slotSize, ImVec2& windowP0);
+	void drawIcon(float slotSize, ImVec2& windowP0, ImageTexture2D* imageTexture);
+	void drawItemCount(float slotSize, ImVec2& windowP0, int count);
 	void drawDraggedItem(float slotSize, ImageTexture2D* imageTexture, int count);
+	void resetDNDLogic();
 
 	// Percentage of slotSize
 	const float SLOT_BORDER_SIZE_PERCENTAGE = 0.07f;
@@ -23,9 +29,31 @@ private:
 	float m_itemSlotSize;
 	float m_inventoryToolbarPadding;
 	bool m_isDraggingItem;
-	int m_draggedItemIndex;
+	bool m_isDraggingCraftingResult;
+	int m_inventoryDraggedItemIndex;
+	int m_craftingTableDraggedItemIndex;
+	float m_windowHorizontalPadding;
+	float m_windowVerticalPadding;
+	float m_inventoryToolbarSpacing;
+	float m_inventoryCraftingTableSpacing;
+	float m_inventoryWidth;
+	float m_inventoryHeight;
+	float m_craftingTableWidth;
+	float m_craftingTableHeight;
+	float m_craftingTableResultHorSpacing;
+	float m_windowWidth;
+	float m_windowHeight;
+	unsigned int m_inventoryNumSlots;
+	unsigned int m_craftingTableRows;
+	unsigned int m_craftingTableCols;
+	float m_viewportWidth;
+	float m_viewportHeight;
+	ItemSlot* m_dragSourceItemSlot;
+	ImVec2 m_windowP0;
+	ImVec2 m_windowP1;
 	ImGuiWindowFlags m_windowFlags;
 	ImGuiWindowFlags m_draggedWindowFlags;
 	Graphics* m_graphics;
 	Inventory* m_inventory;
+	CraftingTable* m_craftingTable;
 };

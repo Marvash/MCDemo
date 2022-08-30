@@ -109,6 +109,7 @@ void Renderer::registerComponent(RenderingComponent* renderingComponent) {
 }
 
 void Renderer::msaaResize() {
+	// TODO: Optimize risizing (if screen width and height smaller than some, do not resize and skip rendering)
 	BOOST_LOG_TRIVIAL(info) << "Screen width: " << m_screenWidth << " screen height: " << m_screenHeight;
 	m_msaaFBColorTexture->resetTexture(m_screenWidth, m_screenHeight, GL_RGBA16F, m_msaaSamples);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_msaaFramebuffer);

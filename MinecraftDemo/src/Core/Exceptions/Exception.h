@@ -7,7 +7,7 @@ class Exception : public std::exception
 public:
 	Exception(std::string message);
 
-	std::string getError();
+	std::string getErrorString();
 
 private:
 	std::string message;

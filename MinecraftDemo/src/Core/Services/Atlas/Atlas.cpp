@@ -92,6 +92,9 @@ int Atlas::getAtlasTexIndex(CubeId cubeId, Cube::FaceSide faceSide) {
 	case CubeId::LEAVES_BLOCK:
 		return 264;
 		break;
+	case CubeId::PLANK_BLOCK:
+		return 288;
+		break;
 	}
 	BOOST_LOG_TRIVIAL(warning) << "Returning -1";
 	return -1;

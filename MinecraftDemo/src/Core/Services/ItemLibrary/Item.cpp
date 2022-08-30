@@ -26,10 +26,18 @@ void Item::setItemCount(int count) {
 	m_count = glm::max(glm::min(count, m_itemSpecification->getItemMaxStackCount()), 0);
 }
 
+bool Item::isCompatibleWith(Item* target) {
+	return target != nullptr && getItemId() == target->getItemId();
+}
+
 int Item::getItemMaxStackCount() {
 	return m_itemSpecification->getItemMaxStackCount();
 }
 
 ImageTexture2D* Item::getItemIcon() {
 	return m_itemSpecification->getItemIcon();
+}
+
+Item* Item::clone() {
+	return new Item(m_itemSpecification, m_count);
 }

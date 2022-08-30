@@ -3,9 +3,9 @@
 Inventory::Inventory(CoreEventDispatcher* coreEventDispatcher) :
 	CoreService(coreEventDispatcher),
 	m_itemBarSelectedSlot(0),
-	m_inventory(new Item*[TOTAL_SLOTS]) {
+	m_inventory(new ItemSlot*[TOTAL_SLOTS]) {
 	for (int i = 0; i < TOTAL_SLOTS; i++) {
-		m_inventory[i] = nullptr;
+		m_inventory[i] = new ItemSlot();
 	}
 	m_itemBar = &m_inventory[TOTAL_SLOTS - ITEMBAR_SLOTS];
 }
@@ -21,8 +21,8 @@ void Inventory::init(ItemLibrary* itemLibrary) {
 int Inventory::queryAvailableSpaceForItemId(ItemId itemId) {
 	int spaceAvailable = 0;
 	for (int i = 0; i < TOTAL_SLOTS; i++) {
-		if(m_inventory[i] != nullptr && m_inventory[i]->getItemId() == itemId) {
-			spaceAvailable += (m_inventory[i]->getItemMaxStackCount() - m_inventory[i]->getItemCount());
+		if(m_inventory[i] != nullptr && m_inventory[i]->getItem()->getItemId() == itemId) {
+			spaceAvailable += (m_inventory[i]->getItem()->getItemMaxStackCount() - m_inventory[i]->getItem()->getItemCount());
 		}
 	}
 	return spaceAvailable;
@@ -31,7 +31,7 @@ int Inventory::queryAvailableSpaceForItemId(ItemId itemId) {
 int Inventory::queryItemCount(ItemId itemId) {
 	int itemCount = 0;
 	for (int i = 0; i < TOTAL_SLOTS; i++) {
-		Item*& item = m_inventory[i];
+		Item* item = m_inventory[i]->getItem();
 		if (item != nullptr && item->getItemId() == itemId) {
 			itemCount += item->getItemCount();
 		}
@@ -43,7 +43,7 @@ void Inventory::addItem(ItemId itemId, int count) {
 	int itemsLeft = (int)count;
 	if (itemsLeft > 0) {
 		for (int i = 0; (i < TOTAL_SLOTS) && (itemsLeft > 0); i++) {
-			Item*& item = m_inventory[i];
+			Item* item = m_inventory[i]->getItem();
 			if (item != nullptr && item->getItemId() == itemId) {
 				int stackSpaceAvailable = item->getItemMaxStackCount() - item->getItemCount();
 				item->setItemCount(item->getItemCount() + glm::min(stackSpaceAvailable, itemsLeft));
@@ -51,11 +51,11 @@ void Inventory::addItem(ItemId itemId, int count) {
 			}
 		}
 		for (int i = 0; (i < TOTAL_SLOTS) && (itemsLeft > 0); i++) {
-			Item*& item = m_inventory[i];
-			if (item == nullptr) {
+			ItemSlot* itemslot = m_inventory[i];
+			if (itemslot->isEmpty()) {
 				ItemSpecification* newItemSpec = m_itemLibrary->getItemSpecification(itemId);
-				item = new Item(newItemSpec, glm::min(newItemSpec->getItemMaxStackCount(), itemsLeft));
-				itemsLeft -= m_inventory[i]->getItemCount();
+				itemslot->replaceItem(new Item(newItemSpec, glm::min(newItemSpec->getItemMaxStackCount(), itemsLeft)));
+				itemsLeft -= m_inventory[i]->getItem()->getItemCount();
 			}
 		}
 	}
@@ -64,16 +64,14 @@ void Inventory::addItem(ItemId itemId, int count) {
 void Inventory::removeItem(ItemId itemId, int count) {
 	if (count > 0) {
 		for (int i = 0; (i < TOTAL_SLOTS) && (count > 0); i++) {
-			if (m_inventory[i] != nullptr && m_inventory[i]->getItemId() == itemId) {
-				Item*& item = m_inventory[i];
-				int itemCount = item->getItemCount();
+			ItemSlot* itemSlot = m_inventory[i];
+			if (!itemSlot->isEmpty() && itemSlot->getItem()->getItemId() == itemId) {
+				int itemCount = itemSlot->getItem()->getItemCount();
+				itemSlot->decreaseItemCountBy(count);
 				if (count < itemCount) {
-					item->setItemCount(itemCount - count);
 					count = 0;
 				}
 				else {
-					delete item;
-					m_inventory[i] = nullptr;
 					count -= itemCount;
 				}
 			}
@@ -83,68 +81,62 @@ void Inventory::removeItem(ItemId itemId, int count) {
 
 void Inventory::addItemInInventorySlot(ItemId itemId, int count, unsigned int slot) {
 	if (count > 0 && slot < TOTAL_SLOTS) {
-		Item*& item = m_inventory[slot];
-		if(item == nullptr) {
+		ItemSlot* itemSlot = m_inventory[slot];
+		if(itemSlot->isEmpty()) {
 			ItemSpecification* newItemSpec = m_itemLibrary->getItemSpecification(itemId);
-			item = new Item(newItemSpec, glm::min(newItemSpec->getItemMaxStackCount(), (int)count));
-		} else if (item->getItemId() == itemId) {
-			int totalCount = item->getItemCount() + count;
-			item->setItemCount(totalCount);
+			itemSlot->replaceItem(new Item(newItemSpec, glm::min(newItemSpec->getItemMaxStackCount(), (int)count)));
+		} else if (itemSlot->getItem()->getItemId() == itemId) {
+			itemSlot->increaseItemCountBy(count);
 		}
 	}
 }
 
 void Inventory::removeItemInInventorySlot(unsigned int slot) {
 	if (slot < TOTAL_SLOTS) {
-		Item*& item = m_inventory[slot];
-		if (item != nullptr) {
-			delete item;
-			item = nullptr;
+		m_inventory[slot]->resetItem();
+	}
+}
+
+Item* Inventory::takeItemFromInventorySlot(unsigned int slot) {
+	Item* toTake = nullptr;
+	if (slot < TOTAL_SLOTS) {
+		ItemSlot* itemSlot = m_inventory[slot];
+		if (!itemSlot->isEmpty()) {
+			toTake = itemSlot->takeItem();
 		}
+	}
+	return toTake;
+}
+
+void Inventory::moveExistingItemInSlot(unsigned int slot, Item* item) {
+	if (slot < TOTAL_SLOTS) {
+		m_inventory[slot]->replaceItem(item);
 	}
 }
 
 void Inventory::decreaseItemCountInSlot(int count, unsigned int slot) {
 	if (count > 0 && slot < TOTAL_SLOTS) {
-		Item*& item = m_inventory[slot];
-		if (item != nullptr) {
-			int itemCount = item->getItemCount();
-			if (count < itemCount) {
-				item->setItemCount(itemCount - count);
-			}
-			else {
-				delete item;
-				item = nullptr;
-			}
+		ItemSlot* itemSlot = m_inventory[slot];
+		if (!itemSlot->isEmpty()) {
+			itemSlot->decreaseItemCountBy(count);
 		}
 	}
 }
 
-void Inventory::swapItems(unsigned int source, unsigned int destination) {
-	Item* tmp = m_inventory[destination];
-	m_inventory[destination] = m_inventory[source];
-	m_inventory[source] = tmp;
-}
-
-bool Inventory::isItemCompatible(Item* source, Item* target) {
-	return source != nullptr && target != nullptr && source->getItemId() == target->getItemId();
-}
-
-
-Item** Inventory::getItemBar() {
+ItemSlot** Inventory::getItemBar() {
 	return m_itemBar;
 }
 
-Item* Inventory::getItemInSlot(unsigned int slot) {
-	Item* item = nullptr;
+ItemSlot* Inventory::getItemSlot(unsigned int slot) {
+	ItemSlot* itemSlot = nullptr;
 	if (slot < TOTAL_SLOTS) {
-		item = m_inventory[slot];
+		itemSlot = m_inventory[slot];
 	}
-	return item;
+	return itemSlot;
 }
 
 Item* Inventory::getSelectedItem() {
-	return m_inventory[getInventorySlots() + getItemBarSelectedSlot()];
+	return m_inventory[getInventorySlots() + getItemBarSelectedSlot()]->getItem();
 }
 
 unsigned int Inventory::getItemBarSelectedSlot() {

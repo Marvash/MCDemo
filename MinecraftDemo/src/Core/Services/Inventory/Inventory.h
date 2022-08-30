@@ -2,7 +2,7 @@
 #include "Core/Cube/Cube.h"
 #include "Core/Services/CoreService.h"
 #include "Core/Services/ItemLibrary/ItemLibrary.h"
-#include "Core/Services/ItemLibrary/Item.h"
+#include "Core/Services/ItemLibrary/ItemSlot.h"
 #include <glm/glm.hpp>
 #include <vector>
 
@@ -20,11 +20,11 @@ public:
 	void addItemInInventorySlot(ItemId itemId, int count, unsigned int slot);
 	void decreaseItemCountInSlot(int count, unsigned int slot);
 	void removeItemInInventorySlot(unsigned int slot);
-	void swapItems(unsigned int source, unsigned int destination);
-	bool isItemCompatible(Item* source, Item* target);
-	Item* getItemInSlot(unsigned int slot);
+	Item* takeItemFromInventorySlot(unsigned int slot);
+	void moveExistingItemInSlot(unsigned int slot, Item* item);
 	Item* getSelectedItem();
-	Item** getItemBar();
+	ItemSlot** getItemBar();
+	ItemSlot* getItemSlot(unsigned int slot);
 	unsigned int getItemBarSelectedSlot();
 	void setItemBarSelectedSlot(unsigned int slot);
 	unsigned int getItemBarSelectedSlotAbs();
@@ -34,7 +34,7 @@ public:
 	const unsigned int ITEMBAR_SLOTS = 10;
 private:
 	unsigned int m_itemBarSelectedSlot;
-	Item** m_inventory;
-	Item** m_itemBar;
+	ItemSlot** m_inventory;
+	ItemSlot** m_itemBar;
 	ItemLibrary* m_itemLibrary;
 };

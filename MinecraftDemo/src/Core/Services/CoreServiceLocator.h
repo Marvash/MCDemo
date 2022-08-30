@@ -11,6 +11,7 @@
 #include "Core/Services/Biome/BiomeService.h"
 #include "Core/Services/ItemLibrary/ItemLibrary.h"
 #include "Core/Services/Inventory/Inventory.h"
+#include "Core/Services/Crafting/CraftingTable.h"
 
 class CoreServiceLocator {
 public:
@@ -28,6 +29,7 @@ public:
 	BiomeService* getBiomeService();
 	Inventory* getInventory();
 	ItemLibrary* getItemLibrary();
+	CraftingTable* getCraftingTable();
 
 	void provide(InputManager* input);
 	void provide(Window* window);
@@ -41,6 +43,7 @@ public:
 	void provide(BiomeService* biomeService);
 	void provide(Inventory* inventoryService);
 	void provide(ItemLibrary* itemLibraryService);
+	void provide(CraftingTable* craftingTable);
 
 private:
 	InputManager* m_input;
@@ -55,5 +58,6 @@ private:
 	BiomeService* m_biomeService;
 	Inventory* m_inventory;
 	ItemLibrary* m_itemLibrary;
+	CraftingTable* m_craftingTable;
 };
 
