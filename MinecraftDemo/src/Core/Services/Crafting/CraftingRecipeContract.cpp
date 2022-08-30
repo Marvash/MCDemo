@@ -45,7 +45,6 @@ void CraftingRecipeContract::setRecipeApplicabilityMultiplier(int multiplier) {
 }
 
 void CraftingRecipeContract::updateResultByMultiplier() {
-	BOOST_LOG_TRIVIAL(info) << "Setting result item count " << m_originalResult->getItemCount() << " " << m_recipeApplicabilityMultiplier;
 	m_result->setItemCount(m_originalResult->getItemCount() * m_recipeApplicabilityMultiplier);
 }
 
@@ -73,7 +72,6 @@ void CraftingRecipeContract::applyCostWithMultiplier(int multiplier) {
 			ItemSlot* itemSlot = m_itemPattern[row + rowOffset][column + columnOffset];
 			Item* recipeItem = m_recipe[row][column];
 			if (!itemSlot->isEmpty() && recipeItem != nullptr) {
-				BOOST_LOG_TRIVIAL(info) << "Decreasing by " << recipeItem->getItemCount() * multiplier;
 				itemSlot->decreaseItemCountBy(recipeItem->getItemCount() * multiplier);
 			}
 		}
