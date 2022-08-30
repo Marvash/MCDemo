@@ -2,7 +2,7 @@
 
 const float Chunk::blockSideSize = 1.0f;
 
-Chunk::Chunk(BiomeManager* biomeManager, Atlas* atlas, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
+Chunk::Chunk(BiomeLibrary* biomeManager, Atlas* atlas, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
 	leftNeighbour(nullptr),
 	rightNeighbour(nullptr),
 	frontNeighbour(nullptr),
@@ -20,7 +20,7 @@ Chunk::Chunk(BiomeManager* biomeManager, Atlas* atlas, int chunkHeight, int chun
 	renderingSetup();
 }
 
-Chunk::Chunk(BiomeManager* biomeManager, Atlas* atlas, Cube*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
+Chunk::Chunk(BiomeLibrary* biomeManager, Atlas* atlas, Cube*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
 	leftNeighbour(nullptr),
 	rightNeighbour(nullptr),
 	frontNeighbour(nullptr),
@@ -61,7 +61,7 @@ void Chunk::initEmptyBlockMatrix() {
 				float xOffset = (j + halfBlockSideSize);
 				float yOffset = (i + halfBlockSideSize);
 				float zOffset = (k + halfBlockSideSize);
-				m_blockMatrix[i][j][k] = Cube(Cube::CubeId::UNGENERATED_BLOCK, this, nullptr, xOffset, yOffset, zOffset);
+				m_blockMatrix[i][j][k] = Cube(CubeId::UNGENERATED_BLOCK, this, nullptr, xOffset, yOffset, zOffset);
 			}
 		}
 	}
@@ -262,7 +262,7 @@ void Chunk::buildMesh() {
 	for (int i = 0; i < chunkHeight; i++) {
 		for (int j = 0; j < chunkSideSize; j++) {
 			for (int w = 0; w < chunkSideSize; w++) {
-				if (m_blockMatrix[i][j][w].getCubeId() == Cube::CubeId::AIR_BLOCK || m_blockMatrix[i][j][w].getCubeId() == Cube::CubeId::UNGENERATED_BLOCK) {
+				if (m_blockMatrix[i][j][w].getCubeId() == CubeId::AIR_BLOCK || m_blockMatrix[i][j][w].getCubeId() == CubeId::UNGENERATED_BLOCK) {
 					continue;
 				}
 				/*

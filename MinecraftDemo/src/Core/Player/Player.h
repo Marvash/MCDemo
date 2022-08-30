@@ -6,7 +6,6 @@
 #include "Core/Cube/Cube.h"
 #include "Core/Services/MovementSystem/MovementModeEnum.h"
 #include "Core/Components/MovementComponent.h"
-#include "Core/InventoryManager/InventoryManager.h"
 #include <glm/glm.hpp>
 
 class CoreServiceLocator;
@@ -16,10 +15,11 @@ public:
 	Player(CoreServiceLocator* coreServiceLocator);
 	void onNotify(Event& newEvent) override;
 	void update() override;
-	Item* getSelectedItem();
 	Cube* getTargetCube();
-	InventoryManager* getInventoryManager();
 	bool getIsOpenInventory();
+	// TODO: Move getFirstSolidCube and getLastPlaceableCube in World or something (they do not belong in player)
+	Cube* getFirstSolidCube();
+	Cube* getLastPlaceableCube();
 
 private:
 	void processKeyinput();
@@ -29,10 +29,8 @@ private:
 	void processInventoryKeyInput();
 	void handleGameplayInput();
 	void handleInventoryInput();
-	Cube* getFirstSolidCube();
-	Cube* getLastPlaceableCube();
+	void performNoItemPrimaryAction();
 	Cube* m_targetCube;
-	InventoryManager m_inventoryManager;
 
 	float m_jumpForce;
 	float m_targetCubeRayLength;

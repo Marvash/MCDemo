@@ -1,6 +1,6 @@
 #include "TerrainGenerator.h"
 
-TerrainGenerator::TerrainGenerator(BiomeManager* biomeManager, int chunkSideSize, int chunkHeight) : 
+TerrainGenerator::TerrainGenerator(BiomeLibrary* biomeManager, int chunkSideSize, int chunkHeight) :
 	m_chunkSideSize(chunkSideSize), 
 	m_chunkHeight(chunkHeight), 
 	m_treeChunkOffset(8), 
@@ -367,36 +367,36 @@ void TerrainGenerator::generateChunk(Cube*** &blockMatrix, glm::vec3& chunkPosit
 			for (int i = 0; i < m_chunkHeight; i++) {
 				if (i <= finalHeight) {
 					if (i < dirtHeight) {
-						blockMatrix[i][j][w].setCubeId(Cube::CubeId::STONE_BLOCK);
+						blockMatrix[i][j][w].setCubeId(CubeId::STONE_BLOCK);
 						blockMatrix[i][j][w].setBiomeRef(biome);
 					}
 					else if (i >= dirtHeight && i < finalHeight) {
 						if (biome->m_biomeId == Biome::BiomeId::DESERT) {
-							blockMatrix[i][j][w].setCubeId(Cube::CubeId::SAND_BLOCK);
+							blockMatrix[i][j][w].setCubeId(CubeId::SAND_BLOCK);
 							blockMatrix[i][j][w].setBiomeRef(biome);
 						}
 						else {
-							blockMatrix[i][j][w].setCubeId(Cube::CubeId::DIRT_BLOCK);
+							blockMatrix[i][j][w].setCubeId(CubeId::DIRT_BLOCK);
 							blockMatrix[i][j][w].setBiomeRef(biome);
 						}
 					}
 					else if (i == finalHeight) {
 						if (biome->m_biomeId == Biome::BiomeId::DESERT) {
-							blockMatrix[i][j][w].setCubeId(Cube::CubeId::SAND_BLOCK);
+							blockMatrix[i][j][w].setCubeId(CubeId::SAND_BLOCK);
 							blockMatrix[i][j][w].setBiomeRef(biome);
 						}
 						else if (biome->m_biomeId == Biome::BiomeId::TUNDRA) {
-							blockMatrix[i][j][w].setCubeId(Cube::CubeId::SNOWY_GRASS_BLOCK);
+							blockMatrix[i][j][w].setCubeId(CubeId::SNOWY_GRASS_BLOCK);
 							blockMatrix[i][j][w].setBiomeRef(biome);
 						}
 						else {
-							blockMatrix[i][j][w].setCubeId(Cube::CubeId::GRASS_BLOCK);
+							blockMatrix[i][j][w].setCubeId(CubeId::GRASS_BLOCK);
 							blockMatrix[i][j][w].setBiomeRef(biome);
 						}
 					}
 				}
 				else {
-					blockMatrix[i][j][w].setCubeId(Cube::CubeId::AIR_BLOCK);
+					blockMatrix[i][j][w].setCubeId(CubeId::AIR_BLOCK);
 					blockMatrix[i][j][w].setBiomeRef(biome);
 				}
 			}

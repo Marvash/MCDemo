@@ -21,10 +21,13 @@ Player::Player(CoreServiceLocator* coreServiceLocator) : GameObject(coreServiceL
 	m_coreServiceLocator->getMovementSystem()->setMovementMode(this, MovementMode::FLY);
 	m_coreServiceLocator->getGameObjectManager()->setPlayerId(m_id);
 
-	m_inventoryManager.addItemInInventorySlot(Cube::CubeId::DIRT_BLOCK, 10, m_inventoryManager.getInventorySlots());
-	m_inventoryManager.addItemInInventorySlot(Cube::CubeId::STONE_BLOCK, 10, m_inventoryManager.getInventorySlots() + 1);
-	m_inventoryManager.addItemInInventorySlot(Cube::CubeId::SAND_BLOCK, 10, m_inventoryManager.getInventorySlots() + 2);
-	m_inventoryManager.setItemBarSelectedSlot(0);
+	Inventory* inventory = m_coreServiceLocator->getInventory();
+
+	inventory->addItemInInventorySlot(ItemId::DIRT_BLOCK_ITEM, 10, inventory->getInventorySlots());
+	inventory->addItemInInventorySlot(ItemId::STONE_BLOCK_ITEM, 10, inventory->getInventorySlots() + 1);
+	inventory->addItemInInventorySlot(ItemId::SAND_BLOCK_ITEM, 10, inventory->getInventorySlots() + 2);
+	inventory->addItemInInventorySlot(ItemId::PLANK_BLOCK_ITEM, 10, inventory->getInventorySlots() + 3);
+	inventory->setItemBarSelectedSlot(0);
 }
 
 void Player::onNotify(Event& newEvent) {
@@ -38,23 +41,25 @@ void Player::processMousePosition() {
 }
 
 void Player::processMouseScroll() {
+	Inventory* inventory = m_coreServiceLocator->getInventory();
 	InputManager* inputManager = m_coreServiceLocator->getInput();
 	float yoffset = (float)inputManager->getScrollYDelta();
 	if (yoffset != 0.0f) {
-		unsigned int selectedSlot = m_inventoryManager.getItemBarSelectedSlot();
+		unsigned int selectedSlot = inventory->getItemBarSelectedSlot();
 		if (selectedSlot == 0 && glm::sign(yoffset) > 0.0f) {
-			selectedSlot = m_inventoryManager.ITEMBAR_SLOTS - 1;
+			selectedSlot = inventory->ITEMBAR_SLOTS - 1;
 		}
 		else {
 			selectedSlot -= (unsigned int)glm::sign(yoffset);
-			selectedSlot = selectedSlot % m_inventoryManager.ITEMBAR_SLOTS;
+			selectedSlot = selectedSlot % inventory->ITEMBAR_SLOTS;
 		}
-		m_inventoryManager.setItemBarSelectedSlot(selectedSlot);
+		inventory->setItemBarSelectedSlot(selectedSlot);
 	}
 	//m_coreServiceLocator->getCameraSystem()->processMouseScroll(yoffset);
 }
 
 void Player::processKeyinput() {
+	Inventory* inventory = m_coreServiceLocator->getInventory();
 	InputManager* inputManager = m_coreServiceLocator->getInput();
 	double dt = m_coreServiceLocator->getApplicationManager()->getDeltaTime();
 	/*
@@ -134,34 +139,34 @@ void Player::processKeyinput() {
 	}
 	m_movementComponent->setTargetVelocity(targetVelocity);
 	if (inputManager->getInputStatePressed(InputKey::KEY_1)) {
-		m_inventoryManager.setItemBarSelectedSlot(0);
+		inventory->setItemBarSelectedSlot(0);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_2)) {
-		m_inventoryManager.setItemBarSelectedSlot(1);
+		inventory->setItemBarSelectedSlot(1);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_3)) {
-		m_inventoryManager.setItemBarSelectedSlot(2);
+		inventory->setItemBarSelectedSlot(2);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_4)) {
-		m_inventoryManager.setItemBarSelectedSlot(3);
+		inventory->setItemBarSelectedSlot(3);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_5)) {
-		m_inventoryManager.setItemBarSelectedSlot(4);
+		inventory->setItemBarSelectedSlot(4);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_6)) {
-		m_inventoryManager.setItemBarSelectedSlot(5);
+		inventory->setItemBarSelectedSlot(5);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_7)) {
-		m_inventoryManager.setItemBarSelectedSlot(6);
+		inventory->setItemBarSelectedSlot(6);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_8)) {
-		m_inventoryManager.setItemBarSelectedSlot(7);
+		inventory->setItemBarSelectedSlot(7);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_9)) {
-		m_inventoryManager.setItemBarSelectedSlot(8);
+		inventory->setItemBarSelectedSlot(8);
 	}
 	if (inputManager->getInputStatePressed(InputKey::KEY_0)) {
-		m_inventoryManager.setItemBarSelectedSlot(9);
+		inventory->setItemBarSelectedSlot(9);
 	}
 	if (inputManager->getInputState(InputKey::KEY_LEFT_CTRL)) {
 		m_movementComponent->setFlySpeed(30.0f);
@@ -195,16 +200,8 @@ void Player::processInventoryKeyInput() {
 	}
 }
 
-Item* Player::getSelectedItem() {
-	return m_inventoryManager.getSelectedItem();
-}
-
 Cube* Player::getTargetCube() {
 	return m_targetCube;
-}
-
-InventoryManager* Player::getInventoryManager() {
-	return &m_inventoryManager;
 }
 
 bool Player::getIsOpenInventory() {
@@ -215,22 +212,21 @@ bool Player::getIsOpenInventory() {
 void Player::processMouseInput() {
 	static bool leftMousePressed = false;
 	static bool rightMousePressed = false;
+	Inventory* inventory = m_coreServiceLocator->getInventory();
 	InputManager* inputManager = m_coreServiceLocator->getInput();
 	if (inputManager->getInputStatePressed(InputMouseButton::MOUSE_LEFT)) {
-		if (m_targetCube != nullptr) {
-			Cube::CubeId targetCubeId = m_targetCube->getCubeId();
-			m_coreServiceLocator->getWorld()->destroyBlock(m_targetCube);
-			if (targetCubeId != Cube::CubeId::AIR_BLOCK) {
-				m_inventoryManager.addItem(targetCubeId, 1);
-			}
+		Item* selectedItem = inventory->getSelectedItem();
+		if (selectedItem != nullptr) {
+			selectedItem->performItemPrimaryAction(m_coreServiceLocator);
+		}
+		else {
+			performNoItemPrimaryAction();
 		}
 	}
 	if (inputManager->getInputStatePressed(InputMouseButton::MOUSE_RIGHT)) {
-		Item* selectedItem = m_inventoryManager.getSelectedItem();
-		if (selectedItem != nullptr && selectedItem->getItemType() == Item::ItemType::CUBE) {
-			CubeItem* cubeItem = static_cast<CubeItem*>(selectedItem);
-			m_coreServiceLocator->getWorld()->placeBlock(getLastPlaceableCube(), cubeItem->getCubeId());
-			m_inventoryManager.removeItemInInventorySlotCount(cubeItem->getCubeId(), 1, m_inventoryManager.getItemBarSelectedSlotAbs());
+		Item* selectedItem = inventory->getSelectedItem();
+		if (selectedItem != nullptr) {
+			selectedItem->performItemSecondaryAction(m_coreServiceLocator);
 		}
 	}
 }
@@ -244,6 +240,15 @@ void Player::handleGameplayInput() {
 
 void Player::handleInventoryInput() {
 	processInventoryKeyInput();
+}
+
+void Player::performNoItemPrimaryAction() {
+	Cube* targetCube = getFirstSolidCube();
+	if (targetCube != nullptr) {
+		CubeId targetCubeId = targetCube->getCubeId();
+		m_coreServiceLocator->getWorld()->destroyBlock(targetCube);
+		m_coreServiceLocator->getInventory()->addItem(Cube::getItemId(targetCubeId), 1);
+	}
 }
 
 void Player::update() {
@@ -274,7 +279,7 @@ Cube* Player::getFirstSolidCube() {
 		for (int i = 0; i < cubesInRay.size(); i++) {
 			glm::vec3 cubeCoords = m_coreServiceLocator->getWorld()->getCubeAbsCoords(cubesInRay.at(i));
 			//BOOST_LOG_TRIVIAL(info) << "cube " << i << " coords: " << cubeCoords.x << " " << cubeCoords.y << " " << cubeCoords.z;
-			if (cubesInRay.at(i)->getCubeId() != Cube::CubeId::AIR_BLOCK && cubesInRay.at(i)->getCubeId() != Cube::CubeId::UNGENERATED_BLOCK) {
+			if (cubesInRay.at(i)->getCubeId() != CubeId::AIR_BLOCK && cubesInRay.at(i)->getCubeId() != CubeId::UNGENERATED_BLOCK) {
 				target = cubesInRay.at(i);
 				//BOOST_LOG_TRIVIAL(info) << "target is cube " << i;
 				break;
@@ -292,7 +297,7 @@ Cube* Player::getLastPlaceableCube() {
 	m_coreServiceLocator->getWorld()->getCubesInRay(cameraPos, cameraLookDir, m_targetCubeRayLength, cubesInRay);
 	if (cubesInRay.size() > 0) {
 		for (int i = 0; i < cubesInRay.size(); i++) {
-			if (i > 0 && cubesInRay.at(i)->getCubeId() != Cube::CubeId::AIR_BLOCK && cubesInRay.at(i)->getCubeId() != Cube::CubeId::UNGENERATED_BLOCK) {
+			if (i > 0 && cubesInRay.at(i)->getCubeId() != CubeId::AIR_BLOCK && cubesInRay.at(i)->getCubeId() != CubeId::UNGENERATED_BLOCK) {
 				target = cubesInRay.at(i - 1);
 				break;
 			}

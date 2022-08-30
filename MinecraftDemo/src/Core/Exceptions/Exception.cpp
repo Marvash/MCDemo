@@ -7,6 +7,6 @@ Exception::Exception(std::string message) :
 
 }
 
-std::string Exception::getError() {
+std::string Exception::getErrorString() {
 	return message;
 }

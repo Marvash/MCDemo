@@ -16,13 +16,13 @@
 #include "Core/CoreEventDispatcher.h"
 #include <vector>
 
-class BiomeManager : public CoreService {
+class BiomeLibrary : public CoreService {
 public:
-	BiomeManager(CoreEventDispatcher* coreEventDispatcher);
+	BiomeLibrary(CoreEventDispatcher* coreEventDispatcher);
 	
 	unsigned int getBiomesCount();
 	TextureBuffer* getBiomeColorsBuffer();
-	int getBiomeCubeColors(Biome::BiomeId biomeId, Cube::CubeId cubeId, Cube::FaceSide faceSide);
+	int getBiomeCubeColors(Biome::BiomeId biomeId, CubeId cubeId, Cube::FaceSide faceSide);
 	Biome** getBiomes();
 	void init();
 	void onNotify(Event& newEvent) override;

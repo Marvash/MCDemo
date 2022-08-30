@@ -58,7 +58,7 @@ void World::destroyBlock(Cube* toDestroy) {
 	m_chunkManager->destroyBlock(toDestroy);
 }
 
-void World::placeBlock(Cube* toPlace, Cube::CubeId cubeId) {
+void World::placeBlock(Cube* toPlace, CubeId cubeId) {
 	m_chunkManager->placeBlock(toPlace, cubeId);
 }
 

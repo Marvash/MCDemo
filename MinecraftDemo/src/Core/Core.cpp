@@ -8,7 +8,7 @@ Core::Core() :
 	m_coreSM(new StateMachine<CoreState>()),
 	m_serviceLocator(new CoreServiceLocator()),
 	m_eventDispatcher(new CoreEventDispatcher()), 
-	m_biomeManager(new BiomeManager(m_eventDispatcher)),
+	m_biomeManager(new BiomeLibrary(m_eventDispatcher)),
 	m_atlas(new Atlas(m_eventDispatcher)),
 	m_renderer(new Renderer(m_eventDispatcher)),
 	m_chunkManager(new ChunkManager(m_eventDispatcher)) {
@@ -22,6 +22,9 @@ Core::Core() :
 	m_serviceLocator->provide(new GameObjectManager(m_eventDispatcher));
 	m_serviceLocator->provide(new AtlasService(m_eventDispatcher));
 	m_serviceLocator->provide(new BiomeService(m_eventDispatcher));
+	m_serviceLocator->provide(new ItemLibrary(m_eventDispatcher));
+	m_serviceLocator->provide(new Inventory(m_eventDispatcher));
+	m_serviceLocator->provide(new CraftingTable(m_eventDispatcher));
 	m_eventDispatcher->addSubService(m_serviceLocator->getWindow());
 	m_eventDispatcher->addSubService(m_renderer);
 	m_eventDispatcher->addSubService(m_serviceLocator->getInput());
@@ -67,6 +70,11 @@ void Core::initializeCoreServices() {
 	m_serviceLocator->getGraphics()->setCameraRenderingData(m_serviceLocator->getCameraSystem()->getCameraRenderingData());
 	m_serviceLocator->getAtlasService()->init(m_atlas);
 	m_serviceLocator->getBiomeService()->init(m_biomeManager);
+	m_serviceLocator->getItemLibrary()->init(m_renderer, m_biomeManager, m_atlas);
+	m_serviceLocator->getInventory()->init(m_serviceLocator->getItemLibrary());
+	m_craftingRecipeLibrary = new CraftingRecipeLibrary();
+	m_craftingRecipeLibrary->init(m_serviceLocator->getItemLibrary());
+	m_serviceLocator->getCraftingTable()->init(m_craftingRecipeLibrary);
 }
 
 void Core::shutdownCoreServices() {
@@ -118,7 +126,7 @@ void Core::run() {
 		shutdownCoreServices();
 	}
 	catch (Exception& e) {
-		BOOST_LOG_TRIVIAL(fatal) << e.getError();
+		BOOST_LOG_TRIVIAL(fatal) << e.getErrorString();
 	}
 }
 

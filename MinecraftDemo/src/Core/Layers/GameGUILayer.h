@@ -4,8 +4,7 @@
 #include "Core/GUI/DebugGUI/DebugPanel.h"
 #include "Core/GUI/Crosshair.h"
 #include "Core/GUI/ItemBar.h"
-#include "Core/GUI/Inventory.h"
-#include "Core/IconManager/IconManager.h"
+#include "Core/GUI/InventoryGUI.h"
 
 class GameGUILayer : public Layer {
 public:
@@ -21,6 +20,5 @@ private:
 	DebugPanel* m_debugPanel;
 	Crosshair* m_crosshair;
 	ItemBar* m_itemBar;
-	Inventory* m_inventory;
-	IconManager* m_iconManager;
+	InventoryGUI* m_inventory;
 };

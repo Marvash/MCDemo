@@ -8,7 +8,10 @@
 #include "Core/Services/CameraSystem/CameraSystem.h"
 #include "Core/Services/GameObjectManager/GameObjectManager.h"
 #include "Core/Services/Atlas/AtlasService.h"
-#include "Core/Services/BiomeManager/BiomeService.h"
+#include "Core/Services/Biome/BiomeService.h"
+#include "Core/Services/ItemLibrary/ItemLibrary.h"
+#include "Core/Services/Inventory/Inventory.h"
+#include "Core/Services/Crafting/CraftingTable.h"
 
 class CoreServiceLocator {
 public:
@@ -24,6 +27,9 @@ public:
 	CameraSystem* getCameraSystem();
 	GameObjectManager* getGameObjectManager();
 	BiomeService* getBiomeService();
+	Inventory* getInventory();
+	ItemLibrary* getItemLibrary();
+	CraftingTable* getCraftingTable();
 
 	void provide(InputManager* input);
 	void provide(Window* window);
@@ -35,6 +41,9 @@ public:
 	void provide(GameObjectManager* gameObjectManager);
 	void provide(AtlasService* atlasService);
 	void provide(BiomeService* biomeService);
+	void provide(Inventory* inventoryService);
+	void provide(ItemLibrary* itemLibraryService);
+	void provide(CraftingTable* craftingTable);
 
 private:
 	InputManager* m_input;
@@ -47,5 +56,8 @@ private:
 	GameObjectManager* m_gameObjectManager;
 	AtlasService* m_atlasService;
 	BiomeService* m_biomeService;
+	Inventory* m_inventory;
+	ItemLibrary* m_itemLibrary;
+	CraftingTable* m_craftingTable;
 };
 

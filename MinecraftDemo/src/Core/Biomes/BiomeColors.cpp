@@ -3,7 +3,7 @@
 BiomeColors::BiomeColors() {
 	m_biomeColorsArray = new GLfloat[TEX_COLORS_SIZE];
 
-	// DEFAULT
+	// DEFAULT (no color)
 
 	m_biomeColorsArray[0] = 1.0f;
 	m_biomeColorsArray[1] = 1.0f;

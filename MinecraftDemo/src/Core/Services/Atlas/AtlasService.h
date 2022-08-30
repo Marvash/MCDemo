@@ -5,7 +5,6 @@
 #include "Core/TerrainGenerator/TerrainGenerator.h"
 #include "Core/Services/CoreService.h"
 #include "Core/Services/Atlas/Atlas.h"
-#include "Core/Services/BiomeManager/BiomeManager.h"
 #include "Atlas.h"
 #include <Boost/log/trivial.hpp>
 
@@ -16,7 +15,7 @@ public:
 	AtlasService(CoreEventDispatcher* coreEventDispatcher);
 	void init(Atlas* atlas);
 	void onNotify(Event& newEvent) override;
-	int getAtlasTexIndex(Cube::CubeId cubeId, Cube::FaceSide faceSide);
+	int getAtlasTexIndex(CubeId cubeId, Cube::FaceSide faceSide);
 	AtlasTexture* getAtlasTexture();
 	TextureBuffer* getTexCoordsBuffer();
 private:

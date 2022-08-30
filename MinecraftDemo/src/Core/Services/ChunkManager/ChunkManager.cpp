@@ -20,7 +20,7 @@ ChunkManager::ChunkManager(CoreEventDispatcher* eventDispatcher) :
 	
 }
 
-void ChunkManager::init(BiomeManager* biomeManager, Atlas* atlas) {
+void ChunkManager::init(BiomeLibrary* biomeManager, Atlas* atlas) {
 	m_terrainGen = new TerrainGenerator(biomeManager, CHUNK_SIDE_SIZE, CHUNK_HEIGHT);
 	for (int i = 0; i < CHUNK_ARRAY_WIDTH; i++) {
 		m_chunkMatrix[i] = new Chunk * [CHUNK_ARRAY_DEPTH];
@@ -231,7 +231,7 @@ Cube* ChunkManager::solidBlockCast(glm::vec3& rayOrigin, glm::vec3& direction, f
 	Cube* target = nullptr;
 	if (cubes.size() > 0) {
 		for (int i = 0; i < cubes.size(); i++) {
-			if (cubes.at(i)->getCubeId() != Cube::CubeId::AIR_BLOCK && cubes.at(i)->getCubeId() != Cube::CubeId::UNGENERATED_BLOCK) {
+			if (cubes.at(i)->getCubeId() != CubeId::AIR_BLOCK && cubes.at(i)->getCubeId() != CubeId::UNGENERATED_BLOCK) {
 				target = cubes.at(i);
 				i = cubes.size();
 			}
@@ -243,7 +243,7 @@ Cube* ChunkManager::solidBlockCast(glm::vec3& rayOrigin, glm::vec3& direction, f
 void ChunkManager::destroyBlock(Cube* toDestroy) {
 	lockLP();
 	if (toDestroy != nullptr) {
-		toDestroy->setCubeId(Cube::CubeId::AIR_BLOCK);
+		toDestroy->setCubeId(CubeId::AIR_BLOCK);
 		Chunk* ownerChunk = toDestroy->getChunkRef();
 		ownerChunk->buildMesh();
 		ownerChunk->loadMesh();
@@ -280,13 +280,13 @@ void ChunkManager::destroyBlock(Cube* toDestroy) {
 	while (toDestroy == nullptr && glm::length(rayEnd - playerPosition) < rayLength) {
 		rayEnd = playerPosition + (playerLookDirection * currentIncrement);
 		toDestroy = getCubeByCoords(rayEnd);
-		if (toDestroy != nullptr && toDestroy->cubeId == Cube::CubeId::AIR_BLOCK) {
+		if (toDestroy != nullptr && toDestroy->cubeId == CubeId::AIR_BLOCK) {
 			toDestroy = nullptr;
 		}
 		currentIncrement += incrementStep;
 	}
 	if (toDestroy != nullptr) {
-		toDestroy->setCubeId(Cube::CubeId::AIR_BLOCK);
+		toDestroy->setCubeId(CubeId::AIR_BLOCK);
 		Chunk* ownerChunk = toDestroy->chunkRef;
 		ownerChunk->state = Chunk::ChunkState::SHOULDREBUILD;
 		if (ownerChunk->leftNeighbour != nullptr && ownerChunk->leftNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
@@ -306,7 +306,7 @@ void ChunkManager::destroyBlock(Cube* toDestroy) {
 	*/
 }
 
-void ChunkManager::placeBlock(Cube* toPlace, Cube::CubeId cubeId) {
+void ChunkManager::placeBlock(Cube* toPlace, CubeId cubeId) {
 	lockLP();
 	if (toPlace != nullptr) {
 		toPlace->setCubeId(cubeId);

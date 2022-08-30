@@ -14,7 +14,7 @@ void AtlasService::onNotify(Event& newEvent) {
 
 }
 
-int AtlasService::getAtlasTexIndex(Cube::CubeId cubeId, Cube::FaceSide faceSide) {
+int AtlasService::getAtlasTexIndex(CubeId cubeId, Cube::FaceSide faceSide) {
 	return m_atlas->getAtlasTexIndex(cubeId, faceSide);
 }
 

@@ -43,9 +43,9 @@ void Atlas::notify(Event& newEvent) {
 
 }
 
-int Atlas::getAtlasTexIndex(Cube::CubeId cubeId, Cube::FaceSide faceSide) {
+int Atlas::getAtlasTexIndex(CubeId cubeId, Cube::FaceSide faceSide) {
 	switch (cubeId) {
-	case Cube::CubeId::GRASS_BLOCK:
+	case CubeId::GRASS_BLOCK:
 		switch (faceSide) {
 		case Cube::FaceSide::RIGHT:
 		case Cube::FaceSide::LEFT:
@@ -58,13 +58,13 @@ int Atlas::getAtlasTexIndex(Cube::CubeId cubeId, Cube::FaceSide faceSide) {
 			return 48;
 		}
 		break;
-	case Cube::CubeId::DIRT_BLOCK:
+	case CubeId::DIRT_BLOCK:
 		return 72;
-	case Cube::CubeId::STONE_BLOCK:
+	case CubeId::STONE_BLOCK:
 		return 96;
-	case Cube::CubeId::SAND_BLOCK:
+	case CubeId::SAND_BLOCK:
 		return 120;
-	case Cube::CubeId::SNOWY_GRASS_BLOCK:
+	case CubeId::SNOWY_GRASS_BLOCK:
 		switch (faceSide) {
 		case Cube::FaceSide::RIGHT:
 		case Cube::FaceSide::LEFT:
@@ -77,7 +77,7 @@ int Atlas::getAtlasTexIndex(Cube::CubeId cubeId, Cube::FaceSide faceSide) {
 			return 192;
 		}
 		break;
-	case Cube::CubeId::OAK_LOG_BLOCK:
+	case CubeId::OAK_LOG_BLOCK:
 		switch (faceSide) {
 		case Cube::FaceSide::RIGHT:
 		case Cube::FaceSide::LEFT:
@@ -89,8 +89,11 @@ int Atlas::getAtlasTexIndex(Cube::CubeId cubeId, Cube::FaceSide faceSide) {
 			return 240;
 		}
 		break;
-	case Cube::CubeId::LEAVES_BLOCK:
+	case CubeId::LEAVES_BLOCK:
 		return 264;
+		break;
+	case CubeId::PLANK_BLOCK:
+		return 288;
 		break;
 	}
 	BOOST_LOG_TRIVIAL(warning) << "Returning -1";

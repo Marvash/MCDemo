@@ -24,28 +24,28 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(Cube::CubeId::OAK_LOG_BLOCK);
+		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::OAK_LOG_BLOCK);
 	}
 	treeY += 1.0f;
 	if (treeX > xChunkMin && treeX < xChunkMax && treeZ > yChunkMin && treeZ < yChunkMax) {
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(Cube::CubeId::OAK_LOG_BLOCK);
+		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::OAK_LOG_BLOCK);
 	}
 	treeY += 1.0f;
 	if (treeX > xChunkMin && treeX < xChunkMax && treeZ > yChunkMin && treeZ < yChunkMax) {
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(Cube::CubeId::OAK_LOG_BLOCK);
+		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::OAK_LOG_BLOCK);
 	}
 	treeY += 1.0f;
 	if (treeX > xChunkMin && treeX < xChunkMax && treeZ > yChunkMin && treeZ < yChunkMax) {
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(Cube::CubeId::OAK_LOG_BLOCK);
+		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::OAK_LOG_BLOCK);
 	}
 	for (int i = -treeWidth; i <= treeWidth; i++) {
 		for (int j = -treeWidth; j <= treeWidth; j++) {
@@ -55,8 +55,8 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 				relativeTreeX = tmpTreeX - xChunkMin;
 				relativeTreeZ = tmpTreeZ - yChunkMin;
 				relativeTreeY = treeY;
-				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == Cube::CubeId::AIR_BLOCK) {
-					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(Cube::CubeId::LEAVES_BLOCK);
+				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == CubeId::AIR_BLOCK) {
+					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::LEAVES_BLOCK);
 				}
 			}
 		}
@@ -66,7 +66,7 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(Cube::CubeId::OAK_LOG_BLOCK);
+		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::OAK_LOG_BLOCK);
 	}
 	for (int i = -treeWidth; i <= treeWidth; i++) {
 		for (int j = -treeWidth; j <= treeWidth; j++) {
@@ -76,8 +76,8 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 				relativeTreeX = tmpTreeX - xChunkMin;
 				relativeTreeZ = tmpTreeZ - yChunkMin;
 				relativeTreeY = treeY;
-				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == Cube::CubeId::AIR_BLOCK) {
-					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(Cube::CubeId::LEAVES_BLOCK);
+				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == CubeId::AIR_BLOCK) {
+					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::LEAVES_BLOCK);
 				}
 			}
 		}
@@ -87,7 +87,7 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(Cube::CubeId::OAK_LOG_BLOCK);
+		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::OAK_LOG_BLOCK);
 	}
 	for (int i = -treeWidth; i <= treeWidth; i++) {
 		for (int j = -treeWidth; j <= treeWidth; j++) {
@@ -97,23 +97,8 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 				relativeTreeX = tmpTreeX - xChunkMin;
 				relativeTreeZ = tmpTreeZ - yChunkMin;
 				relativeTreeY = treeY;
-				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == Cube::CubeId::AIR_BLOCK) {
-					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(Cube::CubeId::LEAVES_BLOCK);
-				}
-			}
-		}
-	}
-	treeY += 1.0f;
-	for (int i = -treeWidth; i <= treeWidth; i++) {
-		for (int j = -treeWidth; j <= treeWidth; j++) {
-			tmpTreeX = treeX + i;
-			tmpTreeZ = treeZ + j;
-			if (tmpTreeX > xChunkMin && tmpTreeX < xChunkMax && tmpTreeZ > yChunkMin && tmpTreeZ < yChunkMax) {
-				relativeTreeX = tmpTreeX - xChunkMin;
-				relativeTreeZ = tmpTreeZ - yChunkMin;
-				relativeTreeY = treeY;
-				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == Cube::CubeId::AIR_BLOCK) {
-					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(Cube::CubeId::LEAVES_BLOCK);
+				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == CubeId::AIR_BLOCK) {
+					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::LEAVES_BLOCK);
 				}
 			}
 		}
@@ -127,8 +112,23 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 				relativeTreeX = tmpTreeX - xChunkMin;
 				relativeTreeZ = tmpTreeZ - yChunkMin;
 				relativeTreeY = treeY;
-				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == Cube::CubeId::AIR_BLOCK) {
-					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(Cube::CubeId::LEAVES_BLOCK);
+				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == CubeId::AIR_BLOCK) {
+					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::LEAVES_BLOCK);
+				}
+			}
+		}
+	}
+	treeY += 1.0f;
+	for (int i = -treeWidth; i <= treeWidth; i++) {
+		for (int j = -treeWidth; j <= treeWidth; j++) {
+			tmpTreeX = treeX + i;
+			tmpTreeZ = treeZ + j;
+			if (tmpTreeX > xChunkMin && tmpTreeX < xChunkMax && tmpTreeZ > yChunkMin && tmpTreeZ < yChunkMax) {
+				relativeTreeX = tmpTreeX - xChunkMin;
+				relativeTreeZ = tmpTreeZ - yChunkMin;
+				relativeTreeY = treeY;
+				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == CubeId::AIR_BLOCK) {
+					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::LEAVES_BLOCK);
 				}
 			}
 		}

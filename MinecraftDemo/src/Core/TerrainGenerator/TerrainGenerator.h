@@ -10,7 +10,7 @@
 #include "Core/Biomes/HillsBiome.h"
 #include "Core/Biomes/JungleBiome.h"
 #include "Core/Biomes/SavanaBiome.h"
-#include "Core/Services/BiomeManager/BiomeManager.h"
+#include "Core/Services/Biome/BiomeLibrary.h"
 #include "TreeBuilder.h"
 
 class TerrainGenerator {
@@ -20,7 +20,7 @@ public:
 	PerlinNoiseGenerator m_temperaturePerlinGen;
 	PerlinNoiseGenerator m_humidityPerlinGen;
 
-	TerrainGenerator(BiomeManager* biomeManager, int chunkSideSize, int chunkHeight);
+	TerrainGenerator(BiomeLibrary* biomeManager, int chunkSideSize, int chunkHeight);
 	void generateChunk(Cube*** &blockMatrix, glm::vec3 &chunkPosition);
 	void decorateChunk(Cube*** &blockMatrix, glm::vec3 &chunkPosition);
 	float getDebugHeight(float x, float y);
@@ -42,7 +42,7 @@ private:
 	unsigned int m_treeChunkOffset;
 
 	TreeBuilder m_treeBuilder;
-	BiomeManager* m_biomeManager;
+	BiomeLibrary* m_biomeManager;
 
 	float getBlockHeight(Biome* biome, float x, float y);
 	float bilinearFilter(float x, float y, float* samples, float* corners);

@@ -1,5 +1,6 @@
 #pragma once
-
+#include "Core/Services/ItemLibrary/ItemIdEnum.h"
+#include "CubeIdEnum.h"
 #include <string>
 #include <glm/glm.hpp>
 
@@ -18,20 +19,6 @@ public:
 		BACK
 	};
 
-	enum class CubeId {
-		AIR_BLOCK,
-		DIRT_BLOCK,
-		GRASS_BLOCK,
-		STONE_BLOCK,
-		SAND_BLOCK,
-		SNOWY_GRASS_BLOCK,
-		OAK_LOG_BLOCK,
-		LEAVES_BLOCK,
-		UNGENERATED_BLOCK
-	};
-
-	
-
 	Cube();
 	~Cube();
 	Cube(CubeId cubeId);
@@ -41,6 +28,7 @@ public:
 	static int getNumericId(CubeId cubeId);
 	static bool isTransparent(CubeId cubeId);
 	static bool canBeRendered(CubeId cubeId);
+	static ItemId getItemId(CubeId cubeId);
 
 	CubeId getCubeId();
 	void setCubeId(CubeId cubeId);
