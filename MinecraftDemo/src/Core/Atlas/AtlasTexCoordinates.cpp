@@ -410,6 +410,37 @@ AtlasTexCoordinates::AtlasTexCoordinates(unsigned int atlasWidth, unsigned int a
 	m_atlasTexCoordinates[309] = getCoordY(5);
 	m_atlasTexCoordinates[310] = -1.0f;
 	m_atlasTexCoordinates[311] = -1.0f;
+
+	// STICK
+	
+	// Top left
+	m_atlasTexCoordinates[312] = getCoordX(10);
+	m_atlasTexCoordinates[313] = -1.0f;
+	m_atlasTexCoordinates[314] = -1.0f;
+	m_atlasTexCoordinates[315] = getCoordY(18);
+	m_atlasTexCoordinates[316] = -1.0f;
+	m_atlasTexCoordinates[317] = -1.0f;
+	// Top right
+	m_atlasTexCoordinates[318] = getCoordX(11);
+	m_atlasTexCoordinates[319] = -1.0f;
+	m_atlasTexCoordinates[320] = -1.0f;
+	m_atlasTexCoordinates[321] = getCoordY(18);
+	m_atlasTexCoordinates[322] = -1.0f;
+	m_atlasTexCoordinates[323] = -1.0f;
+	// Bottom right
+	m_atlasTexCoordinates[324] = getCoordX(11);
+	m_atlasTexCoordinates[325] = -1.0f;
+	m_atlasTexCoordinates[326] = -1.0f;
+	m_atlasTexCoordinates[327] = getCoordY(19);
+	m_atlasTexCoordinates[328] = -1.0f;
+	m_atlasTexCoordinates[329] = -1.0f;
+	// Bottom left
+	m_atlasTexCoordinates[330] = getCoordX(10);
+	m_atlasTexCoordinates[331] = -1.0f;
+	m_atlasTexCoordinates[332] = -1.0f;
+	m_atlasTexCoordinates[333] = getCoordY(19);
+	m_atlasTexCoordinates[334] = -1.0f;
+	m_atlasTexCoordinates[335] = -1.0f;
 }
 
 AtlasTexCoordinates::~AtlasTexCoordinates() {

@@ -6,6 +6,7 @@
 #include "Core/Services/CoreService.h"
 #include "PlaceableItemSpecification.h"
 #include "NullItemSpecification.h"
+#include "DefaultItemSpecification.h"
 #include "Core/Services/Renderer/Renderer.h"
 #include "Core/Services/Biome/BiomeLibrary.h"
 #include "Core/Services/Atlas/Atlas.h"

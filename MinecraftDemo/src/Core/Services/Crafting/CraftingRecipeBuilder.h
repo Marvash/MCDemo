@@ -7,6 +7,7 @@ class CraftingRecipeBuilder : public SpecializedBuilder<CraftingRecipe> {
 public:
 	CraftingRecipeBuilder(ItemLibrary* itemLibrary);
 	void buildPlankRecipe();
+	void buildStickRecipe();
 private:
 	Item*** initEmptyRecipe(unsigned int recipeRows, unsigned int recipeCols);
 	ItemLibrary* m_itemLibrary;

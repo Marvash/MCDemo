@@ -27,6 +27,7 @@ void ItemLibrary::generateItemSpecifications() {
 	m_itemSpecifications[ItemId::OAK_LOG_BLOCK_ITEM] = new PlaceableItemSpecification(ItemId::OAK_LOG_BLOCK_ITEM, m_iconLibrary->getItemIcon(ItemId::OAK_LOG_BLOCK_ITEM), CubeId::OAK_LOG_BLOCK);
 	m_itemSpecifications[ItemId::LEAVES_BLOCK_ITEM] = new PlaceableItemSpecification(ItemId::LEAVES_BLOCK_ITEM, m_iconLibrary->getItemIcon(ItemId::LEAVES_BLOCK_ITEM), CubeId::LEAVES_BLOCK);
 	m_itemSpecifications[ItemId::PLANK_BLOCK_ITEM] = new PlaceableItemSpecification(ItemId::PLANK_BLOCK_ITEM, m_iconLibrary->getItemIcon(ItemId::PLANK_BLOCK_ITEM), CubeId::PLANK_BLOCK);
+	m_itemSpecifications[ItemId::STICK_ITEM] = new DefaultItemSpecification(ItemId::STICK_ITEM, m_iconLibrary->getItemIcon(ItemId::STICK_ITEM));
 	m_itemSpecifications[ItemId::LAST_ITEM] = new NullItemSpecification(ItemId::LAST_ITEM, nullptr);
 }
 

@@ -27,6 +27,7 @@ Player::Player(CoreServiceLocator* coreServiceLocator) : GameObject(coreServiceL
 	inventory->addItemInInventorySlot(ItemId::STONE_BLOCK_ITEM, 10, inventory->getInventorySlots() + 1);
 	inventory->addItemInInventorySlot(ItemId::SAND_BLOCK_ITEM, 10, inventory->getInventorySlots() + 2);
 	inventory->addItemInInventorySlot(ItemId::PLANK_BLOCK_ITEM, 10, inventory->getInventorySlots() + 3);
+	inventory->addItemInInventorySlot(ItemId::STICK_ITEM, 10, inventory->getInventorySlots() + 4);
 	inventory->setItemBarSelectedSlot(0);
 }
 

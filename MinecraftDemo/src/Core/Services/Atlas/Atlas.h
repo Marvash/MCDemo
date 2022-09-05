@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/Textures/AtlasTexture.h"
+#include "Core/Textures/ImageTexture2D.h"
 #include "Core/Textures/TextureBuffer.h"
 #include "Core/Cube/Cube.h"
 #include "Core/Atlas/AtlasTexCoordinates.h"
@@ -15,9 +16,11 @@ public:
 	Atlas(CoreEventDispatcher* coreEventDispatcher);
 	~Atlas();
 
-	int getAtlasTexIndex(CubeId cubeId, Cube::FaceSide faceSide);
+	int getCubeTexIndex(CubeId cubeId, Cube::FaceSide faceSide);
+	int getItemTexIndex(ItemId itemId);
 	AtlasTexture* getAtlasTexture();
 	TextureBuffer* getTexCoordsBuffer();
+	
 	void init();
 	void onNotify(Event& newEvent) override;
 	void notify(Event& newEvent) override;

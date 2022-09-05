@@ -43,7 +43,7 @@ void Atlas::notify(Event& newEvent) {
 
 }
 
-int Atlas::getAtlasTexIndex(CubeId cubeId, Cube::FaceSide faceSide) {
+int Atlas::getCubeTexIndex(CubeId cubeId, Cube::FaceSide faceSide) {
 	switch (cubeId) {
 	case CubeId::GRASS_BLOCK:
 		switch (faceSide) {
@@ -98,4 +98,11 @@ int Atlas::getAtlasTexIndex(CubeId cubeId, Cube::FaceSide faceSide) {
 	}
 	BOOST_LOG_TRIVIAL(warning) << "Returning -1";
 	return -1;
+}
+
+int Atlas::getItemTexIndex(ItemId itemId) {
+	switch (itemId) {
+	case ItemId::STICK_ITEM:
+		return 312;
+	}
 }

@@ -14,6 +14,9 @@ void CraftingRecipeLibrary::populateCraftingRecipeLibrary() {
 	craftingRecipeBuilder.buildPlankRecipe();
 	CraftingRecipe* recipe = craftingRecipeBuilder.getResult();
 	m_craftingRecipes.push_back(recipe);
+	craftingRecipeBuilder.buildStickRecipe();
+	recipe = craftingRecipeBuilder.getResult();
+	m_craftingRecipes.push_back(recipe);
 }
 
 CraftingRecipe* CraftingRecipeLibrary::matchItemPattern(unsigned int patternRows, unsigned int patternCols, ItemSlot*** craftingTable) {

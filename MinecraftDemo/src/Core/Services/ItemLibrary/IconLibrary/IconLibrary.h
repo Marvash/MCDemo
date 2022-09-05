@@ -21,14 +21,16 @@ public:
 
 private:
 	void generateBlockIcons();
-    void addFaceTexIndexes(size_t& vertexIndexesBaseIndex, int textureCoordinatesIndex, int colorIndex);
+	void generateItemIcons();
+    void addFaceTexIndexes(GLint* buffer, size_t& vertexIndexesBaseIndex, int textureCoordinatesIndex, int colorIndex);
 
     Renderer* m_renderer;
     Atlas* m_atlas;
     BiomeLibrary* m_biomeLibrary;
 	CoreServiceLocator* m_coreServiceLocator;
 	std::map<ItemId, ImageTexture2D*> m_itemIcons;
-	GLint* m_verticesTexIndexes;
+	GLint* m_cubeVerticesTexIndexes;
+	GLint* m_itemVerticesTexIndexes;
 
 	GLfloat m_iconCubeVertices[108] = {
         // Back face
@@ -74,4 +76,13 @@ private:
          0.5f,  0.5f,  0.5f, // bottom-right
          0.5f,  0.5f, -0.5f, // top-right     
 	};
+
+    GLfloat m_iconItemVertices[18] = {
+         0.5f, -0.5f,  0.0f, // bottom-right
+        -0.5f,  0.5f,  0.0f, // top-left
+        -0.5f, -0.5f,  0.0f, // bottom-left
+        -0.5f,  0.5f,  0.0f, // top-left
+         0.5f, -0.5f,  0.0f, // bottom-right
+         0.5f,  0.5f,  0.0f, // top-right
+    };
 };

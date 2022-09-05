@@ -333,6 +333,9 @@
     <ClCompile Include="src\Core\Services\Crafting\CraftingRecipeContract.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\Services\ItemLibrary\DefaultItemSpecification.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\Random\PerlinGenerator\PerlinNoiseGenerator.h">
@@ -723,6 +726,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Services\Crafting\CraftingRecipeContract.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\DefaultItemSpecification.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

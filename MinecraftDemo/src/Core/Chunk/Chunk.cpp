@@ -276,7 +276,7 @@ void Chunk::buildMesh() {
 				float vertexBaseDepth = (cubeOffset.z - (chunkSideSize / 2));
 				size_t vertexCoordsBaseIndex = correctVertexCount * 3;
 				size_t texCoordsBaseIndex = correctVertexCount * 2;
-				int texCoordsIndex = m_atlas->getAtlasTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::TOP);
+				int texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::TOP);
 				int colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::TOP);
 				//BOOST_LOG_TRIVIAL(info) << "tex: " << texCoordsIndex << "color: " << colorsIndex;
 				// TOP
@@ -293,7 +293,7 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = m_atlas->getAtlasTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BOTTOM);
+				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BOTTOM);
 				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BOTTOM);
 				// BOTTOM
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::BOTTOM, i, j, w);
@@ -309,7 +309,7 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = m_atlas->getAtlasTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::RIGHT);
+				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::RIGHT);
 				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::RIGHT);
 				// RIGHT
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::RIGHT, i, j, w);
@@ -325,7 +325,7 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = m_atlas->getAtlasTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::LEFT);
+				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::LEFT);
 				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::LEFT);
 				// LEFT
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::LEFT, i, j, w);
@@ -341,7 +341,7 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = m_atlas->getAtlasTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::FRONT);
+				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::FRONT);
 				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::FRONT);
 				// FRONT
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::FRONT, i, j, w);
@@ -357,7 +357,7 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = m_atlas->getAtlasTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BACK);
+				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BACK);
 				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BACK);
 				// BACK
 				neighbourCube = findNeighbourBlock(Cube::FaceSide::BACK, i, j, w);

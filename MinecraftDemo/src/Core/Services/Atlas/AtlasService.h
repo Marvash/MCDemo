@@ -15,7 +15,7 @@ public:
 	AtlasService(CoreEventDispatcher* coreEventDispatcher);
 	void init(Atlas* atlas);
 	void onNotify(Event& newEvent) override;
-	int getAtlasTexIndex(CubeId cubeId, Cube::FaceSide faceSide);
+	int getCubeTexIndex(CubeId cubeId, Cube::FaceSide faceSide);
 	AtlasTexture* getAtlasTexture();
 	TextureBuffer* getTexCoordsBuffer();
 private:
