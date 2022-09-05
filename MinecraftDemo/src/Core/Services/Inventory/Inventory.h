@@ -20,6 +20,7 @@ public:
 	void addItemInInventorySlot(ItemId itemId, int count, unsigned int slot);
 	void decreaseItemCountInSlot(int count, unsigned int slot);
 	void removeItemInInventorySlot(unsigned int slot);
+	void splitItemSlot(unsigned int slot);
 	Item* takeItemFromInventorySlot(unsigned int slot);
 	void moveExistingItemInSlot(unsigned int slot, Item* item);
 	Item* getSelectedItem();

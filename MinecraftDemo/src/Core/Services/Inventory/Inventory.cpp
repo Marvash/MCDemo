@@ -123,6 +123,25 @@ void Inventory::decreaseItemCountInSlot(int count, unsigned int slot) {
 	}
 }
 
+void Inventory::splitItemSlot(unsigned int slot) {
+	if (slot < TOTAL_SLOTS) {
+		ItemSlot* itemSlot = m_inventory[slot];
+		if (!itemSlot->isEmpty() && itemSlot->getItem()->getItemCount() > 1) {
+			for (int i = 0; (i < TOTAL_SLOTS); i++) {
+				ItemSlot* currentSlot = m_inventory[i];
+				if (currentSlot->isEmpty()) {
+					Item* splitItem = itemSlot->getItem()->clone();
+					int countHalf = splitItem->getItemCount() / 2;
+					itemSlot->decreaseItemCountBy(countHalf);
+					splitItem->setItemCount(countHalf);
+					currentSlot->replaceItem(splitItem);
+					break;
+				}
+			}
+		}
+	}
+}
+
 ItemSlot** Inventory::getItemBar() {
 	return m_itemBar;
 }

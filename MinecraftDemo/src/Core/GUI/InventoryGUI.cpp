@@ -211,26 +211,32 @@ void InventoryGUI::drawInventoryDNDBox(int targetId, float slotSize, ImVec2& win
 	ImGui::SetCursorScreenPos(p0);
 	ImGui::BeginChild("InventoryDNDChild", targetSize);
 	ImGui::Button("##DNDButton", targetSize);
-	if (ImGui::IsItemActivated()) {
-		if (!m_isDraggingItem) {
-			if (!m_inventory->getItemSlot(targetId)->isEmpty()) {
-				m_isDraggingItem = true;
-				m_dragSourceItemSlot = m_inventory->getItemSlot(targetId);
-			}
-		}
-		else {
-			ItemSlot* m_dragTargetItemSlot = m_inventory->getItemSlot(targetId);
-			if (m_dragSourceItemSlot == m_craftingTable->getResultItemSlot()) {
-				if (m_inventory->getItemSlot(targetId)->isEmpty()) {
-					m_craftingTable->fulfillMatchingRecipeContract();
-					m_craftingTable->matchRecipe();
+	if (ImGui::IsItemHovered()) {
+		if (ImGui::IsMouseClicked(0)) {
+			if (!m_isDraggingItem) {
+				if (!m_inventory->getItemSlot(targetId)->isEmpty()) {
+					m_isDraggingItem = true;
+					m_dragSourceItemSlot = m_inventory->getItemSlot(targetId);
 				}
 			}
 			else {
-				m_dragTargetItemSlot->resolveSlotDrag(m_dragSourceItemSlot);
-				m_craftingTable->matchRecipe();
+				ItemSlot* m_dragTargetItemSlot = m_inventory->getItemSlot(targetId);
+				if (m_dragSourceItemSlot == m_craftingTable->getResultItemSlot()) {
+					if (m_dragTargetItemSlot->isEmpty()) {
+						m_dragTargetItemSlot->resolveSlotDrag(m_dragSourceItemSlot);
+						m_craftingTable->fulfillMatchingRecipeContract();
+						m_craftingTable->matchRecipe();
+					}
+				}
+				else {
+					m_dragTargetItemSlot->resolveSlotDrag(m_dragSourceItemSlot);
+					m_craftingTable->matchRecipe();
+				}
+				resetDNDLogic();
 			}
-			resetDNDLogic();
+		}
+		else if (ImGui::IsMouseClicked(1)) {
+			m_inventory->splitItemSlot(targetId);
 		}
 	}
 	ImGui::EndChild();
@@ -263,26 +269,33 @@ void InventoryGUI::drawCraftingTableDNDBox(int targetId, float slotSize, ImVec2&
 	ImGui::SetCursorScreenPos(p0);
 	ImGui::BeginChild("craftingDNDChild", targetSize);
 	ImGui::Button("##DNDButton", targetSize);
-	if (ImGui::IsItemActivated()) {
-		if (!m_isDraggingItem) {
-			if (!m_craftingTable->getItemSlot(targetId)->isEmpty()) {
-				m_isDraggingItem = true;
-				m_dragSourceItemSlot = m_craftingTable->getItemSlot(targetId);
-			}
-		}
-		else {
-			ItemSlot* m_dragTargetItemSlot = m_craftingTable->getItemSlot(targetId);
-			if (m_dragSourceItemSlot == m_craftingTable->getResultItemSlot()) {
-				if (m_inventory->getItemSlot(targetId)->isEmpty()) {
-					m_craftingTable->fulfillMatchingRecipeContract();
-					m_craftingTable->matchRecipe();
+	if (ImGui::IsItemHovered()) {
+		if (ImGui::IsMouseClicked(0)) {
+			if (!m_isDraggingItem) {
+				if (!m_craftingTable->getItemSlot(targetId)->isEmpty()) {
+					m_isDraggingItem = true;
+					m_dragSourceItemSlot = m_craftingTable->getItemSlot(targetId);
 				}
 			}
 			else {
-				m_dragTargetItemSlot->resolveSlotDrag(m_dragSourceItemSlot);
-				m_craftingTable->matchRecipe();
+				ItemSlot* m_dragTargetItemSlot = m_craftingTable->getItemSlot(targetId);
+				if (m_dragSourceItemSlot == m_craftingTable->getResultItemSlot()) {
+					if (m_dragTargetItemSlot->isEmpty()) {
+						m_dragTargetItemSlot->resolveSlotDrag(m_dragSourceItemSlot);
+						m_craftingTable->fulfillMatchingRecipeContract();
+						m_craftingTable->matchRecipe();
+					}
+				}
+				else {
+					m_dragTargetItemSlot->resolveSlotDrag(m_dragSourceItemSlot);
+					m_craftingTable->matchRecipe();
+				}
+				resetDNDLogic();
 			}
-			resetDNDLogic();
+		}
+		else if (ImGui::IsMouseClicked(1)) {
+			m_craftingTable->splitItemSlot(targetId);
+			m_craftingTable->matchRecipe();
 		}
 	}
 	ImGui::EndChild();

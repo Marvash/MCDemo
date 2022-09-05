@@ -12,6 +12,7 @@ public:
 	ItemSlot* getItemSlot(int row, int column);
 	ItemSlot* getItemSlot(int index);
 	ItemSlot* getResultItemSlot();
+	void splitItemSlot(unsigned int slot);
 	void matchRecipe();
 	void fulfillMatchingRecipeContract();
 

@@ -67,6 +67,28 @@ void CraftingTable::matchRecipe() {
 	}
 }
 
+void CraftingTable::splitItemSlot(unsigned int slot) {
+	if (slot < (CRAFTING_TABLE_SLOTS * CRAFTING_TABLE_SLOTS)) {
+		ItemSlot* itemSlot = getItemSlot(slot);
+		if (!itemSlot->isEmpty() && itemSlot->getItem()->getItemCount() > 1) {
+			for (int i = 0; i < CRAFTING_TABLE_SLOTS; i++) {
+				for (int j = 0; j < CRAFTING_TABLE_SLOTS; j++) {
+					ItemSlot* currentSlot = m_craftingTable[i][j];
+					if (currentSlot->isEmpty()) {
+						Item* splitItem = itemSlot->getItem()->clone();
+						int countHalf = splitItem->getItemCount() / 2;
+						itemSlot->decreaseItemCountBy(countHalf);
+						splitItem->setItemCount(countHalf);
+						currentSlot->replaceItem(splitItem);
+						i = CRAFTING_TABLE_SLOTS;
+						j = CRAFTING_TABLE_SLOTS;
+					}
+				}
+			}
+		}
+	}
+}
+
 void CraftingTable::fulfillMatchingRecipeContract() {
 	if (m_matchingRecipe != nullptr) {
 		m_matchingRecipe->getCraftingRecipeContract()->fulfillContract();
