@@ -119,6 +119,20 @@ void IconLibrary::generateBlockIcons() {
 }
 
 void IconLibrary::generateItemIcons() {
+	generateItemIcon(ItemId::STICK);
+	generateItemIcon(ItemId::WOODEN_AXE);
+	generateItemIcon(ItemId::WOODEN_HOE);
+	generateItemIcon(ItemId::WOODEN_PICKAXE);
+	generateItemIcon(ItemId::WOODEN_SHOVEL);
+	generateItemIcon(ItemId::WOODEN_SWORD);
+	generateItemIcon(ItemId::STONE_AXE);
+	generateItemIcon(ItemId::STONE_HOE);
+	generateItemIcon(ItemId::STONE_PICKAXE);
+	generateItemIcon(ItemId::STONE_SHOVEL);
+	generateItemIcon(ItemId::STONE_SWORD);
+}
+
+void IconLibrary::generateItemIcon(ItemId itemId) {
 	BOOST_LOG_TRIVIAL(info) << "Generating item icons...";
 	OffScreenRenderData renderData;
 	renderData.cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -163,8 +177,7 @@ void IconLibrary::generateItemIcons() {
 	orthographicData.t = 0.5f;
 	renderData.projectionData = &orthographicData;
 	unsigned char* result;
-	ItemId itemId = ItemId::STICK_ITEM;
-	BOOST_LOG_TRIVIAL(info) << "Generating icon stick";
+	BOOST_LOG_TRIVIAL(info) << "Generating icon " << (int)itemId;
 	size_t vertexIndexesBaseIndex = 0;
 	int texCoordsIndex = m_atlas->getItemTexIndex(itemId);
 	int colorsIndex = 0;
@@ -183,10 +196,10 @@ void IconLibrary::generateItemIcons() {
 	{
 		BOOST_LOG_TRIVIAL(info) << "ERROR " << err;
 	}
-		
+
 	m_itemIcons.insert(std::make_pair(itemId, new ImageTexture2D(renderData.renderingWidth, renderData.renderingHeight, GL_RGBA, GL_RGBA, result)));
 	delete[] result;
-	BOOST_LOG_TRIVIAL(info) << "Generated stick icon";
+	BOOST_LOG_TRIVIAL(info) << "Generated icon " << (int)itemId;
 }
 
 void IconLibrary::addFaceTexIndexes(GLint* buffer, size_t& vertexIndexesBaseIndex, int textureCoordinatesIndex, int colorIndex) {

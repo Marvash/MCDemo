@@ -165,6 +165,7 @@
     <ClCompile Include="src\Core\Services\Biome\BiomeService.cpp" />
     <ClCompile Include="src\Core\Services\ItemLibrary\NullItemSpecification.cpp" />
     <ClCompile Include="src\Core\Services\ItemLibrary\PlaceableItemSpecification.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\ToolItemSpecification.cpp" />
     <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\OffScreenPPShaderConfig.cpp" />
     <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\ScreenShaderConfig.cpp" />
     <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\WorldShaderConfig.cpp" />
@@ -277,6 +278,7 @@
     <ClInclude Include="src\Core\Services\Biome\BiomeService.h" />
     <ClInclude Include="src\Core\Services\ItemLibrary\NullItemSpecification.h" />
     <ClInclude Include="src\Core\Services\ItemLibrary\PlaceableItemSpecification.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\ToolItemSpecification.h" />
     <ClInclude Include="src\Core\Services\Renderer\RendererStructs.h" />
     <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\OffScreenPPShaderConfig.h" />
     <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\ScreenShaderConfig.h" />

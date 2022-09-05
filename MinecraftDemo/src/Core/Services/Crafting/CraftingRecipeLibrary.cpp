@@ -17,6 +17,36 @@ void CraftingRecipeLibrary::populateCraftingRecipeLibrary() {
 	craftingRecipeBuilder.buildStickRecipe();
 	recipe = craftingRecipeBuilder.getResult();
 	m_craftingRecipes.push_back(recipe);
+	craftingRecipeBuilder.buildWoodenAxeRecipe();
+	recipe = craftingRecipeBuilder.getResult();
+	m_craftingRecipes.push_back(recipe);
+	craftingRecipeBuilder.buildWoodenHoeRecipe();
+	recipe = craftingRecipeBuilder.getResult();
+	m_craftingRecipes.push_back(recipe);
+	craftingRecipeBuilder.buildWoodenPickaxeRecipe();
+	recipe = craftingRecipeBuilder.getResult();
+	m_craftingRecipes.push_back(recipe);
+	craftingRecipeBuilder.buildWoodenShovelRecipe();
+	recipe = craftingRecipeBuilder.getResult();
+	m_craftingRecipes.push_back(recipe);
+	craftingRecipeBuilder.buildWoodenSwordRecipe();
+	recipe = craftingRecipeBuilder.getResult();
+	m_craftingRecipes.push_back(recipe);
+	craftingRecipeBuilder.buildStoneAxeRecipe();
+	recipe = craftingRecipeBuilder.getResult();
+	m_craftingRecipes.push_back(recipe);
+	craftingRecipeBuilder.buildStoneHoeRecipe();
+	recipe = craftingRecipeBuilder.getResult();
+	m_craftingRecipes.push_back(recipe);
+	craftingRecipeBuilder.buildStonePickaxeRecipe();
+	recipe = craftingRecipeBuilder.getResult();
+	m_craftingRecipes.push_back(recipe);
+	craftingRecipeBuilder.buildStoneShovelRecipe();
+	recipe = craftingRecipeBuilder.getResult();
+	m_craftingRecipes.push_back(recipe);
+	craftingRecipeBuilder.buildStoneSwordRecipe();
+	recipe = craftingRecipeBuilder.getResult();
+	m_craftingRecipes.push_back(recipe);
 }
 
 CraftingRecipe* CraftingRecipeLibrary::matchItemPattern(unsigned int patternRows, unsigned int patternCols, ItemSlot*** craftingTable) {

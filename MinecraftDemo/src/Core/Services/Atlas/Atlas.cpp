@@ -102,7 +102,28 @@ int Atlas::getCubeTexIndex(CubeId cubeId, Cube::FaceSide faceSide) {
 
 int Atlas::getItemTexIndex(ItemId itemId) {
 	switch (itemId) {
-	case ItemId::STICK_ITEM:
+	case ItemId::STICK:
 		return 312;
+	case ItemId::WOODEN_AXE:
+		return 336;
+	case ItemId::WOODEN_HOE:
+		return 360;
+	case ItemId::WOODEN_PICKAXE:
+		return 384;
+	case ItemId::WOODEN_SHOVEL:
+		return 408;
+	case ItemId::WOODEN_SWORD:
+		return 432;
+	case ItemId::STONE_AXE:
+		return 456;
+	case ItemId::STONE_HOE:
+		return 480;
+	case ItemId::STONE_PICKAXE:
+		return 504;
+	case ItemId::STONE_SHOVEL:
+		return 528;
+	case ItemId::STONE_SWORD:
+		return 552;
 	}
+	return 576;
 }

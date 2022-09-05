@@ -1,7 +1,7 @@
 #include "AtlasTexCoordinates.h"
 
-AtlasTexCoordinates::AtlasTexCoordinates(unsigned int atlasWidth, unsigned int atlasHeight) : 
-	m_atlasWidth(atlasWidth), 
+AtlasTexCoordinates::AtlasTexCoordinates(unsigned int atlasWidth, unsigned int atlasHeight) :
+	m_atlasWidth(atlasWidth),
 	m_atlasHeight(atlasHeight) {
 	m_atlasTexCoordinates = new GLfloat[TEX_COORDINATES_SIZE];
 
@@ -412,7 +412,7 @@ AtlasTexCoordinates::AtlasTexCoordinates(unsigned int atlasWidth, unsigned int a
 	m_atlasTexCoordinates[311] = -1.0f;
 
 	// STICK
-	
+
 	// Top left
 	m_atlasTexCoordinates[312] = getCoordX(10);
 	m_atlasTexCoordinates[313] = -1.0f;
@@ -441,6 +441,347 @@ AtlasTexCoordinates::AtlasTexCoordinates(unsigned int atlasWidth, unsigned int a
 	m_atlasTexCoordinates[333] = getCoordY(19);
 	m_atlasTexCoordinates[334] = -1.0f;
 	m_atlasTexCoordinates[335] = -1.0f;
+
+	// WOODEN AXE
+
+	// Top left
+	m_atlasTexCoordinates[336] = getCoordX(19);
+	m_atlasTexCoordinates[337] = -1.0f;
+	m_atlasTexCoordinates[338] = -1.0f;
+	m_atlasTexCoordinates[339] = getCoordY(18);
+	m_atlasTexCoordinates[340] = -1.0f;
+	m_atlasTexCoordinates[341] = -1.0f;
+	// Top right
+	m_atlasTexCoordinates[342] = getCoordX(20);
+	m_atlasTexCoordinates[343] = -1.0f;
+	m_atlasTexCoordinates[344] = -1.0f;
+	m_atlasTexCoordinates[345] = getCoordY(18);
+	m_atlasTexCoordinates[346] = -1.0f;
+	m_atlasTexCoordinates[347] = -1.0f;
+	// Bottom right
+	m_atlasTexCoordinates[348] = getCoordX(20);
+	m_atlasTexCoordinates[349] = -1.0f;
+	m_atlasTexCoordinates[350] = -1.0f;
+	m_atlasTexCoordinates[351] = getCoordY(19);
+	m_atlasTexCoordinates[352] = -1.0f;
+	m_atlasTexCoordinates[353] = -1.0f;
+	// Bottom left
+	m_atlasTexCoordinates[354] = getCoordX(19);
+	m_atlasTexCoordinates[355] = -1.0f;
+	m_atlasTexCoordinates[356] = -1.0f;
+	m_atlasTexCoordinates[357] = getCoordY(19);
+	m_atlasTexCoordinates[358] = -1.0f;
+	m_atlasTexCoordinates[359] = -1.0f;
+
+	// WOODEN HOE
+
+	// Top left
+	m_atlasTexCoordinates[360] = getCoordX(20);
+	m_atlasTexCoordinates[361] = -1.0f;
+	m_atlasTexCoordinates[362] = -1.0f;
+	m_atlasTexCoordinates[363] = getCoordY(18);
+	m_atlasTexCoordinates[364] = -1.0f;
+	m_atlasTexCoordinates[365] = -1.0f;
+	// Top right
+	m_atlasTexCoordinates[366] = getCoordX(21);
+	m_atlasTexCoordinates[367] = -1.0f;
+	m_atlasTexCoordinates[368] = -1.0f;
+	m_atlasTexCoordinates[369] = getCoordY(18);
+	m_atlasTexCoordinates[370] = -1.0f;
+	m_atlasTexCoordinates[371] = -1.0f;
+	// Bottom right
+	m_atlasTexCoordinates[372] = getCoordX(21);
+	m_atlasTexCoordinates[373] = -1.0f;
+	m_atlasTexCoordinates[374] = -1.0f;
+	m_atlasTexCoordinates[375] = getCoordY(19);
+	m_atlasTexCoordinates[376] = -1.0f;
+	m_atlasTexCoordinates[377] = -1.0f;
+	// Bottom left
+	m_atlasTexCoordinates[378] = getCoordX(20);
+	m_atlasTexCoordinates[379] = -1.0f;
+	m_atlasTexCoordinates[380] = -1.0f;
+	m_atlasTexCoordinates[381] = getCoordY(19);
+	m_atlasTexCoordinates[382] = -1.0f;
+	m_atlasTexCoordinates[383] = -1.0f;
+
+	// WOODEN PICKAXE
+
+	// Top left
+	m_atlasTexCoordinates[384] = getCoordX(21);
+	m_atlasTexCoordinates[385] = -1.0f;
+	m_atlasTexCoordinates[386] = -1.0f;
+	m_atlasTexCoordinates[387] = getCoordY(18);
+	m_atlasTexCoordinates[388] = -1.0f;
+	m_atlasTexCoordinates[389] = -1.0f;
+	// Top right
+	m_atlasTexCoordinates[390] = getCoordX(22);
+	m_atlasTexCoordinates[391] = -1.0f;
+	m_atlasTexCoordinates[392] = -1.0f;
+	m_atlasTexCoordinates[393] = getCoordY(18);
+	m_atlasTexCoordinates[394] = -1.0f;
+	m_atlasTexCoordinates[395] = -1.0f;
+	// Bottom right
+	m_atlasTexCoordinates[396] = getCoordX(22);
+	m_atlasTexCoordinates[397] = -1.0f;
+	m_atlasTexCoordinates[398] = -1.0f;
+	m_atlasTexCoordinates[399] = getCoordY(19);
+	m_atlasTexCoordinates[400] = -1.0f;
+	m_atlasTexCoordinates[401] = -1.0f;
+	// Bottom left
+	m_atlasTexCoordinates[402] = getCoordX(21);
+	m_atlasTexCoordinates[403] = -1.0f;
+	m_atlasTexCoordinates[404] = -1.0f;
+	m_atlasTexCoordinates[405] = getCoordY(19);
+	m_atlasTexCoordinates[406] = -1.0f;
+	m_atlasTexCoordinates[407] = -1.0f;
+
+	// WOODEN SHOVEL
+
+	// Top left
+	m_atlasTexCoordinates[408] = getCoordX(22);
+	m_atlasTexCoordinates[409] = -1.0f;
+	m_atlasTexCoordinates[410] = -1.0f;
+	m_atlasTexCoordinates[411] = getCoordY(18);
+	m_atlasTexCoordinates[412] = -1.0f;
+	m_atlasTexCoordinates[413] = -1.0f;
+	// Top right
+	m_atlasTexCoordinates[414] = getCoordX(23);
+	m_atlasTexCoordinates[415] = -1.0f;
+	m_atlasTexCoordinates[416] = -1.0f;
+	m_atlasTexCoordinates[417] = getCoordY(18);
+	m_atlasTexCoordinates[418] = -1.0f;
+	m_atlasTexCoordinates[419] = -1.0f;
+	// Bottom right
+	m_atlasTexCoordinates[420] = getCoordX(23);
+	m_atlasTexCoordinates[421] = -1.0f;
+	m_atlasTexCoordinates[422] = -1.0f;
+	m_atlasTexCoordinates[423] = getCoordY(19);
+	m_atlasTexCoordinates[424] = -1.0f;
+	m_atlasTexCoordinates[425] = -1.0f;
+	// Bottom left
+	m_atlasTexCoordinates[426] = getCoordX(22);
+	m_atlasTexCoordinates[427] = -1.0f;
+	m_atlasTexCoordinates[428] = -1.0f;
+	m_atlasTexCoordinates[429] = getCoordY(19);
+	m_atlasTexCoordinates[430] = -1.0f;
+	m_atlasTexCoordinates[431] = -1.0f;
+
+	// WOODEN SWORD
+
+	// Top left
+	m_atlasTexCoordinates[432] = getCoordX(23);
+	m_atlasTexCoordinates[433] = -1.0f;
+	m_atlasTexCoordinates[434] = -1.0f;
+	m_atlasTexCoordinates[435] = getCoordY(18);
+	m_atlasTexCoordinates[436] = -1.0f;
+	m_atlasTexCoordinates[437] = -1.0f;
+	// Top right
+	m_atlasTexCoordinates[438] = getCoordX(24);
+	m_atlasTexCoordinates[439] = -1.0f;
+	m_atlasTexCoordinates[440] = -1.0f;
+	m_atlasTexCoordinates[441] = getCoordY(18);
+	m_atlasTexCoordinates[442] = -1.0f;
+	m_atlasTexCoordinates[443] = -1.0f;
+	// Bottom right
+	m_atlasTexCoordinates[444] = getCoordX(24);
+	m_atlasTexCoordinates[445] = -1.0f;
+	m_atlasTexCoordinates[446] = -1.0f;
+	m_atlasTexCoordinates[447] = getCoordY(19);
+	m_atlasTexCoordinates[448] = -1.0f;
+	m_atlasTexCoordinates[449] = -1.0f;
+	// Bottom left
+	m_atlasTexCoordinates[450] = getCoordX(23);
+	m_atlasTexCoordinates[451] = -1.0f;
+	m_atlasTexCoordinates[452] = -1.0f;
+	m_atlasTexCoordinates[453] = getCoordY(19);
+	m_atlasTexCoordinates[454] = -1.0f;
+	m_atlasTexCoordinates[455] = -1.0f;
+
+	// STONE AXE
+
+	// Top left
+	m_atlasTexCoordinates[456] = getCoordX(11);
+	m_atlasTexCoordinates[457] = -1.0f;
+	m_atlasTexCoordinates[458] = -1.0f;
+	m_atlasTexCoordinates[459] = getCoordY(18);
+	m_atlasTexCoordinates[460] = -1.0f;
+	m_atlasTexCoordinates[461] = -1.0f;
+	// Top right
+	m_atlasTexCoordinates[462] = getCoordX(12);
+	m_atlasTexCoordinates[463] = -1.0f;
+	m_atlasTexCoordinates[464] = -1.0f;
+	m_atlasTexCoordinates[465] = getCoordY(18);
+	m_atlasTexCoordinates[466] = -1.0f;
+	m_atlasTexCoordinates[467] = -1.0f;
+	// Bottom right
+	m_atlasTexCoordinates[468] = getCoordX(12);
+	m_atlasTexCoordinates[469] = -1.0f;
+	m_atlasTexCoordinates[470] = -1.0f;
+	m_atlasTexCoordinates[471] = getCoordY(19);
+	m_atlasTexCoordinates[472] = -1.0f;
+	m_atlasTexCoordinates[473] = -1.0f;
+	// Bottom left
+	m_atlasTexCoordinates[474] = getCoordX(11);
+	m_atlasTexCoordinates[475] = -1.0f;
+	m_atlasTexCoordinates[476] = -1.0f;
+	m_atlasTexCoordinates[477] = getCoordY(19);
+	m_atlasTexCoordinates[478] = -1.0f;
+	m_atlasTexCoordinates[479] = -1.0f;
+
+	// STONE HOE
+
+	// Top left
+	m_atlasTexCoordinates[480] = getCoordX(12);
+	m_atlasTexCoordinates[481] = -1.0f;
+	m_atlasTexCoordinates[482] = -1.0f;
+	m_atlasTexCoordinates[483] = getCoordY(18);
+	m_atlasTexCoordinates[484] = -1.0f;
+	m_atlasTexCoordinates[485] = -1.0f;
+	// Top right
+	m_atlasTexCoordinates[486] = getCoordX(13);
+	m_atlasTexCoordinates[487] = -1.0f;
+	m_atlasTexCoordinates[488] = -1.0f;
+	m_atlasTexCoordinates[489] = getCoordY(18);
+	m_atlasTexCoordinates[490] = -1.0f;
+	m_atlasTexCoordinates[491] = -1.0f;
+	// Bottom right
+	m_atlasTexCoordinates[492] = getCoordX(13);
+	m_atlasTexCoordinates[493] = -1.0f;
+	m_atlasTexCoordinates[494] = -1.0f;
+	m_atlasTexCoordinates[495] = getCoordY(19);
+	m_atlasTexCoordinates[496] = -1.0f;
+	m_atlasTexCoordinates[497] = -1.0f;
+	// Bottom left
+	m_atlasTexCoordinates[498] = getCoordX(12);
+	m_atlasTexCoordinates[499] = -1.0f;
+	m_atlasTexCoordinates[500] = -1.0f;
+	m_atlasTexCoordinates[501] = getCoordY(19);
+	m_atlasTexCoordinates[502] = -1.0f;
+	m_atlasTexCoordinates[503] = -1.0f;
+
+	// STONE PICKAXE
+
+	// Top left
+	m_atlasTexCoordinates[504] = getCoordX(13);
+	m_atlasTexCoordinates[505] = -1.0f;
+	m_atlasTexCoordinates[506] = -1.0f;
+	m_atlasTexCoordinates[507] = getCoordY(18);
+	m_atlasTexCoordinates[508] = -1.0f;
+	m_atlasTexCoordinates[509] = -1.0f;
+	// Top right
+	m_atlasTexCoordinates[510] = getCoordX(14);
+	m_atlasTexCoordinates[511] = -1.0f;
+	m_atlasTexCoordinates[512] = -1.0f;
+	m_atlasTexCoordinates[513] = getCoordY(18);
+	m_atlasTexCoordinates[514] = -1.0f;
+	m_atlasTexCoordinates[515] = -1.0f;
+	// Bottom right
+	m_atlasTexCoordinates[516] = getCoordX(14);
+	m_atlasTexCoordinates[517] = -1.0f;
+	m_atlasTexCoordinates[518] = -1.0f;
+	m_atlasTexCoordinates[519] = getCoordY(19);
+	m_atlasTexCoordinates[520] = -1.0f;
+	m_atlasTexCoordinates[521] = -1.0f;
+	// Bottom left
+	m_atlasTexCoordinates[522] = getCoordX(13);
+	m_atlasTexCoordinates[523] = -1.0f;
+	m_atlasTexCoordinates[524] = -1.0f;
+	m_atlasTexCoordinates[525] = getCoordY(19);
+	m_atlasTexCoordinates[526] = -1.0f;
+	m_atlasTexCoordinates[527] = -1.0f;
+
+	// STONE SHOVEL
+
+	// Top left
+	m_atlasTexCoordinates[528] = getCoordX(14);
+	m_atlasTexCoordinates[529] = -1.0f;
+	m_atlasTexCoordinates[530] = -1.0f;
+	m_atlasTexCoordinates[531] = getCoordY(18);
+	m_atlasTexCoordinates[532] = -1.0f;
+	m_atlasTexCoordinates[533] = -1.0f;
+	// Top right
+	m_atlasTexCoordinates[534] = getCoordX(15);
+	m_atlasTexCoordinates[535] = -1.0f;
+	m_atlasTexCoordinates[536] = -1.0f;
+	m_atlasTexCoordinates[537] = getCoordY(18);
+	m_atlasTexCoordinates[538] = -1.0f;
+	m_atlasTexCoordinates[539] = -1.0f;
+	// Bottom right
+	m_atlasTexCoordinates[540] = getCoordX(15);
+	m_atlasTexCoordinates[541] = -1.0f;
+	m_atlasTexCoordinates[542] = -1.0f;
+	m_atlasTexCoordinates[543] = getCoordY(19);
+	m_atlasTexCoordinates[544] = -1.0f;
+	m_atlasTexCoordinates[545] = -1.0f;
+	// Bottom left
+	m_atlasTexCoordinates[546] = getCoordX(14);
+	m_atlasTexCoordinates[547] = -1.0f;
+	m_atlasTexCoordinates[548] = -1.0f;
+	m_atlasTexCoordinates[549] = getCoordY(19);
+	m_atlasTexCoordinates[550] = -1.0f;
+	m_atlasTexCoordinates[551] = -1.0f;
+
+	// STONE SWORD
+
+	// Top left
+	m_atlasTexCoordinates[552] = getCoordX(15);
+	m_atlasTexCoordinates[553] = -1.0f;
+	m_atlasTexCoordinates[554] = -1.0f;
+	m_atlasTexCoordinates[555] = getCoordY(18);
+	m_atlasTexCoordinates[556] = -1.0f;
+	m_atlasTexCoordinates[557] = -1.0f;
+	// Top right
+	m_atlasTexCoordinates[558] = getCoordX(16);
+	m_atlasTexCoordinates[559] = -1.0f;
+	m_atlasTexCoordinates[560] = -1.0f;
+	m_atlasTexCoordinates[561] = getCoordY(18);
+	m_atlasTexCoordinates[562] = -1.0f;
+	m_atlasTexCoordinates[563] = -1.0f;
+	// Bottom right
+	m_atlasTexCoordinates[564] = getCoordX(16);
+	m_atlasTexCoordinates[565] = -1.0f;
+	m_atlasTexCoordinates[566] = -1.0f;
+	m_atlasTexCoordinates[567] = getCoordY(19);
+	m_atlasTexCoordinates[568] = -1.0f;
+	m_atlasTexCoordinates[569] = -1.0f;
+	// Bottom left
+	m_atlasTexCoordinates[570] = getCoordX(15);
+	m_atlasTexCoordinates[571] = -1.0f;
+	m_atlasTexCoordinates[572] = -1.0f;
+	m_atlasTexCoordinates[573] = getCoordY(19);
+	m_atlasTexCoordinates[574] = -1.0f;
+	m_atlasTexCoordinates[575] = -1.0f;
+
+	// UNKNOWN ITEM
+
+	// Top left
+	m_atlasTexCoordinates[576] = getCoordX(25);
+	m_atlasTexCoordinates[577] = -1.0f;
+	m_atlasTexCoordinates[578] = -1.0f;
+	m_atlasTexCoordinates[579] = getCoordY(18);
+	m_atlasTexCoordinates[580] = -1.0f;
+	m_atlasTexCoordinates[581] = -1.0f;
+	// Top right
+	m_atlasTexCoordinates[582] = getCoordX(26);
+	m_atlasTexCoordinates[583] = -1.0f;
+	m_atlasTexCoordinates[584] = -1.0f;
+	m_atlasTexCoordinates[585] = getCoordY(18);
+	m_atlasTexCoordinates[586] = -1.0f;
+	m_atlasTexCoordinates[587] = -1.0f;
+	// Bottom right
+	m_atlasTexCoordinates[588] = getCoordX(26);
+	m_atlasTexCoordinates[589] = -1.0f;
+	m_atlasTexCoordinates[590] = -1.0f;
+	m_atlasTexCoordinates[591] = getCoordY(19);
+	m_atlasTexCoordinates[592] = -1.0f;
+	m_atlasTexCoordinates[593] = -1.0f;
+	// Bottom left
+	m_atlasTexCoordinates[594] = getCoordX(25);
+	m_atlasTexCoordinates[595] = -1.0f;
+	m_atlasTexCoordinates[596] = -1.0f;
+	m_atlasTexCoordinates[597] = getCoordY(19);
+	m_atlasTexCoordinates[598] = -1.0f;
+	m_atlasTexCoordinates[599] = -1.0f;
 }
 
 AtlasTexCoordinates::~AtlasTexCoordinates() {

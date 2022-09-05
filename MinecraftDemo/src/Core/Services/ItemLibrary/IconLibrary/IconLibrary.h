@@ -22,6 +22,7 @@ public:
 private:
 	void generateBlockIcons();
 	void generateItemIcons();
+    void generateItemIcon(ItemId itemId);
     void addFaceTexIndexes(GLint* buffer, size_t& vertexIndexesBaseIndex, int textureCoordinatesIndex, int colorIndex);
 
     Renderer* m_renderer;

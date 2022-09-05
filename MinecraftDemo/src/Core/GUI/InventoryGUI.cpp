@@ -220,11 +220,16 @@ void InventoryGUI::drawInventoryDNDBox(int targetId, float slotSize, ImVec2& win
 		}
 		else {
 			ItemSlot* m_dragTargetItemSlot = m_inventory->getItemSlot(targetId);
-			m_dragTargetItemSlot->resolveSlotDrag(m_dragSourceItemSlot);
 			if (m_dragSourceItemSlot == m_craftingTable->getResultItemSlot()) {
-				m_craftingTable->fulfillMatchingRecipeContract();
+				if (m_inventory->getItemSlot(targetId)->isEmpty()) {
+					m_craftingTable->fulfillMatchingRecipeContract();
+					m_craftingTable->matchRecipe();
+				}
 			}
-			m_craftingTable->matchRecipe();
+			else {
+				m_dragTargetItemSlot->resolveSlotDrag(m_dragSourceItemSlot);
+				m_craftingTable->matchRecipe();
+			}
 			resetDNDLogic();
 		}
 	}
@@ -267,11 +272,16 @@ void InventoryGUI::drawCraftingTableDNDBox(int targetId, float slotSize, ImVec2&
 		}
 		else {
 			ItemSlot* m_dragTargetItemSlot = m_craftingTable->getItemSlot(targetId);
-			m_dragTargetItemSlot->resolveSlotDrag(m_dragSourceItemSlot);
 			if (m_dragSourceItemSlot == m_craftingTable->getResultItemSlot()) {
-				m_craftingTable->fulfillMatchingRecipeContract();
+				if (m_inventory->getItemSlot(targetId)->isEmpty()) {
+					m_craftingTable->fulfillMatchingRecipeContract();
+					m_craftingTable->matchRecipe();
+				}
 			}
-			m_craftingTable->matchRecipe();
+			else {
+				m_dragTargetItemSlot->resolveSlotDrag(m_dragSourceItemSlot);
+				m_craftingTable->matchRecipe();
+			}
 			resetDNDLogic();
 		}
 	}

@@ -6,7 +6,7 @@ public:
 	AtlasTexCoordinates(unsigned int atlasWidth, unsigned int atlasHeight);
 	~AtlasTexCoordinates();
 	GLfloat* m_atlasTexCoordinates;
-	const size_t TEX_COORDINATES_SIZE = 336;
+	const size_t TEX_COORDINATES_SIZE = 600;
 
 private:
 	float getCoordX(int spriteNum);
