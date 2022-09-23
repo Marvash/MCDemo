@@ -1,10 +1,10 @@
 #include "TreeBuilder.h"
 
-TreeBuilder::TreeBuilder() {
+TreeBuilder::TreeBuilder(BlockManager* blockManager) : m_blockManager(blockManager) {
 
 }
 
-void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float chunkX, float chunkY, unsigned int chunkSideSize, float xTreeMin, float yTreeMin, Cube***& blockMatrix) {
+void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float chunkX, float chunkY, unsigned int chunkSideSize, float xTreeMin, float yTreeMin, Block***& blockMatrix) {
 	float xChunkMin = chunkX - (chunkSideSize / 2.0f);
 	float yChunkMin = chunkY - (chunkSideSize / 2.0f);
 	float xChunkMax = chunkX + (chunkSideSize / 2.0f);
@@ -24,28 +24,28 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::OAK_LOG_BLOCK);
+		m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::OAK_LOG);
 	}
 	treeY += 1.0f;
 	if (treeX > xChunkMin && treeX < xChunkMax && treeZ > yChunkMin && treeZ < yChunkMax) {
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::OAK_LOG_BLOCK);
+		m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::OAK_LOG);
 	}
 	treeY += 1.0f;
 	if (treeX > xChunkMin && treeX < xChunkMax && treeZ > yChunkMin && treeZ < yChunkMax) {
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::OAK_LOG_BLOCK);
+		m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::OAK_LOG);
 	}
 	treeY += 1.0f;
 	if (treeX > xChunkMin && treeX < xChunkMax && treeZ > yChunkMin && treeZ < yChunkMax) {
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::OAK_LOG_BLOCK);
+		m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::OAK_LOG);
 	}
 	for (int i = -treeWidth; i <= treeWidth; i++) {
 		for (int j = -treeWidth; j <= treeWidth; j++) {
@@ -55,8 +55,8 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 				relativeTreeX = tmpTreeX - xChunkMin;
 				relativeTreeZ = tmpTreeZ - yChunkMin;
 				relativeTreeY = treeY;
-				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == CubeId::AIR_BLOCK) {
-					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::LEAVES_BLOCK);
+				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getBlockId() == BlockId::AIR) {
+					m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::LEAVES);
 				}
 			}
 		}
@@ -66,7 +66,7 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::OAK_LOG_BLOCK);
+		m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::OAK_LOG);
 	}
 	for (int i = -treeWidth; i <= treeWidth; i++) {
 		for (int j = -treeWidth; j <= treeWidth; j++) {
@@ -76,8 +76,8 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 				relativeTreeX = tmpTreeX - xChunkMin;
 				relativeTreeZ = tmpTreeZ - yChunkMin;
 				relativeTreeY = treeY;
-				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == CubeId::AIR_BLOCK) {
-					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::LEAVES_BLOCK);
+				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getBlockId() == BlockId::AIR) {
+					m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::LEAVES);
 				}
 			}
 		}
@@ -87,7 +87,7 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::OAK_LOG_BLOCK);
+		m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::OAK_LOG);
 	}
 	for (int i = -treeWidth; i <= treeWidth; i++) {
 		for (int j = -treeWidth; j <= treeWidth; j++) {
@@ -97,23 +97,8 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 				relativeTreeX = tmpTreeX - xChunkMin;
 				relativeTreeZ = tmpTreeZ - yChunkMin;
 				relativeTreeY = treeY;
-				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == CubeId::AIR_BLOCK) {
-					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::LEAVES_BLOCK);
-				}
-			}
-		}
-	}
-	treeY += 1.0f;
-	for (int i = -treeWidth; i <= treeWidth; i++) {
-		for (int j = -treeWidth; j <= treeWidth; j++) {
-			tmpTreeX = treeX + i;
-			tmpTreeZ = treeZ + j;
-			if (tmpTreeX > xChunkMin && tmpTreeX < xChunkMax && tmpTreeZ > yChunkMin && tmpTreeZ < yChunkMax) {
-				relativeTreeX = tmpTreeX - xChunkMin;
-				relativeTreeZ = tmpTreeZ - yChunkMin;
-				relativeTreeY = treeY;
-				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == CubeId::AIR_BLOCK) {
-					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::LEAVES_BLOCK);
+				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getBlockId() == BlockId::AIR) {
+					m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::LEAVES);
 				}
 			}
 		}
@@ -127,8 +112,23 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 				relativeTreeX = tmpTreeX - xChunkMin;
 				relativeTreeZ = tmpTreeZ - yChunkMin;
 				relativeTreeY = treeY;
-				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getCubeId() == CubeId::AIR_BLOCK) {
-					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].setCubeId(CubeId::LEAVES_BLOCK);
+				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getBlockId() == BlockId::AIR) {
+					m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::LEAVES);
+				}
+			}
+		}
+	}
+	treeY += 1.0f;
+	for (int i = -treeWidth; i <= treeWidth; i++) {
+		for (int j = -treeWidth; j <= treeWidth; j++) {
+			tmpTreeX = treeX + i;
+			tmpTreeZ = treeZ + j;
+			if (tmpTreeX > xChunkMin && tmpTreeX < xChunkMax && tmpTreeZ > yChunkMin && tmpTreeZ < yChunkMax) {
+				relativeTreeX = tmpTreeX - xChunkMin;
+				relativeTreeZ = tmpTreeZ - yChunkMin;
+				relativeTreeY = treeY;
+				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getBlockId() == BlockId::AIR) {
+					m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::LEAVES);
 				}
 			}
 		}

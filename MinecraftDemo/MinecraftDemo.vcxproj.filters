@@ -219,9 +219,6 @@
     <ClCompile Include="src\Core\Services\ChunkManager\ChunkManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Cube\Cube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Core\TerrainGenerator\TerrainGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -273,7 +270,7 @@
     <ClCompile Include="src\Core\Services\Inventory\Inventory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Services\ItemLibrary\ItemSpecification.cpp">
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemSharedSpec.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Services\Renderer\Shader\ShaderLibrary.cpp">
@@ -309,15 +306,6 @@
     <ClCompile Include="src\Core\Services\ItemLibrary\IconLibrary\IconLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Services\ItemLibrary\PlaceableItemSpecification.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\Services\ItemLibrary\NullItemSpecification.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\Services\ItemLibrary\Item.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Core\Services\Crafting\CraftingRecipeLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -327,16 +315,49 @@
     <ClCompile Include="src\Core\Services\Crafting\CraftingRecipeBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Services\ItemLibrary\ItemSlot.cpp">
+    <ClCompile Include="src\Core\Services\ItemLibrary\DefaultItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Services\Crafting\CraftingRecipeContract.cpp">
+    <ClCompile Include="src\Core\Services\BlockLibrary\BlockLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Services\ItemLibrary\DefaultItemSpecification.cpp">
+    <ClCompile Include="src\Core\Services\BlockLibrary\BlockSharedSpec.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Services\ItemLibrary\ToolItemSpecification.cpp">
+    <ClCompile Include="src\Core\Services\BlockLibrary\DroppableBlockSharedSpec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\BlockLibrary\Block.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\BlockLibrary\BlockBreakingContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\ItemLibrary\Item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemDecorator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\ItemLibrary\PlaceableItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\ItemLibrary\PlaceableItemSharedSpec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemHandle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\Crafting\CraftingPatternMatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\Crafting\CraftingPatternMatchResult.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Services\BlockLibrary\BlockManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -581,9 +602,6 @@
     <ClInclude Include="src\Core\Services\ChunkManager\ChunkManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Cube\Cube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Core\TerrainGenerator\TerrainGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -647,7 +665,7 @@
     <ClInclude Include="src\Core\Services\Inventory\Inventory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Services\ItemLibrary\ItemSpecification.h">
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemSharedSpec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Services\Renderer\Shader\ShaderLibrary.h">
@@ -701,16 +719,7 @@
     <ClInclude Include="src\Core\Inventory\ItemUsageStrategySelector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Services\ItemLibrary\PlaceableItemSpecification.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Core\Services\ItemLibrary\NullItemSpecification.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Core\Cube\CubeIdEnum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Core\Services\ItemLibrary\Item.h">
+    <ClInclude Include="src\Core\Services\BlockLibrary\BlockIdEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Services\Crafting\CraftingRecipeLibrary.h">
@@ -725,16 +734,58 @@
     <ClInclude Include="src\Core\Exceptions\GameLogicException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Services\ItemLibrary\ItemSlot.h">
+    <ClInclude Include="src\Core\Services\ItemLibrary\DefaultItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipeContract.h">
+    <ClInclude Include="src\Core\Services\BlockLibrary\BlockLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Services\ItemLibrary\DefaultItemSpecification.h">
+    <ClInclude Include="src\Core\Atlas\AtlasElementTexIndex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Services\ItemLibrary\ToolItemSpecification.h">
+    <ClInclude Include="src\Core\Services\BlockLibrary\BlockFaceEnum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\BlockLibrary\BlockSharedSpec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\BlockLibrary\Block.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\BlockLibrary\DroppableBlockSharedSpec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\BlockLibrary\BlockBreakingContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\Item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemDecorator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\PlaceableItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\PlaceableItemSharedSpec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\IItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\Crafting\CraftingPatternMatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\Crafting\CraftingPatternMatchResult.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\BlockLibrary\BlockManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

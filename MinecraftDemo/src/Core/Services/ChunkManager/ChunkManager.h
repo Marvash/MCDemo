@@ -1,11 +1,12 @@
 #pragma once
 #include "Core/GameObject/GameObject.h"
 #include "Core/Chunk/Chunk.h"
-#include "Core/Cube/Cube.h"
+#include "Core/Services/BlockLibrary/Block.h"
 #include "Core/TerrainGenerator/TerrainGenerator.h"
 #include "Core/Services/CoreService.h"
 #include "Core/Services/Atlas/Atlas.h"
 #include "Core/Services/Biome/BiomeLibrary.h"
+#include "Core/Services/BlockLibrary/BlockManager.h"
 #include <Boost/log/trivial.hpp>
 
 class CoreServiceLocator;
@@ -32,19 +33,16 @@ public:
 	void startGeneratorThreads();
 	void stopBuilderThreads();
 	void stopGeneratorThreads();
-	void destroyBlock(Cube* toDestroy);
-	void placeBlock(Cube* toPlace, CubeId cubeId);
 	void updateGenerationOrigin(glm::vec3& playerPos);
-	Cube* getCubeByCoords(glm::f64vec3 coords);
+	Block* getCubeByCoords(glm::f64vec3 coords);
 	void convertToCenteredCubeCoordinates(glm::vec3& coords);
-	void init(BiomeLibrary* biomeManager, Atlas* atlas);
-	void computeAdjacentCubes(Cube*** adjacentCubes, GameObject* gameObject, int radius);
+	void init(BiomeLibrary* biomeManager, Atlas* atlas, BlockManager* blockManager);
 	void onNotify(Event& newEvent) override;
 	void notify(Event& newEvent) override;
-	Cube* solidBlockCast(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength);
-	glm::vec3 getCubeAbsCoords(Cube* cube);
-	std::vector<Cube*> getCubesInRay(glm::vec3 rayOrigin, glm::vec3 rayDirection, float rayLength);
-	void getCubesInRay(glm::vec3 rayOrigin, glm::vec3 rayDirection, float rayLength, std::vector<Cube*>& cubes);
+	Block* solidBlockCast(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength);
+	glm::vec3 getCubeAbsCoords(Block* cube);
+	std::vector<Block*> getCubesInRay(glm::vec3 rayOrigin, glm::vec3 rayDirection, float rayLength);
+	void getCubesInRay(glm::vec3 rayOrigin, glm::vec3 rayDirection, float rayLength, std::vector<Block*>& cubes);
 
 private:
 	enum class ChunkSide {
@@ -63,6 +61,8 @@ private:
 	glm::vec3 m_generationOrigin;
 	glm::vec3 m_playerPosition;
 	std::vector<RenderingComponent*> m_chunksRenderingComponents;
+	BlockManager* m_blockManager;
+	Inventory* m_inventory;
 	
 	bool m_buildersShouldStop;
 	bool m_generatorsShouldStop;
@@ -74,6 +74,7 @@ private:
 	void moveChunkMatrix(ChunkSide side);
 	void generatorThreadFunction();
 	void builderThreadFunction();
+	void updateBlockNeighbouringChunks(Block* block);
 
 	void lockHP();
 	void unlockHP();

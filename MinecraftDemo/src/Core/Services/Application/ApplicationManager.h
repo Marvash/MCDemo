@@ -13,9 +13,11 @@ public:
 
 	void requestCoreStateChange(CoreState nextState);
 	double getDeltaTime();
+	double getTime();
 	void onNotify(Event& newEvent) override;
 
 private:
 	Core* m_core;
 	double m_deltaTime;
+	double m_time;
 };

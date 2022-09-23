@@ -1,10 +1,12 @@
 #include "TerrainGenerator.h"
 
-TerrainGenerator::TerrainGenerator(BiomeLibrary* biomeManager, int chunkSideSize, int chunkHeight) :
+TerrainGenerator::TerrainGenerator(BiomeLibrary* biomeManager, BlockManager* blockManager, int chunkSideSize, int chunkHeight) :
 	m_chunkSideSize(chunkSideSize), 
 	m_chunkHeight(chunkHeight), 
 	m_treeChunkOffset(8), 
-	m_biomeManager(biomeManager) {
+	m_biomeManager(biomeManager),
+	m_blockManager(blockManager),
+	m_treeBuilder(new TreeBuilder(blockManager)) {
 
 	m_temperaturePerlinGen = PerlinNoiseGenerator();
 	m_temperaturePerlinGen.setSeed(m_temperatureSeed);
@@ -12,6 +14,10 @@ TerrainGenerator::TerrainGenerator(BiomeLibrary* biomeManager, int chunkSideSize
 	m_humidityPerlinGen = PerlinNoiseGenerator();
 	m_humidityPerlinGen.setSeed(m_humiditySeed);
 	m_humidityPerlinGen.setPeriod(BIOME_PERLIN_PERIOD);
+}
+
+TerrainGenerator::~TerrainGenerator() {
+	delete m_treeBuilder;
 }
 
 float TerrainGenerator::getBlockHeight(Biome* biome, float x, float y) {
@@ -353,7 +359,7 @@ float TerrainGenerator::computeTerrainHeight(float x, float y, Biome* &biome) {
 	return height;
 }
 
-void TerrainGenerator::generateChunk(Cube*** &blockMatrix, glm::vec3& chunkPosition) {
+void TerrainGenerator::generateChunk(Block*** &blockMatrix, glm::vec3& chunkPosition) {
 	Biome** biomes = m_biomeManager->getBiomes();
 	unsigned int biomesCount = m_biomeManager->getBiomesCount();
 	Biome* biome = biomes[7];
@@ -365,40 +371,36 @@ void TerrainGenerator::generateChunk(Cube*** &blockMatrix, glm::vec3& chunkPosit
 			int finalHeight = (int)height;
 			int dirtHeight = 70;
 			for (int i = 0; i < m_chunkHeight; i++) {
+				BlockId blockId = BlockId::AIR;
 				if (i <= finalHeight) {
 					if (i < dirtHeight) {
-						blockMatrix[i][j][w].setCubeId(CubeId::STONE_BLOCK);
-						blockMatrix[i][j][w].setBiomeRef(biome);
+						blockId = BlockId::STONE;
 					}
 					else if (i >= dirtHeight && i < finalHeight) {
 						if (biome->m_biomeId == Biome::BiomeId::DESERT) {
-							blockMatrix[i][j][w].setCubeId(CubeId::SAND_BLOCK);
-							blockMatrix[i][j][w].setBiomeRef(biome);
+							blockId = BlockId::SAND;
 						}
 						else {
-							blockMatrix[i][j][w].setCubeId(CubeId::DIRT_BLOCK);
-							blockMatrix[i][j][w].setBiomeRef(biome);
+							blockId = BlockId::DIRT;
 						}
 					}
 					else if (i == finalHeight) {
 						if (biome->m_biomeId == Biome::BiomeId::DESERT) {
-							blockMatrix[i][j][w].setCubeId(CubeId::SAND_BLOCK);
-							blockMatrix[i][j][w].setBiomeRef(biome);
+							blockId = BlockId::SAND;
 						}
 						else if (biome->m_biomeId == Biome::BiomeId::TUNDRA) {
-							blockMatrix[i][j][w].setCubeId(CubeId::SNOWY_GRASS_BLOCK);
-							blockMatrix[i][j][w].setBiomeRef(biome);
+							blockId = BlockId::SNOWY_GRASS;
 						}
 						else {
-							blockMatrix[i][j][w].setCubeId(CubeId::GRASS_BLOCK);
-							blockMatrix[i][j][w].setBiomeRef(biome);
+							blockId = BlockId::GRASS;
 						}
 					}
 				}
-				else {
-					blockMatrix[i][j][w].setCubeId(CubeId::AIR_BLOCK);
-					blockMatrix[i][j][w].setBiomeRef(biome);
+				m_blockManager->changeBlock(&blockMatrix[i][j][w], blockId);
+				if (biome == nullptr) {
+					BOOST_LOG_TRIVIAL(info) << "FOUND BIOME NULL ";
 				}
+				blockMatrix[i][j][w].setBiomeRef(biome);
 			}
 		}
 	}
@@ -443,7 +445,7 @@ void TerrainGenerator::getBilinearSmoothingGridCoordinates(float x, float y, flo
 	
 }
 
-void TerrainGenerator::decorateChunk(Cube*** &blockMatrix, glm::vec3 &chunkPosition) {
+void TerrainGenerator::decorateChunk(Block*** &blockMatrix, glm::vec3 &chunkPosition) {
 	Biome** biomes = m_biomeManager->getBiomes();
 	unsigned int biomesCount = m_biomeManager->getBiomesCount();
 	float xMin = chunkPosition.x - (m_chunkSideSize / 2.0f);
@@ -586,7 +588,7 @@ void TerrainGenerator::decorateChunk(Cube*** &blockMatrix, glm::vec3 &chunkPosit
 					float cubeCenterY = ((int)height) + 0.5f;
 					switch (sampleBiome->m_biomeId) {
 					case Biome::BiomeId::FOREST:
-						m_treeBuilder.buildForestTree(cubeCenterY, cubeCenterX, cubeCenterZ, chunkPosition.x, chunkPosition.z, m_chunkSideSize, xTreeMin, yTreeMin, blockMatrix);
+						m_treeBuilder->buildForestTree(cubeCenterY, cubeCenterX, cubeCenterZ, chunkPosition.x, chunkPosition.z, m_chunkSideSize, xTreeMin, yTreeMin, blockMatrix);
 						break;
 					}
 				}

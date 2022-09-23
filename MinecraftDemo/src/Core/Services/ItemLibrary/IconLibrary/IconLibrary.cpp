@@ -2,10 +2,11 @@
 #include <iostream>
 #include <fstream>
 
-IconLibrary::IconLibrary(Renderer* renderer, BiomeLibrary* biomeLibrary, Atlas* atlas) :
+IconLibrary::IconLibrary(Renderer* renderer, BiomeLibrary* biomeLibrary, Atlas* atlas, BlockLibrary* blockLibrary) :
 	m_renderer(renderer),
 	m_atlas(atlas),
-	m_biomeLibrary(biomeLibrary) {
+	m_biomeLibrary(biomeLibrary),
+	m_blockLibrary(blockLibrary) {
 	m_cubeVerticesTexIndexes = new GLint[(2 * 6 * 6)];
 	m_itemVerticesTexIndexes = new GLint[(2 * 6)];
 	generateBlockIcons();
@@ -13,10 +14,11 @@ IconLibrary::IconLibrary(Renderer* renderer, BiomeLibrary* biomeLibrary, Atlas* 
 }
 
 IconLibrary::~IconLibrary() {
-	int cubesCount = (int)CubeId::UNGENERATED_BLOCK;
+	int cubesCount = (int)BlockId::NONE;
 	for (int i = 0; i < cubesCount; i++) {
-		if (Cube::canBeRendered((CubeId)i)) {
-			ItemId itemId = Cube::getItemId((CubeId)i);
+		BlockSharedSpec* blockSpec = m_blockLibrary->getBlockSpecification((BlockId)i);
+		if (blockSpec->isRenderable()) {
+			ItemId itemId = blockSpec->getBlockItemId();
 			delete m_itemIcons[itemId];
 		}
 	}
@@ -29,15 +31,13 @@ ImageTexture2D* IconLibrary::getItemIcon(ItemId itemId) {
 }
 
 void IconLibrary::generateBlockIcons() {
-	BOOST_LOG_TRIVIAL(info) << "Generating block icons...";
 	OffScreenRenderData renderData;
-	int cubesCount = (int)CubeId::UNGENERATED_BLOCK;
+	int cubesCount = (int)BlockId::NONE;
 	renderData.cameraPos = glm::vec3(1.0f, 1.0f, 1.0f);
 	renderData.cameraDir = -renderData.cameraPos;
 	renderData.clearColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 	float viewportHeight = m_renderer->getViewportHeight();
 	float iconSize = glm::round(viewportHeight / 10.0f);
-	BOOST_LOG_TRIVIAL(info) << "Viewport height " << viewportHeight << " icon size " << iconSize;
 	renderData.renderingHeight = iconSize;
 	renderData.renderingWidth = iconSize;
 	renderData.shaderType = ShaderType::WORLD;
@@ -74,27 +74,27 @@ void IconLibrary::generateBlockIcons() {
 	renderData.projectionData = &orthographicData;
 	unsigned char* result;
 	for (int i = 0; i < cubesCount; i++) {
-		CubeId cubeId = (CubeId)i;
-		BOOST_LOG_TRIVIAL(info) << "Generating icon " << Cube::getDisplayName(cubeId);
-		if (Cube::canBeRendered(cubeId)) {
+		BlockId cubeId = (BlockId)i;
+		BlockSharedSpec* blockSpec = m_blockLibrary->getBlockSpecification(cubeId);
+		if (blockSpec->isRenderable()) {
 			size_t vertexIndexesBaseIndex = 0;
-			int texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, Cube::FaceSide::BACK);
-			int colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, Cube::FaceSide::BACK);
+			int texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, BlockFace::BACK);
+			int colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, BlockFace::BACK);
 			addFaceTexIndexes(m_cubeVerticesTexIndexes, vertexIndexesBaseIndex, texCoordsIndex, colorsIndex);
-			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, Cube::FaceSide::FRONT);
-			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, Cube::FaceSide::FRONT);
+			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, BlockFace::FRONT);
+			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, BlockFace::FRONT);
 			addFaceTexIndexes(m_cubeVerticesTexIndexes, vertexIndexesBaseIndex, texCoordsIndex, colorsIndex);
-			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, Cube::FaceSide::LEFT);
-			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, Cube::FaceSide::LEFT);
+			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, BlockFace::LEFT);
+			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, BlockFace::LEFT);
 			addFaceTexIndexes(m_cubeVerticesTexIndexes, vertexIndexesBaseIndex, texCoordsIndex, colorsIndex);
-			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, Cube::FaceSide::RIGHT);
-			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, Cube::FaceSide::RIGHT);
+			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, BlockFace::RIGHT);
+			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, BlockFace::RIGHT);
 			addFaceTexIndexes(m_cubeVerticesTexIndexes, vertexIndexesBaseIndex, texCoordsIndex, colorsIndex);
-			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, Cube::FaceSide::BOTTOM);
-			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, Cube::FaceSide::BOTTOM);
+			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, BlockFace::BOTTOM);
+			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, BlockFace::BOTTOM);
 			addFaceTexIndexes(m_cubeVerticesTexIndexes, vertexIndexesBaseIndex, texCoordsIndex, colorsIndex);
-			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, Cube::FaceSide::TOP);
-			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, Cube::FaceSide::TOP);
+			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, BlockFace::TOP);
+			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, BlockFace::TOP);
 			addFaceTexIndexes(m_cubeVerticesTexIndexes, vertexIndexesBaseIndex, texCoordsIndex, colorsIndex);
 			size_t vertexesCoordinatesDataSize = (size_t)renderData.modelData.vertexCount * (size_t)3;
 			size_t vertexesTexIndexesDataSize = (size_t)renderData.modelData.vertexCount * (size_t)2;
@@ -110,12 +110,11 @@ void IconLibrary::generateBlockIcons() {
 			{
 				BOOST_LOG_TRIVIAL(info) << "ERROR " << err;
 			}
-			ItemId itemId = Cube::getItemId(cubeId);
+			ItemId itemId = blockSpec->getBlockItemId();
 			m_itemIcons.insert(std::make_pair(itemId, new ImageTexture2D(renderData.renderingWidth, renderData.renderingHeight, GL_RGBA, GL_RGBA, result)));
 			delete[] result;
 		}
 	}
-	BOOST_LOG_TRIVIAL(info) << "Generated " << m_itemIcons.size() << " block icons";
 }
 
 void IconLibrary::generateItemIcons() {
@@ -133,14 +132,12 @@ void IconLibrary::generateItemIcons() {
 }
 
 void IconLibrary::generateItemIcon(ItemId itemId) {
-	BOOST_LOG_TRIVIAL(info) << "Generating item icons...";
 	OffScreenRenderData renderData;
 	renderData.cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
 	renderData.cameraDir = -renderData.cameraPos;
 	renderData.clearColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 	float viewportHeight = m_renderer->getViewportHeight();
 	float iconSize = glm::round(viewportHeight / 10.0f);
-	BOOST_LOG_TRIVIAL(info) << "Viewport height " << viewportHeight << " icon size " << iconSize;
 	renderData.renderingHeight = iconSize;
 	renderData.renderingWidth = iconSize;
 	renderData.shaderType = ShaderType::WORLD;
@@ -177,7 +174,6 @@ void IconLibrary::generateItemIcon(ItemId itemId) {
 	orthographicData.t = 0.5f;
 	renderData.projectionData = &orthographicData;
 	unsigned char* result;
-	BOOST_LOG_TRIVIAL(info) << "Generating icon " << (int)itemId;
 	size_t vertexIndexesBaseIndex = 0;
 	int texCoordsIndex = m_atlas->getItemTexIndex(itemId);
 	int colorsIndex = 0;
@@ -199,7 +195,6 @@ void IconLibrary::generateItemIcon(ItemId itemId) {
 
 	m_itemIcons.insert(std::make_pair(itemId, new ImageTexture2D(renderData.renderingWidth, renderData.renderingHeight, GL_RGBA, GL_RGBA, result)));
 	delete[] result;
-	BOOST_LOG_TRIVIAL(info) << "Generated icon " << (int)itemId;
 }
 
 void IconLibrary::addFaceTexIndexes(GLint* buffer, size_t& vertexIndexesBaseIndex, int textureCoordinatesIndex, int colorIndex) {

@@ -1,8 +1,9 @@
 #include "Chunk.h"
+#include "Core/Services/BlockLibrary/BlockManager.h"
 
 const float Chunk::blockSideSize = 1.0f;
 
-Chunk::Chunk(BiomeLibrary* biomeManager, Atlas* atlas, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
+Chunk::Chunk(BlockManager* blockManager, BiomeLibrary* biomeManager, Atlas* atlas, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
 	leftNeighbour(nullptr),
 	rightNeighbour(nullptr),
 	frontNeighbour(nullptr),
@@ -14,13 +15,14 @@ Chunk::Chunk(BiomeLibrary* biomeManager, Atlas* atlas, int chunkHeight, int chun
 	state(ChunkState::SHOULDREGENERATE),
 	canDraw(false),
 	m_atlas(atlas),
-	m_biomeManager(biomeManager) {
+	m_biomeManager(biomeManager),
+	m_blockManager(blockManager) {
 
 	initEmptyBlockMatrix();
 	renderingSetup();
 }
 
-Chunk::Chunk(BiomeLibrary* biomeManager, Atlas* atlas, Cube*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
+Chunk::Chunk(BlockManager* blockManager, BiomeLibrary* biomeManager, Atlas* atlas, Block*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition) :
 	leftNeighbour(nullptr),
 	rightNeighbour(nullptr),
 	frontNeighbour(nullptr),
@@ -39,7 +41,8 @@ Chunk::Chunk(BiomeLibrary* biomeManager, Atlas* atlas, Cube*** blockMatrix, int 
 	canDraw(false),
 	m_blockMatrix(blockMatrix),
 	m_atlas(atlas),
-	m_biomeManager(biomeManager) {
+	m_biomeManager(biomeManager),
+	m_blockManager(blockManager) {
 
 	renderingSetup();
 }
@@ -52,23 +55,24 @@ RenderingComponent* Chunk::getRenderingComponent() {
 void Chunk::initEmptyBlockMatrix() {
 	//BOOST_LOG_TRIVIAL(info) << "Chunk pos x: " << chunkPosition.x << " y: " << chunkPosition.y << " z: " << chunkPosition.z;
 	float halfBlockSideSize = blockSideSize / 2.0f;
-	Cube*** m_blockMatrix = new Cube * *[chunkHeight];
+	Block*** m_blockMatrix = new Block * *[chunkHeight];
 	for (int i = 0; i < chunkHeight; i++) {
-		m_blockMatrix[i] = new Cube * [chunkSideSize];
+		m_blockMatrix[i] = new Block * [chunkSideSize];
 		for (int j = 0; j < chunkSideSize; j++) {
-			m_blockMatrix[i][j] = new Cube[chunkSideSize];
+			m_blockMatrix[i][j] = new Block[chunkSideSize];
 			for (int k = 0; k < chunkSideSize; k++) {
 				float xOffset = (j + halfBlockSideSize);
 				float yOffset = (i + halfBlockSideSize);
 				float zOffset = (k + halfBlockSideSize);
-				m_blockMatrix[i][j][k] = Cube(CubeId::UNGENERATED_BLOCK, this, nullptr, xOffset, yOffset, zOffset);
+				glm::vec3 offset((j + halfBlockSideSize), (i + halfBlockSideSize), (k + halfBlockSideSize));
+				m_blockMatrix[i][j][k] = Block(BlockId::NONE, this, offset);
 			}
 		}
 	}
 	this->m_blockMatrix = m_blockMatrix;
 }
 
-Cube*** Chunk::getBlockMatrix() {
+Block*** Chunk::getBlockMatrix() {
 	return m_blockMatrix;
 }
 
@@ -117,10 +121,10 @@ void Chunk::loadMesh() {
 	cleanVerticesArrays();
 }
 
-void Chunk::addFaceCoordinates(size_t& vertexCoordsBaseIndex, Cube::FaceSide faceSide, float vertexBaseHeight, float vertexBaseWidth, float vertexBaseDepth) {
+void Chunk::addFaceCoordinates(size_t& vertexCoordsBaseIndex, BlockFace faceSide, float vertexBaseHeight, float vertexBaseWidth, float vertexBaseDepth) {
 	float halfBlockSideSize = blockSideSize / 2.0f;
 	switch (faceSide) {
-	case Cube::FaceSide::TOP:
+	case BlockFace::TOP:
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseWidth - halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseHeight + halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseDepth - halfBlockSideSize);
@@ -137,7 +141,7 @@ void Chunk::addFaceCoordinates(size_t& vertexCoordsBaseIndex, Cube::FaceSide fac
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseHeight + halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseDepth + halfBlockSideSize);
 		break;
-	case Cube::FaceSide::BOTTOM:
+	case BlockFace::BOTTOM:
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseWidth - halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseHeight - halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseDepth + halfBlockSideSize);
@@ -154,7 +158,7 @@ void Chunk::addFaceCoordinates(size_t& vertexCoordsBaseIndex, Cube::FaceSide fac
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseHeight - halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseDepth - halfBlockSideSize);
 		break;
-	case Cube::FaceSide::RIGHT:
+	case BlockFace::RIGHT:
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseWidth + halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseHeight + halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseDepth + halfBlockSideSize);
@@ -171,7 +175,7 @@ void Chunk::addFaceCoordinates(size_t& vertexCoordsBaseIndex, Cube::FaceSide fac
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseHeight - halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseDepth + halfBlockSideSize);
 		break;
-	case Cube::FaceSide::LEFT:
+	case BlockFace::LEFT:
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseWidth - halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseHeight + halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseDepth - halfBlockSideSize);
@@ -188,7 +192,7 @@ void Chunk::addFaceCoordinates(size_t& vertexCoordsBaseIndex, Cube::FaceSide fac
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseHeight - halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseDepth - halfBlockSideSize);
 		break;
-	case Cube::FaceSide::FRONT:
+	case BlockFace::FRONT:
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseWidth - halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseHeight + halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseDepth + halfBlockSideSize);
@@ -205,7 +209,7 @@ void Chunk::addFaceCoordinates(size_t& vertexCoordsBaseIndex, Cube::FaceSide fac
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseHeight - halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseDepth + halfBlockSideSize);
 		break;
-	case Cube::FaceSide::BACK:
+	case BlockFace::BACK:
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseWidth + halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseHeight + halfBlockSideSize);
 		vertexesCoordinates[vertexCoordsBaseIndex++] = (GLfloat)(vertexBaseDepth - halfBlockSideSize);
@@ -262,7 +266,7 @@ void Chunk::buildMesh() {
 	for (int i = 0; i < chunkHeight; i++) {
 		for (int j = 0; j < chunkSideSize; j++) {
 			for (int w = 0; w < chunkSideSize; w++) {
-				if (m_blockMatrix[i][j][w].getCubeId() == CubeId::AIR_BLOCK || m_blockMatrix[i][j][w].getCubeId() == CubeId::UNGENERATED_BLOCK) {
+				if (!m_blockManager->isRenderable(m_blockMatrix[i][j][w].getBlockId())) {
 					continue;
 				}
 				/*
@@ -270,20 +274,24 @@ void Chunk::buildMesh() {
 				float vertexBaseWidth = j - ((chunkSideSize / 2.0f) + (blockSideSize / 2.0f));
 				float vertexBaseDepth = w - ((chunkSideSize / 2.0f) + (blockSideSize / 2.0f));
 				*/
-				glm::vec3 cubeOffset = m_blockMatrix[i][j][w].getCubeCoordsOffset();
+				glm::vec3 cubeOffset = m_blockMatrix[i][j][w].getBlockCoordsOffset();
 				float vertexBaseHeight = (cubeOffset.y);
 				float vertexBaseWidth = (cubeOffset.x - (chunkSideSize / 2));
 				float vertexBaseDepth = (cubeOffset.z - (chunkSideSize / 2));
 				size_t vertexCoordsBaseIndex = correctVertexCount * 3;
 				size_t texCoordsBaseIndex = correctVertexCount * 2;
-				int texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::TOP);
-				int colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::TOP);
+				int texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getBlockId(), BlockFace::TOP);
+				if (m_blockMatrix[i][j][w].getBiomeRef() == nullptr) {
+					BOOST_LOG_TRIVIAL(info) << "FOUND NULL ";
+					BOOST_LOG_TRIVIAL(info) << "FOUND NULL " << (int)state << " " << i << " " << j << " " << w;
+				}
+				int colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getBlockId(), BlockFace::TOP);
 				//BOOST_LOG_TRIVIAL(info) << "tex: " << texCoordsIndex << "color: " << colorsIndex;
 				// TOP
-				Cube* neighbourCube = findNeighbourBlock(Cube::FaceSide::TOP, i, j, w);
-				if (neighbourCube != nullptr && Cube::isTransparent(neighbourCube->getCubeId())) {
+				Block* neighbourBlock = findNeighbourBlock(BlockFace::TOP, i, j, w);
+				if (neighbourBlock != nullptr && m_blockManager->isTransparent(neighbourBlock->getBlockId())) {
 					
-					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::TOP, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
+					addFaceCoordinates(vertexCoordsBaseIndex, BlockFace::TOP, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
 					addFaceIndexes(vertexIndexBase, correctIndexCount);
 
@@ -293,13 +301,13 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BOTTOM);
-				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BOTTOM);
+				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getBlockId(), BlockFace::BOTTOM);
+				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getBlockId(), BlockFace::BOTTOM);
 				// BOTTOM
-				neighbourCube = findNeighbourBlock(Cube::FaceSide::BOTTOM, i, j, w);
-				if (neighbourCube != nullptr && Cube::isTransparent(neighbourCube->getCubeId())) {
+				neighbourBlock = findNeighbourBlock(BlockFace::BOTTOM, i, j, w);
+				if (neighbourBlock != nullptr && m_blockManager->isTransparent(neighbourBlock->getBlockId())) {
 
-					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::BOTTOM, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
+					addFaceCoordinates(vertexCoordsBaseIndex, BlockFace::BOTTOM, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
 					addFaceIndexes(vertexIndexBase, correctIndexCount);
 
@@ -309,13 +317,13 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::RIGHT);
-				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::RIGHT);
+				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getBlockId(), BlockFace::RIGHT);
+				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getBlockId(), BlockFace::RIGHT);
 				// RIGHT
-				neighbourCube = findNeighbourBlock(Cube::FaceSide::RIGHT, i, j, w);
-				if (neighbourCube != nullptr && Cube::isTransparent(neighbourCube->getCubeId())) {
+				neighbourBlock = findNeighbourBlock(BlockFace::RIGHT, i, j, w);
+				if (neighbourBlock != nullptr && m_blockManager->isTransparent(neighbourBlock->getBlockId())) {
 
-					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::RIGHT, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
+					addFaceCoordinates(vertexCoordsBaseIndex, BlockFace::RIGHT, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
 					addFaceIndexes(vertexIndexBase, correctIndexCount);
 
@@ -325,13 +333,13 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::LEFT);
-				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::LEFT);
+				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getBlockId(), BlockFace::LEFT);
+				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getBlockId(), BlockFace::LEFT);
 				// LEFT
-				neighbourCube = findNeighbourBlock(Cube::FaceSide::LEFT, i, j, w);
-				if (neighbourCube != nullptr && Cube::isTransparent(neighbourCube->getCubeId())) {
+				neighbourBlock = findNeighbourBlock(BlockFace::LEFT, i, j, w);
+				if (neighbourBlock != nullptr && m_blockManager->isTransparent(neighbourBlock->getBlockId())) {
 
-					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::LEFT, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
+					addFaceCoordinates(vertexCoordsBaseIndex, BlockFace::LEFT, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
 					addFaceIndexes(vertexIndexBase, correctIndexCount);
 
@@ -341,13 +349,13 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::FRONT);
-				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::FRONT);
+				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getBlockId(), BlockFace::FRONT);
+				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getBlockId(), BlockFace::FRONT);
 				// FRONT
-				neighbourCube = findNeighbourBlock(Cube::FaceSide::FRONT, i, j, w);
-				if (neighbourCube != nullptr && Cube::isTransparent(neighbourCube->getCubeId())) {
+				neighbourBlock = findNeighbourBlock(BlockFace::FRONT, i, j, w);
+				if (neighbourBlock != nullptr && m_blockManager->isTransparent(neighbourBlock->getBlockId())) {
 
-					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::FRONT, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
+					addFaceCoordinates(vertexCoordsBaseIndex, BlockFace::FRONT, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
 					addFaceIndexes(vertexIndexBase, correctIndexCount);
 
@@ -357,13 +365,13 @@ void Chunk::buildMesh() {
 				}
 				vertexCoordsBaseIndex = correctVertexCount * 3;
 				texCoordsBaseIndex = correctVertexCount * 2;
-				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BACK);
-				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getCubeId(), Cube::FaceSide::BACK);
+				texCoordsIndex = m_atlas->getCubeTexIndex(m_blockMatrix[i][j][w].getBlockId(), BlockFace::BACK);
+				colorsIndex = m_biomeManager->getBiomeCubeColors(m_blockMatrix[i][j][w].getBiomeRef()->m_biomeId, m_blockMatrix[i][j][w].getBlockId(), BlockFace::BACK);
 				// BACK
-				neighbourCube = findNeighbourBlock(Cube::FaceSide::BACK, i, j, w);
-				if (neighbourCube != nullptr && Cube::isTransparent(neighbourCube->getCubeId())) {
+				neighbourBlock = findNeighbourBlock(BlockFace::BACK, i, j, w);
+				if (neighbourBlock != nullptr && m_blockManager->isTransparent(neighbourBlock->getBlockId())) {
 
-					addFaceCoordinates(vertexCoordsBaseIndex, Cube::FaceSide::BACK, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
+					addFaceCoordinates(vertexCoordsBaseIndex, BlockFace::BACK, vertexBaseHeight, vertexBaseWidth, vertexBaseDepth);
 					addFaceTexIndexes(texCoordsBaseIndex, texCoordsIndex, colorsIndex);
 					addFaceIndexes(vertexIndexBase, correctIndexCount);
 
@@ -412,7 +420,7 @@ void Chunk::cleanVerticesArrays() {
 	indexes = nullptr;
 }
 
-Cube* Chunk::getCubeByCoords(glm::f64vec3 coords) {
+Block* Chunk::getCubeByCoords(glm::f64vec3 coords) {
 	glm::f64vec3 originChunkPos = chunkPosition;
 	//BOOST_LOG_TRIVIAL(info) << "o: " << originChunkPos.x << " " << originChunkPos.y << " " << originChunkPos.z;
 	//BOOST_LOG_TRIVIAL(info) << "c: " << coords.x << " " << coords.y << " " << coords.z;
@@ -431,89 +439,118 @@ Cube* Chunk::getCubeByCoords(glm::f64vec3 coords) {
 	return &m_blockMatrix[cubeHeightIndex][cubeWidthIndex][cubeDepthIndex];
 }
 
-Cube* Chunk::getBlockValue(int height, int width, int depth) {
+Block* Chunk::getBlockValue(int height, int width, int depth) {
 	return &m_blockMatrix[height][width][depth];
 }
 
-Cube* Chunk::findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int width, int depth) {
+Block* Chunk::findNeighbourBlock(BlockFace neighbourSide, int height, int width, int depth) {
 	Chunk* neighbourChunk = nullptr;
-	Cube* neighbourCube = nullptr;
+	Block* neighbourBlock = nullptr;
 	switch (neighbourSide) {
-	case Cube::FaceSide::LEFT:
+	case BlockFace::LEFT:
 		if (width == 0) {
 			neighbourChunk = leftNeighbour;
 			width = chunkSideSize - 1;
 			if (neighbourChunk != nullptr) {
-				neighbourCube = neighbourChunk->getBlockValue(height, width, depth);
+				neighbourBlock = neighbourChunk->getBlockValue(height, width, depth);
 			}
 		}
 		else {
 			width -= 1;
-			neighbourCube = &m_blockMatrix[height][width][depth];
+			neighbourBlock = &m_blockMatrix[height][width][depth];
 		}
 		break;
-	case Cube::FaceSide::RIGHT:
+	case BlockFace::RIGHT:
 		if (width == (chunkSideSize - 1)) {
 			neighbourChunk = rightNeighbour;
 			width = 0;
 			if (neighbourChunk != nullptr) {
-				neighbourCube = neighbourChunk->getBlockValue(height, width, depth);
+				neighbourBlock = neighbourChunk->getBlockValue(height, width, depth);
 			}
 		}
 		else {
 			width += 1;
-			neighbourCube = &m_blockMatrix[height][width][depth];
+			neighbourBlock = &m_blockMatrix[height][width][depth];
 		}
 		break;
-	case Cube::FaceSide::FRONT:
+	case BlockFace::FRONT:
 		if (depth == (chunkSideSize - 1)) {
 			neighbourChunk = frontNeighbour;
 			depth = 0;
 			if (neighbourChunk != nullptr) {
-				neighbourCube = neighbourChunk->getBlockValue(height, width, depth);
+				neighbourBlock = neighbourChunk->getBlockValue(height, width, depth);
 			}
 		}
 		else {
 			depth += 1;
-			neighbourCube = &m_blockMatrix[height][width][depth];
+			neighbourBlock = &m_blockMatrix[height][width][depth];
 		}
 		break;
-	case Cube::FaceSide::BACK:
+	case BlockFace::BACK:
 		if (depth == 0) {
 			neighbourChunk = backNeighbour;
 			depth = chunkSideSize - 1;
 			if (neighbourChunk != nullptr) {
-				neighbourCube = neighbourChunk->getBlockValue(height, width, depth);
+				neighbourBlock = neighbourChunk->getBlockValue(height, width, depth);
 			}
 		}
 		else {
 			depth -= 1;
-			neighbourCube = &m_blockMatrix[height][width][depth];
+			neighbourBlock = &m_blockMatrix[height][width][depth];
 		}
 		break;
-	case Cube::FaceSide::TOP:
+	case BlockFace::TOP:
 		if (height != (chunkHeight - 1)) {
 			height += 1;
-			neighbourCube = &m_blockMatrix[height][width][depth];
+			neighbourBlock = &m_blockMatrix[height][width][depth];
 		}
 		break;
-	case Cube::FaceSide::BOTTOM:
+	case BlockFace::BOTTOM:
 		if (height != 0) {
 			height -= 1;
-			neighbourCube = &m_blockMatrix[height][width][depth];
+			neighbourBlock = &m_blockMatrix[height][width][depth];
 		}
 		break;
 	}
-	return neighbourCube;
+	return neighbourBlock;
 }
 
-Cube* Chunk::findNeighbourBlock(Cube::FaceSide neighbourSide, Cube* cube) {
+Block* Chunk::findNeighbourBlock(BlockFace neighbourSide, Block* block) {
 	int height, width, depth;
-	cube->getCubeIndexesOffset(height, width, depth);
-	if (&m_blockMatrix[height][width][depth] == cube) {
+	glm::vec3 blockOffset = block->getBlockCoordsOffset();
+	width = int(blockOffset.x);
+	height = int(blockOffset.y);
+	depth = int(blockOffset.z);
+	if (&m_blockMatrix[height][width][depth] == block) {
 		return findNeighbourBlock(neighbourSide, height, width, depth);
 	}
 	return nullptr;
+}
+
+void Chunk::forceChunkMeshUpdate() {
+	buildMesh();
+	loadMesh();
+	state = Chunk::ChunkState::MESHLOADED;
+	if (leftNeighbour != nullptr) {
+		leftNeighbour->buildMesh();
+		leftNeighbour->loadMesh();
+		leftNeighbour->state = Chunk::ChunkState::MESHLOADED;
+	}
+	if (rightNeighbour != nullptr) {
+		rightNeighbour->buildMesh();
+		rightNeighbour->loadMesh();
+		rightNeighbour->state = Chunk::ChunkState::MESHLOADED;
+	}
+	if (frontNeighbour != nullptr) {
+		frontNeighbour->buildMesh();
+		frontNeighbour->loadMesh();
+		frontNeighbour->state = Chunk::ChunkState::MESHLOADED;
+	}
+	if (backNeighbour != nullptr) {
+		backNeighbour->buildMesh();
+		backNeighbour->loadMesh();
+		backNeighbour->state = Chunk::ChunkState::MESHLOADED;
+	}
 }
 
 Chunk::~Chunk() {
@@ -543,7 +580,7 @@ Chunk::~Chunk() {
 	cleanVerticesArrays();
 }
 
-void Chunk::deleteChunkData(Cube*** chunkData, int height, int width) {
+void Chunk::deleteChunkData(Block*** chunkData, int height, int width) {
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
 			delete[] chunkData[i][j];

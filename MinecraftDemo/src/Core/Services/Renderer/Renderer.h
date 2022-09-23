@@ -93,7 +93,7 @@ private:
 
 	unsigned int m_msaaSamples;
 	bool m_msaaEnabled;
-	const glm::vec4 GAME_CLEAR_COLOR = glm::vec4(0.08f, 0.9f, 0.95f, 1.0f);
+	const glm::vec4 GAME_CLEAR_COLOR = glm::vec4(0.431f, 0.694f, 1.0f, 1.0f);
 	const glm::vec4 SCREEN_CLEAR_COLOR = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	const glm::vec3 WORLD_UP = glm::vec3(0.0f, 1.0f, 0.0f);
 };

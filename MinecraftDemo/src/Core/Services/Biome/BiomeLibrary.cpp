@@ -58,172 +58,172 @@ void BiomeLibrary::notify(Event& newEvent) {
 
 }
 
-int BiomeLibrary::getBiomeCubeColors(Biome::BiomeId biomeId, CubeId cubeId, Cube::FaceSide faceSide) {
+int BiomeLibrary::getBiomeCubeColors(Biome::BiomeId biomeId, BlockId blockId, BlockFace faceSide) {
 	switch (biomeId) {
 	case Biome::BiomeId::TUNDRA:
-		switch (cubeId) {
-		case CubeId::SNOWY_GRASS_BLOCK:
+		switch (blockId) {
+		case BlockId::SNOWY_GRASS:
 			switch (faceSide) {
-			case Cube::FaceSide::RIGHT:
-			case Cube::FaceSide::LEFT:
-			case Cube::FaceSide::FRONT:
-			case Cube::FaceSide::BACK:
+			case BlockFace::RIGHT:
+			case BlockFace::LEFT:
+			case BlockFace::FRONT:
+			case BlockFace::BACK:
 				return 198;
-			case Cube::FaceSide::TOP:
+			case BlockFace::TOP:
 				return 207;
-			case Cube::FaceSide::BOTTOM:
+			case BlockFace::BOTTOM:
 				return 216;
 			}
 			break;
-		case CubeId::LEAVES_BLOCK:
+		case BlockId::LEAVES:
 			return 252;
 		}
 		break;
 	case Biome::BiomeId::TAIGA:
-		switch (cubeId) {
-		case CubeId::SNOWY_GRASS_BLOCK:
+		switch (blockId) {
+		case BlockId::SNOWY_GRASS:
 			switch (faceSide) {
-			case Cube::FaceSide::RIGHT:
-			case Cube::FaceSide::LEFT:
-			case Cube::FaceSide::FRONT:
-			case Cube::FaceSide::BACK:
+			case BlockFace::RIGHT:
+			case BlockFace::LEFT:
+			case BlockFace::FRONT:
+			case BlockFace::BACK:
 				return 225;
-			case Cube::FaceSide::TOP:
+			case BlockFace::TOP:
 				return 234;
-			case Cube::FaceSide::BOTTOM:
+			case BlockFace::BOTTOM:
 				return 243;
 			}
 			break;
-		case CubeId::GRASS_BLOCK:
+		case BlockId::GRASS:
 			switch (faceSide) {
-			case Cube::FaceSide::RIGHT:
-			case Cube::FaceSide::LEFT:
-			case Cube::FaceSide::FRONT:
-			case Cube::FaceSide::BACK:
+			case BlockFace::RIGHT:
+			case BlockFace::LEFT:
+			case BlockFace::FRONT:
+			case BlockFace::BACK:
 				return 36;
-			case Cube::FaceSide::TOP:
+			case BlockFace::TOP:
 				return 45;
-			case Cube::FaceSide::BOTTOM:
+			case BlockFace::BOTTOM:
 				return 54;
 			}
 			break;
-		case CubeId::LEAVES_BLOCK:
+		case BlockId::LEAVES:
 			return 252;
 		}
 		break;
 	case Biome::BiomeId::SAVANA:
-		switch (cubeId) {
-		case CubeId::GRASS_BLOCK:
+		switch (blockId) {
+		case BlockId::GRASS:
 			switch (faceSide) {
-			case Cube::FaceSide::RIGHT:
-			case Cube::FaceSide::LEFT:
-			case Cube::FaceSide::FRONT:
-			case Cube::FaceSide::BACK:
+			case BlockFace::RIGHT:
+			case BlockFace::LEFT:
+			case BlockFace::FRONT:
+			case BlockFace::BACK:
 				return 90;
-			case Cube::FaceSide::TOP:
+			case BlockFace::TOP:
 				return 99;
-			case Cube::FaceSide::BOTTOM:
+			case BlockFace::BOTTOM:
 				return 108;
 			}
 			break;
-		case CubeId::LEAVES_BLOCK:
+		case BlockId::LEAVES:
 			return 252;
 		}
 		break;
 	case Biome::BiomeId::DESERT:
 		break;
 	case Biome::BiomeId::MOUNTAINS:
-		switch (cubeId) {
-		case CubeId::GRASS_BLOCK:
+		switch (blockId) {
+		case BlockId::GRASS:
 			switch (faceSide) {
-			case Cube::FaceSide::RIGHT:
-			case Cube::FaceSide::LEFT:
-			case Cube::FaceSide::FRONT:
-			case Cube::FaceSide::BACK:
+			case BlockFace::RIGHT:
+			case BlockFace::LEFT:
+			case BlockFace::FRONT:
+			case BlockFace::BACK:
 				return 117;
-			case Cube::FaceSide::TOP:
+			case BlockFace::TOP:
 				return 126;
-			case Cube::FaceSide::BOTTOM:
+			case BlockFace::BOTTOM:
 				return 135;
 			}
 			break;
-		case CubeId::LEAVES_BLOCK:
+		case BlockId::LEAVES:
 			return 252;
 		}
 		break;
 	case Biome::BiomeId::HILLS:
-		switch (cubeId) {
-		case CubeId::GRASS_BLOCK:
+		switch (blockId) {
+		case BlockId::GRASS:
 			switch (faceSide) {
-			case Cube::FaceSide::RIGHT:
-			case Cube::FaceSide::LEFT:
-			case Cube::FaceSide::FRONT:
-			case Cube::FaceSide::BACK:
+			case BlockFace::RIGHT:
+			case BlockFace::LEFT:
+			case BlockFace::FRONT:
+			case BlockFace::BACK:
 				return 144;
-			case Cube::FaceSide::TOP:
+			case BlockFace::TOP:
 				return 153;
-			case Cube::FaceSide::BOTTOM:
+			case BlockFace::BOTTOM:
 				return 162;
 			}
 			break;
-		case CubeId::LEAVES_BLOCK:
+		case BlockId::LEAVES:
 			return 252;
 		}
 		break;
 	case Biome::BiomeId::PLAINS:
-		switch (cubeId) {
-		case CubeId::GRASS_BLOCK:
+		switch (blockId) {
+		case BlockId::GRASS:
 			switch (faceSide) {
-			case Cube::FaceSide::RIGHT:
-			case Cube::FaceSide::LEFT:
-			case Cube::FaceSide::FRONT:
-			case Cube::FaceSide::BACK:
+			case BlockFace::RIGHT:
+			case BlockFace::LEFT:
+			case BlockFace::FRONT:
+			case BlockFace::BACK:
 				return 9;
-			case Cube::FaceSide::TOP:
+			case BlockFace::TOP:
 				return 18;
-			case Cube::FaceSide::BOTTOM:
+			case BlockFace::BOTTOM:
 				return 27;
 			}
 			break;
-		case CubeId::LEAVES_BLOCK:
+		case BlockId::LEAVES:
 			return 252;
 		}
 		break;
 	case Biome::BiomeId::FOREST:
-		switch (cubeId) {
-		case CubeId::GRASS_BLOCK:
+		switch (blockId) {
+		case BlockId::GRASS:
 			switch (faceSide) {
-			case Cube::FaceSide::RIGHT:
-			case Cube::FaceSide::LEFT:
-			case Cube::FaceSide::FRONT:
-			case Cube::FaceSide::BACK:
+			case BlockFace::RIGHT:
+			case BlockFace::LEFT:
+			case BlockFace::FRONT:
+			case BlockFace::BACK:
 				return 63;
-			case Cube::FaceSide::TOP:
+			case BlockFace::TOP:
 				return 72;
-			case Cube::FaceSide::BOTTOM:
+			case BlockFace::BOTTOM:
 				return 81;
 			}
 			break;
-		case CubeId::LEAVES_BLOCK:
+		case BlockId::LEAVES:
 			return 252;
 		}
 		break;
 	case Biome::BiomeId::JUNGLE:
-		switch (cubeId) {
-		case CubeId::GRASS_BLOCK:
+		switch (blockId) {
+		case BlockId::GRASS:
 			switch (faceSide) {
-			case Cube::FaceSide::RIGHT:
-			case Cube::FaceSide::LEFT:
-			case Cube::FaceSide::FRONT:
-			case Cube::FaceSide::BACK:
+			case BlockFace::RIGHT:
+			case BlockFace::LEFT:
+			case BlockFace::FRONT:
+			case BlockFace::BACK:
 				return 171;
-			case Cube::FaceSide::TOP:
+			case BlockFace::TOP:
 				return 180;
-			case Cube::FaceSide::BOTTOM:
+			case BlockFace::BOTTOM:
 				return 189;
 			}
 			break;
-		case CubeId::LEAVES_BLOCK:
+		case BlockId::LEAVES:
 			return 252;
 		}
 		break;

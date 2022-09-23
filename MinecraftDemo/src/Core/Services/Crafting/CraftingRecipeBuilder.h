@@ -1,11 +1,11 @@
 #pragma once
 #include "Utils/Builder/SpecializedBuilder.h"
 #include "CraftingRecipe.h"
-#include "Core/Services/ItemLibrary/ItemLibrary.h"
+#include "Core/Services/ItemLibrary/ItemGenerator.h"
 
 class CraftingRecipeBuilder : public SpecializedBuilder<CraftingRecipe> {
 public:
-	CraftingRecipeBuilder(ItemLibrary* itemLibrary);
+	CraftingRecipeBuilder(ItemGenerator* itemGenerator);
 	void buildPlankRecipe();
 	void buildStickRecipe();
 	void buildWoodenAxeRecipe();
@@ -19,6 +19,6 @@ public:
 	void buildStoneShovelRecipe();
 	void buildStoneSwordRecipe();
 private:
-	Item*** initEmptyRecipe(unsigned int recipeRows, unsigned int recipeCols);
-	ItemLibrary* m_itemLibrary;
+	ItemHandle*** initEmptyRecipe(unsigned int recipeRows, unsigned int recipeCols);
+	ItemGenerator* m_itemGenerator;
 };

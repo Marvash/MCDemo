@@ -2,7 +2,9 @@
 #include "Core/Textures/AtlasTexture.h"
 #include "Core/Textures/ImageTexture2D.h"
 #include "Core/Textures/TextureBuffer.h"
-#include "Core/Cube/Cube.h"
+#include "Core/Services/BlockLibrary/BlockIdEnum.h"
+#include "Core/Services/BlockLibrary/BlockFaceEnum.h"
+#include "Core/Services/ItemLibrary/ItemIdEnum.h"
 #include "Core/Atlas/AtlasTexCoordinates.h"
 #include "Core/Services/CoreService.h"
 #include "Core/CoreEventDispatcher.h"
@@ -16,11 +18,12 @@ public:
 	Atlas(CoreEventDispatcher* coreEventDispatcher);
 	~Atlas();
 
-	int getCubeTexIndex(CubeId cubeId, Cube::FaceSide faceSide);
+	int getCubeTexIndex(BlockId blockId, BlockFace blockFace);
 	int getItemTexIndex(ItemId itemId);
-	AtlasTexture* getAtlasTexture();
+
 	TextureBuffer* getTexCoordsBuffer();
-	
+	AtlasTexture* getAtlasTexture();
+
 	void init();
 	void onNotify(Event& newEvent) override;
 	void notify(Event& newEvent) override;

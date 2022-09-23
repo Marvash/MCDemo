@@ -20,6 +20,8 @@
 #include "Core/Services/Input/InputManager.h"
 #include "Core/Services/CameraSystem/CameraSystem.h"
 #include "Core/Services/ItemLibrary/ItemLibrary.h"
+#include "Core/Services/ItemLibrary/ItemGenerator.h"
+#include "Core/Services/BlockLibrary/BlockManager.h"
 #include "Core/Services/Inventory/Inventory.h"
 #include "LayerStack.h"
 #include <Boost/log/trivial.hpp>
@@ -52,9 +54,11 @@ private:
 	CoreEventDispatcher* m_eventDispatcher;
 	LayerStack* m_currentLayerStack;
 	ChunkManager* m_chunkManager;
-	BiomeLibrary* m_biomeManager;
+	BiomeLibrary* m_biomeLibrary;
 	Atlas* m_atlas;
 	Renderer* m_renderer;
 	CraftingRecipeLibrary* m_craftingRecipeLibrary;
+	ItemLibrary* m_itemLibrary;
+	BlockLibrary* m_blockLibrary;
 };
 

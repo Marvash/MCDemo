@@ -9,7 +9,7 @@
 #include "Core/Services/GameObjectManager/GameObjectManager.h"
 #include "Core/Services/Atlas/AtlasService.h"
 #include "Core/Services/Biome/BiomeService.h"
-#include "Core/Services/ItemLibrary/ItemLibrary.h"
+#include "Core/Services/ItemLibrary/ItemGenerator.h"
 #include "Core/Services/Inventory/Inventory.h"
 #include "Core/Services/Crafting/CraftingTable.h"
 
@@ -28,7 +28,8 @@ public:
 	GameObjectManager* getGameObjectManager();
 	BiomeService* getBiomeService();
 	Inventory* getInventory();
-	ItemLibrary* getItemLibrary();
+	ItemGenerator* getItemGenerator();
+	BlockManager* getBlockManager();
 	CraftingTable* getCraftingTable();
 
 	void provide(InputManager* input);
@@ -42,7 +43,8 @@ public:
 	void provide(AtlasService* atlasService);
 	void provide(BiomeService* biomeService);
 	void provide(Inventory* inventoryService);
-	void provide(ItemLibrary* itemLibraryService);
+	void provide(ItemGenerator* itemGeneratorService);
+	void provide(BlockManager* blockManagerService);
 	void provide(CraftingTable* craftingTable);
 
 private:
@@ -57,7 +59,8 @@ private:
 	AtlasService* m_atlasService;
 	BiomeService* m_biomeService;
 	Inventory* m_inventory;
-	ItemLibrary* m_itemLibrary;
+	ItemGenerator* m_itemGenerator;
+	BlockManager* m_blockManager;
 	CraftingTable* m_craftingTable;
 };
 

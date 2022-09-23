@@ -8,11 +8,14 @@
 #include "Core/Biomes/HillsBiome.h"
 #include "Core/Biomes/JungleBiome.h"
 #include "Core/Biomes/SavanaBiome.h"
-#include "Core/Cube/Cube.h"
+#include "Core/Services/BlockLibrary/Block.h"
+#include "Core/Services/BlockLibrary/BlockManager.h"
 
 class TreeBuilder {
 public:
-	TreeBuilder();
+	TreeBuilder(BlockManager* blockManager);
 
-	static void buildForestTree(float treeY, float treeX, float treeZ, float chunkX, float chunkY, unsigned int chunkSideSize, float xTreeMin, float yTreeMin, Cube***& blockMatrix);
+	void buildForestTree(float treeY, float treeX, float treeZ, float chunkX, float chunkY, unsigned int chunkSideSize, float xTreeMin, float yTreeMin, Block***& blockMatrix);
+private:
+	BlockManager* m_blockManager;
 };

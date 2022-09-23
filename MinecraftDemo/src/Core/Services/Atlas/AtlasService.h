@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/GameObject/GameObject.h"
 #include "Core/Chunk/Chunk.h"
-#include "Core/Cube/Cube.h"
+#include "Core/Services/BlockLibrary/Block.h"
 #include "Core/TerrainGenerator/TerrainGenerator.h"
 #include "Core/Services/CoreService.h"
 #include "Core/Services/Atlas/Atlas.h"
@@ -15,8 +15,7 @@ public:
 	AtlasService(CoreEventDispatcher* coreEventDispatcher);
 	void init(Atlas* atlas);
 	void onNotify(Event& newEvent) override;
-	int getCubeTexIndex(CubeId cubeId, Cube::FaceSide faceSide);
-	AtlasTexture* getAtlasTexture();
+	int getCubeTexIndex(BlockId blockId, BlockFace faceSide);
 	TextureBuffer* getTexCoordsBuffer();
 private:
 	Atlas* m_atlas;

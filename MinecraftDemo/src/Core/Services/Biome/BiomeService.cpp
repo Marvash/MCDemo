@@ -22,8 +22,8 @@ TextureBuffer* BiomeService::getBiomeColorsBuffer() {
 	return m_biomeLibrary->getBiomeColorsBuffer();
 }
 
-int BiomeService::getBiomeCubeColors(Biome::BiomeId biomeId, CubeId cubeId, Cube::FaceSide faceSide) {
-	return m_biomeLibrary->getBiomeCubeColors(biomeId, cubeId, faceSide);
+int BiomeService::getBiomeCubeColors(Biome::BiomeId biomeId, BlockId blockId, BlockFace faceSide) {
+	return m_biomeLibrary->getBiomeCubeColors(biomeId, blockId, faceSide);
 }
 
 Biome** BiomeService::getBiomes() {

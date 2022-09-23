@@ -3,7 +3,7 @@
 
 Player::Player(CoreServiceLocator* coreServiceLocator) : GameObject(coreServiceLocator, GameObjectType::DYNAMIC),
 	m_jumpForce(9.0f), // 8.2f
-	m_targetCube(nullptr),
+	m_targetBlock(nullptr),
 	m_targetCubeRayLength(10.0f),
 	m_lookSensitivity(0.02f),
 	m_movementModeIndex((int)MovementMode::FLY),
@@ -23,11 +23,11 @@ Player::Player(CoreServiceLocator* coreServiceLocator) : GameObject(coreServiceL
 
 	Inventory* inventory = m_coreServiceLocator->getInventory();
 
-	inventory->addItemInInventorySlot(ItemId::DIRT_BLOCK_ITEM, 10, inventory->getInventorySlots());
-	inventory->addItemInInventorySlot(ItemId::STONE_BLOCK_ITEM, 10, inventory->getInventorySlots() + 1);
-	inventory->addItemInInventorySlot(ItemId::SAND_BLOCK_ITEM, 10, inventory->getInventorySlots() + 2);
-	inventory->addItemInInventorySlot(ItemId::PLANK_BLOCK_ITEM, 10, inventory->getInventorySlots() + 3);
-	inventory->addItemInInventorySlot(ItemId::STICK, 10, inventory->getInventorySlots() + 4);
+	inventory->addItemInEmptyInventorySlot(ItemId::DIRT_BLOCK_ITEM, 10, inventory->getInventorySlots());
+	inventory->addItemInEmptyInventorySlot(ItemId::STONE_BLOCK_ITEM, 10, inventory->getInventorySlots() + 1);
+	inventory->addItemInEmptyInventorySlot(ItemId::SAND_BLOCK_ITEM, 10, inventory->getInventorySlots() + 2);
+	inventory->addItemInEmptyInventorySlot(ItemId::PLANK_BLOCK_ITEM, 10, inventory->getInventorySlots() + 3);
+	inventory->addItemInEmptyInventorySlot(ItemId::STICK, 10, inventory->getInventorySlots() + 4);
 	inventory->setItemBarSelectedSlot(0);
 }
 
@@ -201,8 +201,8 @@ void Player::processInventoryKeyInput() {
 	}
 }
 
-Cube* Player::getTargetCube() {
-	return m_targetCube;
+Block* Player::getTargetBlock() {
+	return m_targetBlock;
 }
 
 bool Player::getIsOpenInventory() {
@@ -215,20 +215,18 @@ void Player::processMouseInput() {
 	static bool rightMousePressed = false;
 	Inventory* inventory = m_coreServiceLocator->getInventory();
 	InputManager* inputManager = m_coreServiceLocator->getInput();
-	if (inputManager->getInputStatePressed(InputMouseButton::MOUSE_LEFT)) {
-		Item* selectedItem = inventory->getSelectedItem();
-		if (selectedItem != nullptr) {
-			selectedItem->performItemPrimaryAction(m_coreServiceLocator);
-		}
-		else {
-			performNoItemPrimaryAction();
-		}
+	ItemHandle* selectedItem = inventory->getSelectedItem();
+	if (inputManager->getInputState(InputMouseButton::MOUSE_LEFT)) {
+		selectedItem->itemPrimaryActionUpdate(m_coreServiceLocator);
 	}
-	if (inputManager->getInputStatePressed(InputMouseButton::MOUSE_RIGHT)) {
-		Item* selectedItem = inventory->getSelectedItem();
-		if (selectedItem != nullptr) {
-			selectedItem->performItemSecondaryAction(m_coreServiceLocator);
-		}
+	else if(inputManager->getInputStateReleased(InputMouseButton::MOUSE_LEFT)) {
+		selectedItem->itemPrimaryActionEnd(m_coreServiceLocator);
+	}
+	if (inputManager->getInputState(InputMouseButton::MOUSE_RIGHT)) {
+		selectedItem->itemSecondaryActionUpdate(m_coreServiceLocator);
+	}
+	else if (inputManager->getInputStateReleased(InputMouseButton::MOUSE_RIGHT)) {
+		selectedItem->itemSecondaryActionEnd(m_coreServiceLocator);
 	}
 }
 
@@ -243,15 +241,6 @@ void Player::handleInventoryInput() {
 	processInventoryKeyInput();
 }
 
-void Player::performNoItemPrimaryAction() {
-	Cube* targetCube = getFirstSolidCube();
-	if (targetCube != nullptr) {
-		CubeId targetCubeId = targetCube->getCubeId();
-		m_coreServiceLocator->getWorld()->destroyBlock(targetCube);
-		m_coreServiceLocator->getInventory()->addItem(Cube::getItemId(targetCubeId), 1);
-	}
-}
-
 void Player::update() {
 	if (!m_isOpenInventory) {
 		handleGameplayInput();
@@ -261,15 +250,15 @@ void Player::update() {
 	}
 	m_coreServiceLocator->getCameraSystem()->setPlayerPosition(m_position);
 	m_coreServiceLocator->getWorld()->updateGenerationOrigin(m_position);
-	m_targetCube = getFirstSolidCube();
+	m_targetBlock = getFirstNonEmptyBlock();
 	glm::vec3 coords = m_coreServiceLocator->getWorld()->getCubeAbsCoords(m_coreServiceLocator->getWorld()->getCubeByCoords(m_position));
 	//BOOST_LOG_TRIVIAL(info) << "pos: " << m_position.x << " " << m_position.y << " " << m_position.z;
 	//BOOST_LOG_TRIVIAL(info) << "coords: " << coords.x << " " << coords.y << " " << coords.z;
 }
 
-Cube* Player::getFirstSolidCube() {
-	Cube* target = nullptr;
-	std::vector<Cube*> cubesInRay;
+Block* Player::getFirstNonEmptyBlock() {
+	Block* target = nullptr;
+	std::vector<Block*> cubesInRay;
 	glm::vec3 cameraPos = m_coreServiceLocator->getCameraSystem()->getCameraPosition();
 	glm::vec3 cameraLookDir = m_coreServiceLocator->getCameraSystem()->m_front;
 	//BOOST_LOG_TRIVIAL(info) << "player pos: " << m_position.x << " " << m_position.y << " " << m_position.z;
@@ -280,7 +269,7 @@ Cube* Player::getFirstSolidCube() {
 		for (int i = 0; i < cubesInRay.size(); i++) {
 			glm::vec3 cubeCoords = m_coreServiceLocator->getWorld()->getCubeAbsCoords(cubesInRay.at(i));
 			//BOOST_LOG_TRIVIAL(info) << "cube " << i << " coords: " << cubeCoords.x << " " << cubeCoords.y << " " << cubeCoords.z;
-			if (cubesInRay.at(i)->getCubeId() != CubeId::AIR_BLOCK && cubesInRay.at(i)->getCubeId() != CubeId::UNGENERATED_BLOCK) {
+			if (cubesInRay.at(i)->getBlockId() != BlockId::AIR && cubesInRay.at(i)->getBlockId() != BlockId::NONE) {
 				target = cubesInRay.at(i);
 				//BOOST_LOG_TRIVIAL(info) << "target is cube " << i;
 				break;
@@ -290,15 +279,15 @@ Cube* Player::getFirstSolidCube() {
 	return target;
 }
 
-Cube* Player::getLastPlaceableCube() {
-	Cube* target = nullptr;
-	std::vector<Cube*> cubesInRay;
+Block* Player::getLastEmptyBlock() {
+	Block* target = nullptr;
+	std::vector<Block*> cubesInRay;
 	glm::vec3 cameraPos = m_coreServiceLocator->getCameraSystem()->getCameraPosition();
 	glm::vec3 cameraLookDir = m_coreServiceLocator->getCameraSystem()->m_front;
 	m_coreServiceLocator->getWorld()->getCubesInRay(cameraPos, cameraLookDir, m_targetCubeRayLength, cubesInRay);
 	if (cubesInRay.size() > 0) {
 		for (int i = 0; i < cubesInRay.size(); i++) {
-			if (i > 0 && cubesInRay.at(i)->getCubeId() != CubeId::AIR_BLOCK && cubesInRay.at(i)->getCubeId() != CubeId::UNGENERATED_BLOCK) {
+			if (i > 0 && cubesInRay.at(i)->getBlockId() != BlockId::AIR && cubesInRay.at(i)->getBlockId() != BlockId::NONE) {
 				target = cubesInRay.at(i - 1);
 				break;
 			}

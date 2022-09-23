@@ -15,12 +15,12 @@ Atlas::~Atlas() {
 	delete m_texCoords;
 }
 
-AtlasTexture* Atlas::getAtlasTexture() {
-	return m_texture;
-}
-
 TextureBuffer* Atlas::getTexCoordsBuffer() {
 	return m_texCoords;
+}
+
+AtlasTexture* Atlas::getAtlasTexture() {
+	return m_texture;
 }
 
 void Atlas::init() {
@@ -43,56 +43,56 @@ void Atlas::notify(Event& newEvent) {
 
 }
 
-int Atlas::getCubeTexIndex(CubeId cubeId, Cube::FaceSide faceSide) {
-	switch (cubeId) {
-	case CubeId::GRASS_BLOCK:
-		switch (faceSide) {
-		case Cube::FaceSide::RIGHT:
-		case Cube::FaceSide::LEFT:
-		case Cube::FaceSide::FRONT:
-		case Cube::FaceSide::BACK:
+int Atlas::getCubeTexIndex(BlockId blockId, BlockFace blockFace) {
+	switch (blockId) {
+	case BlockId::GRASS:
+		switch (blockFace) {
+		case BlockFace::RIGHT:
+		case BlockFace::LEFT:
+		case BlockFace::FRONT:
+		case BlockFace::BACK:
 			return 0;
-		case Cube::FaceSide::TOP:
+		case BlockFace::TOP:
 			return 24;
-		case Cube::FaceSide::BOTTOM:
+		case BlockFace::BOTTOM:
 			return 48;
 		}
 		break;
-	case CubeId::DIRT_BLOCK:
+	case BlockId::DIRT:
 		return 72;
-	case CubeId::STONE_BLOCK:
+	case BlockId::STONE:
 		return 96;
-	case CubeId::SAND_BLOCK:
+	case BlockId::SAND:
 		return 120;
-	case CubeId::SNOWY_GRASS_BLOCK:
-		switch (faceSide) {
-		case Cube::FaceSide::RIGHT:
-		case Cube::FaceSide::LEFT:
-		case Cube::FaceSide::FRONT:
-		case Cube::FaceSide::BACK:
+	case BlockId::SNOWY_GRASS:
+		switch (blockFace) {
+		case BlockFace::RIGHT:
+		case BlockFace::LEFT:
+		case BlockFace::FRONT:
+		case BlockFace::BACK:
 			return 144;
-		case Cube::FaceSide::TOP:
+		case BlockFace::TOP:
 			return 168;
-		case Cube::FaceSide::BOTTOM:
+		case BlockFace::BOTTOM:
 			return 192;
 		}
 		break;
-	case CubeId::OAK_LOG_BLOCK:
-		switch (faceSide) {
-		case Cube::FaceSide::RIGHT:
-		case Cube::FaceSide::LEFT:
-		case Cube::FaceSide::FRONT:
-		case Cube::FaceSide::BACK:
+	case BlockId::OAK_LOG:
+		switch (blockFace) {
+		case BlockFace::RIGHT:
+		case BlockFace::LEFT:
+		case BlockFace::FRONT:
+		case BlockFace::BACK:
 			return 216;
-		case Cube::FaceSide::TOP:
-		case Cube::FaceSide::BOTTOM:
+		case BlockFace::TOP:
+		case BlockFace::BOTTOM:
 			return 240;
 		}
 		break;
-	case CubeId::LEAVES_BLOCK:
+	case BlockId::LEAVES:
 		return 264;
 		break;
-	case CubeId::PLANK_BLOCK:
+	case BlockId::PLANK:
 		return 288;
 		break;
 	}

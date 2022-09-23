@@ -84,6 +84,14 @@ bool InputManager::getInputStatePressed(InputKey key) {
 	return m_previousInputKeyMap[key] == InputAction::RELEASE && m_inputKeyMap[key] == InputAction::PRESS;
 }
 
+bool InputManager::getInputStateReleased(InputMouseButton button) {
+	return m_previousInputMouseMap[button] == InputAction::PRESS && m_inputMouseMap[button] == InputAction::RELEASE;
+}
+
+bool InputManager::getInputStateReleased(InputKey key) {
+	return m_previousInputKeyMap[key] == InputAction::PRESS && m_inputKeyMap[key] == InputAction::RELEASE;
+}
+
 double InputManager::getMouseXDelta() {
 	return mouseXPos - mouseLastXPos;
 }

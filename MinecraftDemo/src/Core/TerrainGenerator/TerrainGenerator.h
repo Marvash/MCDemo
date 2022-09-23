@@ -1,5 +1,6 @@
 #pragma once
-#include "Core/Cube/Cube.h"
+#include "Core/Services/BlockLibrary/Block.h"
+#include "Core/Services/BlockLibrary/BlockManager.h"
 #include "Utils/Random/PerlinGenerator/PerlinNoiseGenerator.h"
 #include "Core/Biomes/TundraBiome.h"
 #include "Core/Biomes/TaigaBiome.h"
@@ -20,9 +21,10 @@ public:
 	PerlinNoiseGenerator m_temperaturePerlinGen;
 	PerlinNoiseGenerator m_humidityPerlinGen;
 
-	TerrainGenerator(BiomeLibrary* biomeManager, int chunkSideSize, int chunkHeight);
-	void generateChunk(Cube*** &blockMatrix, glm::vec3 &chunkPosition);
-	void decorateChunk(Cube*** &blockMatrix, glm::vec3 &chunkPosition);
+	TerrainGenerator(BiomeLibrary* biomeManager, BlockManager* blockManager, int chunkSideSize, int chunkHeight);
+	~TerrainGenerator();
+	void generateChunk(Block*** &blockMatrix, glm::vec3 &chunkPosition);
+	void decorateChunk(Block*** &blockMatrix, glm::vec3 &chunkPosition);
 	float getDebugHeight(float x, float y);
 
 private:
@@ -41,8 +43,9 @@ private:
 
 	unsigned int m_treeChunkOffset;
 
-	TreeBuilder m_treeBuilder;
+	TreeBuilder* m_treeBuilder;
 	BiomeLibrary* m_biomeManager;
+	BlockManager* m_blockManager;
 
 	float getBlockHeight(Biome* biome, float x, float y);
 	float bilinearFilter(float x, float y, float* samples, float* corners);

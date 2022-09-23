@@ -25,6 +25,8 @@ public:
 	bool getInputState(InputKey key);
 	bool getInputStatePressed(InputMouseButton button);
 	bool getInputStatePressed(InputKey key);
+	bool getInputStateReleased(InputMouseButton button);
+	bool getInputStateReleased(InputKey key);
 	double getMouseXDelta();
 	double getMouseYDelta();
 	double getScrollXDelta();
