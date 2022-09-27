@@ -7,8 +7,8 @@ IconLibrary::IconLibrary(Renderer* renderer, BiomeLibrary* biomeLibrary, Atlas* 
 	m_atlas(atlas),
 	m_biomeLibrary(biomeLibrary),
 	m_blockLibrary(blockLibrary) {
-	m_cubeVerticesTexIndexes = new GLint[(2 * 6 * 6)];
-	m_itemVerticesTexIndexes = new GLint[(2 * 6)];
+	m_cubeVerticesTexIndexes = new GLint[(3 * 6 * 6)];
+	m_itemVerticesTexIndexes = new GLint[(3 * 6)];
 	generateBlockIcons();
 	generateItemIcons();
 }
@@ -53,10 +53,12 @@ void IconLibrary::generateBlockIcons() {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOTexIndices);
-	glVertexAttribIPointer(1, 1, GL_INT, 2 * sizeof(GLint), (void*)0);
-	glVertexAttribIPointer(2, 1, GL_INT, 2 * sizeof(GLint), (void*)(sizeof(GLint)));
+	glVertexAttribIPointer(1, 1, GL_INT, 3 * sizeof(GLint), (void*)0);
+	glVertexAttribIPointer(2, 1, GL_INT, 3 * sizeof(GLint), (void*)(sizeof(GLint)));
+	glVertexAttribIPointer(3, 1, GL_INT, 3 * sizeof(GLint), (void*)(2 * sizeof(GLint)));
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
@@ -78,26 +80,26 @@ void IconLibrary::generateBlockIcons() {
 		BlockSharedSpec* blockSpec = m_blockLibrary->getBlockSpecification(cubeId);
 		if (blockSpec->isRenderable()) {
 			size_t vertexIndexesBaseIndex = 0;
-			int texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, BlockFace::BACK);
+			int texCoordsIndex = m_atlas->getBlockTexIndex(cubeId, BlockFace::BACK);
 			int colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, BlockFace::BACK);
 			addFaceTexIndexes(m_cubeVerticesTexIndexes, vertexIndexesBaseIndex, texCoordsIndex, colorsIndex);
-			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, BlockFace::FRONT);
+			texCoordsIndex = m_atlas->getBlockTexIndex(cubeId, BlockFace::FRONT);
 			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, BlockFace::FRONT);
 			addFaceTexIndexes(m_cubeVerticesTexIndexes, vertexIndexesBaseIndex, texCoordsIndex, colorsIndex);
-			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, BlockFace::LEFT);
+			texCoordsIndex = m_atlas->getBlockTexIndex(cubeId, BlockFace::LEFT);
 			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, BlockFace::LEFT);
 			addFaceTexIndexes(m_cubeVerticesTexIndexes, vertexIndexesBaseIndex, texCoordsIndex, colorsIndex);
-			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, BlockFace::RIGHT);
+			texCoordsIndex = m_atlas->getBlockTexIndex(cubeId, BlockFace::RIGHT);
 			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, BlockFace::RIGHT);
 			addFaceTexIndexes(m_cubeVerticesTexIndexes, vertexIndexesBaseIndex, texCoordsIndex, colorsIndex);
-			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, BlockFace::BOTTOM);
+			texCoordsIndex = m_atlas->getBlockTexIndex(cubeId, BlockFace::BOTTOM);
 			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, BlockFace::BOTTOM);
 			addFaceTexIndexes(m_cubeVerticesTexIndexes, vertexIndexesBaseIndex, texCoordsIndex, colorsIndex);
-			texCoordsIndex = m_atlas->getCubeTexIndex(cubeId, BlockFace::TOP);
+			texCoordsIndex = m_atlas->getBlockTexIndex(cubeId, BlockFace::TOP);
 			colorsIndex = m_biomeLibrary->getBiomeCubeColors(Biome::BiomeId::FOREST, cubeId, BlockFace::TOP);
 			addFaceTexIndexes(m_cubeVerticesTexIndexes, vertexIndexesBaseIndex, texCoordsIndex, colorsIndex);
 			size_t vertexesCoordinatesDataSize = (size_t)renderData.modelData.vertexCount * (size_t)3;
-			size_t vertexesTexIndexesDataSize = (size_t)renderData.modelData.vertexCount * (size_t)2;
+			size_t vertexesTexIndexesDataSize = (size_t)renderData.modelData.vertexCount * (size_t)3;
 			glBindVertexArray(renderData.modelData.VAO);
 			glBindBuffer(GL_ARRAY_BUFFER, VBOvertices);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertexesCoordinatesDataSize, m_iconCubeVertices, GL_STATIC_DRAW);
@@ -153,10 +155,12 @@ void IconLibrary::generateItemIcon(ItemId itemId) {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOTexIndices);
-	glVertexAttribIPointer(1, 1, GL_INT, 2 * sizeof(GLint), (void*)0);
-	glVertexAttribIPointer(2, 1, GL_INT, 2 * sizeof(GLint), (void*)(sizeof(GLint)));
+	glVertexAttribIPointer(1, 1, GL_INT, 3 * sizeof(GLint), (void*)0);
+	glVertexAttribIPointer(2, 1, GL_INT, 3 * sizeof(GLint), (void*)(sizeof(GLint)));
+	glVertexAttribIPointer(3, 1, GL_INT, 3 * sizeof(GLint), (void*)(2 * sizeof(GLint)));
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
@@ -179,7 +183,7 @@ void IconLibrary::generateItemIcon(ItemId itemId) {
 	int colorsIndex = 0;
 	addFaceTexIndexes(m_itemVerticesTexIndexes, vertexIndexesBaseIndex, texCoordsIndex, colorsIndex);
 	size_t vertexesCoordinatesDataSize = (size_t)renderData.modelData.vertexCount * (size_t)3;
-	size_t vertexesTexIndexesDataSize = (size_t)renderData.modelData.vertexCount * (size_t)2;
+	size_t vertexesTexIndexesDataSize = (size_t)renderData.modelData.vertexCount * (size_t)3;
 	glBindVertexArray(renderData.modelData.VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOvertices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertexesCoordinatesDataSize, m_iconItemVertices, GL_STATIC_DRAW);
@@ -200,19 +204,25 @@ void IconLibrary::generateItemIcon(ItemId itemId) {
 void IconLibrary::addFaceTexIndexes(GLint* buffer, size_t& vertexIndexesBaseIndex, int textureCoordinatesIndex, int colorIndex) {
 	buffer[vertexIndexesBaseIndex++] = (GLint)(textureCoordinatesIndex + 12);
 	buffer[vertexIndexesBaseIndex++] = (GLint)colorIndex;
+	buffer[vertexIndexesBaseIndex++] = -1;
 
 	buffer[vertexIndexesBaseIndex++] = (GLint)textureCoordinatesIndex;
 	buffer[vertexIndexesBaseIndex++] = (GLint)colorIndex;
+	buffer[vertexIndexesBaseIndex++] = -1;
 
 	buffer[vertexIndexesBaseIndex++] = (GLint)(textureCoordinatesIndex + 18);
 	buffer[vertexIndexesBaseIndex++] = (GLint)colorIndex;
+	buffer[vertexIndexesBaseIndex++] = -1;
 
 	buffer[vertexIndexesBaseIndex++] = (GLint)(textureCoordinatesIndex);
 	buffer[vertexIndexesBaseIndex++] = (GLint)colorIndex;
+	buffer[vertexIndexesBaseIndex++] = -1;
 
 	buffer[vertexIndexesBaseIndex++] = (GLint)(textureCoordinatesIndex + 12);
 	buffer[vertexIndexesBaseIndex++] = (GLint)colorIndex;
+	buffer[vertexIndexesBaseIndex++] = -1;
 
 	buffer[vertexIndexesBaseIndex++] = (GLint)(textureCoordinatesIndex + 6);
 	buffer[vertexIndexesBaseIndex++] = (GLint)colorIndex;
+	buffer[vertexIndexesBaseIndex++] = -1;
 }

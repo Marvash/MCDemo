@@ -4,6 +4,7 @@ AtlasTexCoordinates::AtlasTexCoordinates(unsigned int atlasWidth, unsigned int a
 	m_atlasWidth(atlasWidth),
 	m_atlasHeight(atlasHeight) {
 	m_atlasTexCoordinates = new GLfloat[TEX_COORDINATES_SIZE];
+	m_atlasSecondaryTexCoordinates = new GLfloat[SECONDARY_TEX_COORDINATES_SIZE];
 
 	// GRASS
 
@@ -782,6 +783,158 @@ AtlasTexCoordinates::AtlasTexCoordinates(unsigned int atlasWidth, unsigned int a
 	m_atlasTexCoordinates[597] = getCoordY(19);
 	m_atlasTexCoordinates[598] = -1.0f;
 	m_atlasTexCoordinates[599] = -1.0f;
+
+
+	// SECONDARY TEX COORDINATES
+	// BLOCK BREAK TEXTURE 1
+
+	// Top left
+	m_atlasSecondaryTexCoordinates[0] = getCoordX(2);
+	m_atlasSecondaryTexCoordinates[1] = getCoordY(7);
+	// Top right
+	m_atlasSecondaryTexCoordinates[2] = getCoordX(3);
+	m_atlasSecondaryTexCoordinates[3] = getCoordY(7);
+	// Bottom right
+	m_atlasSecondaryTexCoordinates[4] = getCoordX(3);
+	m_atlasSecondaryTexCoordinates[5] = getCoordY(8);
+	// Bottom left
+	m_atlasSecondaryTexCoordinates[6] = getCoordX(2);
+	m_atlasSecondaryTexCoordinates[7] = getCoordY(8);
+
+	// BLOCK BREAK TEXTURE 2
+
+	// Top left
+	m_atlasSecondaryTexCoordinates[8] = getCoordX(3);
+	m_atlasSecondaryTexCoordinates[9] = getCoordY(7);
+	// Top right
+	m_atlasSecondaryTexCoordinates[10] = getCoordX(4);
+	m_atlasSecondaryTexCoordinates[11] = getCoordY(7);
+	// Bottom right
+	m_atlasSecondaryTexCoordinates[12] = getCoordX(4);
+	m_atlasSecondaryTexCoordinates[13] = getCoordY(8);
+	// Bottom left
+	m_atlasSecondaryTexCoordinates[14] = getCoordX(3);
+	m_atlasSecondaryTexCoordinates[15] = getCoordY(8);
+
+	// BLOCK BREAK TEXTURE 3
+
+	// Top left
+	m_atlasSecondaryTexCoordinates[16] = getCoordX(4);
+	m_atlasSecondaryTexCoordinates[17] = getCoordY(7);
+	// Top right
+	m_atlasSecondaryTexCoordinates[18] = getCoordX(5);
+	m_atlasSecondaryTexCoordinates[19] = getCoordY(7);
+	// Bottom right
+	m_atlasSecondaryTexCoordinates[20] = getCoordX(5);
+	m_atlasSecondaryTexCoordinates[21] = getCoordY(8);
+	// Bottom left
+	m_atlasSecondaryTexCoordinates[22] = getCoordX(4);
+	m_atlasSecondaryTexCoordinates[23] = getCoordY(8);
+
+	// BLOCK BREAK TEXTURE 4
+
+	// Top left
+	m_atlasSecondaryTexCoordinates[24] = getCoordX(5);
+	m_atlasSecondaryTexCoordinates[25] = getCoordY(7);
+	// Top right
+	m_atlasSecondaryTexCoordinates[26] = getCoordX(6);
+	m_atlasSecondaryTexCoordinates[27] = getCoordY(7);
+	// Bottom right
+	m_atlasSecondaryTexCoordinates[28] = getCoordX(6);
+	m_atlasSecondaryTexCoordinates[29] = getCoordY(8);
+	// Bottom left
+	m_atlasSecondaryTexCoordinates[30] = getCoordX(5);
+	m_atlasSecondaryTexCoordinates[31] = getCoordY(8);
+
+	// BLOCK BREAK TEXTURE 5
+
+	// Top left
+	m_atlasSecondaryTexCoordinates[32] = getCoordX(6);
+	m_atlasSecondaryTexCoordinates[33] = getCoordY(7);
+	// Top right
+	m_atlasSecondaryTexCoordinates[34] = getCoordX(7);
+	m_atlasSecondaryTexCoordinates[35] = getCoordY(7);
+	// Bottom right
+	m_atlasSecondaryTexCoordinates[36] = getCoordX(7);
+	m_atlasSecondaryTexCoordinates[37] = getCoordY(8);
+	// Bottom left
+	m_atlasSecondaryTexCoordinates[38] = getCoordX(6);
+	m_atlasSecondaryTexCoordinates[39] = getCoordY(8);
+
+	// BLOCK BREAK TEXTURE 6
+
+	// Top left
+	m_atlasSecondaryTexCoordinates[40] = getCoordX(7);
+	m_atlasSecondaryTexCoordinates[41] = getCoordY(7);
+	// Top right
+	m_atlasSecondaryTexCoordinates[42] = getCoordX(8);
+	m_atlasSecondaryTexCoordinates[43] = getCoordY(7);
+	// Bottom right
+	m_atlasSecondaryTexCoordinates[44] = getCoordX(8);
+	m_atlasSecondaryTexCoordinates[45] = getCoordY(8);
+	// Bottom left
+	m_atlasSecondaryTexCoordinates[46] = getCoordX(7);
+	m_atlasSecondaryTexCoordinates[47] = getCoordY(8);
+
+	// BLOCK BREAK TEXTURE 7
+
+	// Top left
+	m_atlasSecondaryTexCoordinates[48] = getCoordX(8);
+	m_atlasSecondaryTexCoordinates[49] = getCoordY(0);
+	// Top right
+	m_atlasSecondaryTexCoordinates[50] = getCoordX(9);
+	m_atlasSecondaryTexCoordinates[51] = getCoordY(0);
+	// Bottom right
+	m_atlasSecondaryTexCoordinates[52] = getCoordX(9);
+	m_atlasSecondaryTexCoordinates[53] = getCoordY(1);
+	// Bottom left
+	m_atlasSecondaryTexCoordinates[54] = getCoordX(8);
+	m_atlasSecondaryTexCoordinates[55] = getCoordY(1);
+
+	// BLOCK BREAK TEXTURE 8
+
+	// Top left
+	m_atlasSecondaryTexCoordinates[56] = getCoordX(8);
+	m_atlasSecondaryTexCoordinates[57] = getCoordY(1);
+	// Top right
+	m_atlasSecondaryTexCoordinates[58] = getCoordX(9);
+	m_atlasSecondaryTexCoordinates[59] = getCoordY(1);
+	// Bottom right
+	m_atlasSecondaryTexCoordinates[60] = getCoordX(9);
+	m_atlasSecondaryTexCoordinates[61] = getCoordY(2);
+	// Bottom left
+	m_atlasSecondaryTexCoordinates[62] = getCoordX(8);
+	m_atlasSecondaryTexCoordinates[63] = getCoordY(2);
+
+	// BLOCK BREAK TEXTURE 9
+
+	// Top left
+	m_atlasSecondaryTexCoordinates[64] = getCoordX(8);
+	m_atlasSecondaryTexCoordinates[65] = getCoordY(2);
+	// Top right
+	m_atlasSecondaryTexCoordinates[66] = getCoordX(9);
+	m_atlasSecondaryTexCoordinates[67] = getCoordY(2);
+	// Bottom right
+	m_atlasSecondaryTexCoordinates[68] = getCoordX(9);
+	m_atlasSecondaryTexCoordinates[69] = getCoordY(3);
+	// Bottom left
+	m_atlasSecondaryTexCoordinates[70] = getCoordX(8);
+	m_atlasSecondaryTexCoordinates[71] = getCoordY(3);
+
+	// BLOCK BREAK TEXTURE 10
+
+	// Top left
+	m_atlasSecondaryTexCoordinates[72] = getCoordX(8);
+	m_atlasSecondaryTexCoordinates[73] = getCoordY(3);
+	// Top right
+	m_atlasSecondaryTexCoordinates[74] = getCoordX(9);
+	m_atlasSecondaryTexCoordinates[75] = getCoordY(3);
+	// Bottom right
+	m_atlasSecondaryTexCoordinates[76] = getCoordX(9);
+	m_atlasSecondaryTexCoordinates[77] = getCoordY(4);
+	// Bottom left
+	m_atlasSecondaryTexCoordinates[78] = getCoordX(8);
+	m_atlasSecondaryTexCoordinates[79] = getCoordY(4);
 }
 
 AtlasTexCoordinates::~AtlasTexCoordinates() {

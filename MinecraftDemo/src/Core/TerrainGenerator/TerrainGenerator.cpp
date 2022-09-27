@@ -397,9 +397,6 @@ void TerrainGenerator::generateChunk(Block*** &blockMatrix, glm::vec3& chunkPosi
 					}
 				}
 				m_blockManager->changeBlock(&blockMatrix[i][j][w], blockId);
-				if (biome == nullptr) {
-					BOOST_LOG_TRIVIAL(info) << "FOUND BIOME NULL ";
-				}
 				blockMatrix[i][j][w].setBiomeRef(biome);
 			}
 		}

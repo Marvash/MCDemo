@@ -152,6 +152,11 @@ void BlockLibrary::generateDroppableBlockSpecifications() {
 	droppableBlockSpecification = new DroppableBlockSharedSpec();
 	droppableBlockSpecification->m_coreServiceLocator = m_coreServiceLocator;
 	droppableBlockSpecification->m_droppedCount = 1;
+	droppableBlockSpecification->m_droppedItem = ItemId::LEAVES_BLOCK_ITEM;
+	m_droppableBlockSpecifications[BlockId::LEAVES] = droppableBlockSpecification;
+	droppableBlockSpecification = new DroppableBlockSharedSpec();
+	droppableBlockSpecification->m_coreServiceLocator = m_coreServiceLocator;
+	droppableBlockSpecification->m_droppedCount = 1;
 	droppableBlockSpecification->m_droppedItem = ItemId::STONE_BLOCK_ITEM;
 	droppableBlockSpecification->m_exclusiveItemDropList.push_back(ItemId::WOODEN_PICKAXE);
 	droppableBlockSpecification->m_exclusiveItemDropList.push_back(ItemId::STONE_PICKAXE);

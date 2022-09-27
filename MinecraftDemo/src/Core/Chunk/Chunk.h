@@ -23,15 +23,6 @@ public:
 		MESHLOADED
 	};
 
-	Chunk* leftNeighbour;
-	Chunk* rightNeighbour;
-	Chunk* frontNeighbour;
-	Chunk* backNeighbour;
-	glm::vec3 chunkPosition;
-	bool init;
-	bool canDraw;
-	ChunkState state;
-
 	Chunk(BlockManager* blockManager, BiomeLibrary* biomeManager, Atlas* atlas, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition);
 	Chunk(BlockManager* blockManager, BiomeLibrary* biomeManager, Atlas* atlas, Block*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition);
 	~Chunk();
@@ -46,7 +37,24 @@ public:
 	Block* findNeighbourBlock(BlockFace neighbourSide, Block* cube);
 	void forceChunkMeshUpdate();
 	RenderingComponent* getRenderingComponent();
+
+	Chunk* leftNeighbour;
+	Chunk* rightNeighbour;
+	Chunk* frontNeighbour;
+	Chunk* backNeighbour;
+	glm::vec3 chunkPosition;
+	bool init;
+	bool canDraw;
+	ChunkState state;
+	
 private:
+
+	void renderingSetup();
+	void addFaceCoordinates(size_t& vertexCoordsBaseIndex, BlockFace faceSide, float vertexBaseHeight, float vertexBaseWidth, float vertexBaseDepth);
+	void addFaceTexIndexes(size_t& vertexIndexesBaseIndex, int textureCoordinatesIndex, int colorIndex, int secondaryTextureCoordinatesIndex);
+	void addFaceIndexes(GLuint vertexBaseIndex, size_t& indexCount);
+	void cleanVerticesArrays();
+	void initEmptyBlockMatrix();
 
 	static const float blockSideSize;
 
@@ -69,11 +77,4 @@ private:
 	BiomeLibrary* m_biomeManager;
 	int chunkHeight;
 	int chunkSideSize;
-
-	void renderingSetup();
-	void addFaceCoordinates(size_t& vertexCoordsBaseIndex, BlockFace faceSide, float vertexBaseHeight, float vertexBaseWidth, float vertexBaseDepth);
-	void addFaceTexIndexes(size_t& vertexIndexesBaseIndex, int textureCoordinatesIndex, int colorIndex);
-	void addFaceIndexes(GLuint vertexBaseIndex, size_t& indexCount);
-	void cleanVerticesArrays();
-	void initEmptyBlockMatrix();
 };

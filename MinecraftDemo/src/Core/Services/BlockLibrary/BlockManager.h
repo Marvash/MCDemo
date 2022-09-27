@@ -21,6 +21,9 @@ public:
 	bool isWeakTo(BlockId blockId, ItemId itemId) const;
 	void updateBlockBreakingContext(double delta, Block* block, ItemHandle* itemUsed);
 	void stopBlockBreakingContext();
+	bool getIsBreakingBlock();
+	bool isBlockBeingBroken(Block* block);
+	BlockBreakingContext::BlockBreakStage getBreakingStage();
 private:
 	BlockLibrary* m_blockLibrary;
 	BlockBreakingContext* m_blockBreakingContext;

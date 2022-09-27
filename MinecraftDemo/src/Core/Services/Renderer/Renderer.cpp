@@ -62,7 +62,7 @@ void Renderer::init() {
 	m_shaderLibrary.loadShader("shaders/vOffScreenPPShader.vert", "shaders/fOffScreenPPShader.frag", ShaderType::OFFSCREENPP);
 
 	ScreenShaderConfig* screenShaderConfig = new ScreenShaderConfig(m_shaderLibrary.getShader(ShaderType::SCREEN), m_screenTexture);
-	WorldShaderConfig* worldShaderConfig = new WorldShaderConfig(m_shaderLibrary.getShader(ShaderType::WORLD), m_atlas->getAtlasTexture(), m_atlas->getTexCoordsBuffer(), m_biomeManager->getBiomeColorsBuffer());
+	WorldShaderConfig* worldShaderConfig = new WorldShaderConfig(m_shaderLibrary.getShader(ShaderType::WORLD), m_atlas->getAtlasTexture(), m_atlas->getTexCoordsBuffer(), m_biomeManager->getBiomeColorsBuffer(), m_atlas->getSecondaryTexCoordsBuffer());
 	OffScreenPPShaderConfig* offScreenPPShaderConfig = new OffScreenPPShaderConfig(m_shaderLibrary.getShader(ShaderType::OFFSCREENPP), m_offScreenTexture);
 
 	m_shaderSetups.insert(std::make_pair<ShaderType, ShaderConfig*>(ShaderType::SCREEN, static_cast<ShaderConfig*>(screenShaderConfig)));
@@ -280,6 +280,7 @@ unsigned char* Renderer::drawOffScreen(OffScreenRenderData* renderData) {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_offScreenFramebuffer);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+
 	setClearColor(renderData->clearColor);
 	clear();
 	switch (renderData->shaderType) {

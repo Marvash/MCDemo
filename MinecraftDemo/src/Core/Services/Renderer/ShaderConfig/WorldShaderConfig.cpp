@@ -1,20 +1,23 @@
 #include "WorldShaderConfig.h"
 
-WorldShaderConfig::WorldShaderConfig(Shader* shader, Texture* atlasTexture, Texture* texCoords, Texture* biomeColors) : 
+WorldShaderConfig::WorldShaderConfig(Shader* shader, Texture* atlasTexture, Texture* texCoords, Texture* biomeColors, Texture* secondaryTexCoords) : 
 	ShaderConfig(shader),
 	m_atlasTexture(atlasTexture),
 	m_vertexTexCoords(texCoords),
-	m_vertexTexColor(biomeColors) {
+	m_vertexTexColor(biomeColors),
+	m_vertexSecondaryTexCoords(secondaryTexCoords) {
 }
 
 void WorldShaderConfig::useShaderConfig() {
 	m_atlasTexture->bind(0);
 	m_vertexTexCoords->bind(1);
 	m_vertexTexColor->bind(2);
+	m_vertexSecondaryTexCoords->bind(3);
 	m_shader->use();
 	m_shader->setInt("texAtlas", 0);
 	m_shader->setInt("vertexesTexData", 1);
 	m_shader->setInt("vertexesColorData", 2);
+	m_shader->setInt("vertexesSecondaryTexData", 3);
 }
 
 void WorldShaderConfig::prepareShader(ModelData* modelData, ShaderData* shaderData) {

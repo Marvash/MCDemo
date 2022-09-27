@@ -59,3 +59,15 @@ void BlockManager::updateBlockBreakingContext(double delta, Block* block, ItemHa
 void BlockManager::stopBlockBreakingContext() {
 	m_blockBreakingContext->stopBreaking();
 }
+
+bool BlockManager::getIsBreakingBlock() {
+	return m_blockBreakingContext->getIsBreakingBlock();
+}
+
+bool BlockManager::isBlockBeingBroken(Block* block) {
+	return m_blockBreakingContext->getIsBreakingBlock() && m_blockBreakingContext->getBreakingBlock() == block;
+}
+
+BlockBreakingContext::BlockBreakStage BlockManager::getBreakingStage() {
+	return m_blockBreakingContext->getBreakingStage();
+}

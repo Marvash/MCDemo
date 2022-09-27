@@ -217,9 +217,11 @@ void Player::processMouseInput() {
 	InputManager* inputManager = m_coreServiceLocator->getInput();
 	ItemHandle* selectedItem = inventory->getSelectedItem();
 	if (inputManager->getInputState(InputMouseButton::MOUSE_LEFT)) {
+		//BOOST_LOG_TRIVIAL(info) << "left mouse is pressed";
 		selectedItem->itemPrimaryActionUpdate(m_coreServiceLocator);
 	}
 	else if(inputManager->getInputStateReleased(InputMouseButton::MOUSE_LEFT)) {
+		//BOOST_LOG_TRIVIAL(info) << "left mouse was released";
 		selectedItem->itemPrimaryActionEnd(m_coreServiceLocator);
 	}
 	if (inputManager->getInputState(InputMouseButton::MOUSE_RIGHT)) {

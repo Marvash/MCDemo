@@ -261,7 +261,6 @@
     <ClCompile Include="src\Utils\Strategy\Strategy.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\Atlas\AtlasElementTexIndex.h" />
     <ClInclude Include="src\Core\Components\RenderingComponent.h" />
     <ClInclude Include="src\Core\Exceptions\GameLogicException.h" />
     <ClInclude Include="src\Core\Services\BlockLibrary\BlockManager.h" />

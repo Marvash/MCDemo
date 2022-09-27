@@ -3,6 +3,7 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in int aVertexTexCoordsIndex;
 layout (location = 2) in int aVertexTexColorIndex;
+layout (location = 3) in int aVertexSecondaryTexCoordsIndex;
 
 out vec2 texCoords1;
 out vec2 texCoords2;
@@ -10,10 +11,12 @@ out vec2 texCoords3;
 out vec3 texColor1;
 out vec3 texColor2;
 out vec3 texColor3;
+out vec2 secondaryTexCoords;
 
 uniform mat4 mvp;
 uniform samplerBuffer vertexesTexData;
 uniform samplerBuffer vertexesColorData;
+uniform samplerBuffer vertexesSecondaryTexData;
 
 void populateTexData();
 
@@ -60,5 +63,12 @@ void populateTexData() {
         texColor3.r = -1.0;
         texColor3.g = -1.0;
         texColor3.b = -1.0;
+    }
+    if(aVertexSecondaryTexCoordsIndex >= 0) {
+        secondaryTexCoords.x = texelFetch(vertexesSecondaryTexData, aVertexSecondaryTexCoordsIndex).r;
+        secondaryTexCoords.y = texelFetch(vertexesSecondaryTexData, aVertexSecondaryTexCoordsIndex + 1).r;
+    } else {
+        secondaryTexCoords.x = -1.0;
+        secondaryTexCoords.y = -1.0;
     }
 }

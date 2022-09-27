@@ -14,8 +14,8 @@ void AtlasService::onNotify(Event& newEvent) {
 
 }
 
-int AtlasService::getCubeTexIndex(BlockId blockId, BlockFace faceSide) {
-	return m_atlas->getCubeTexIndex(blockId, faceSide);
+int AtlasService::getBlockTexIndex(BlockId blockId, BlockFace faceSide) {
+	return m_atlas->getBlockTexIndex(blockId, faceSide);
 }
 
 TextureBuffer* AtlasService::getTexCoordsBuffer() {
