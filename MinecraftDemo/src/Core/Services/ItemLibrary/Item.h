@@ -1,20 +1,32 @@
 #pragma once
-#include "Core/Services/ItemLibrary/ItemSpecification.h"
-#include <glm/common.hpp>
+#include "ItemIdEnum.h"
+#include "Core/Textures/ImageTexture2D.h"
+#include "ItemIdEnum.h"
+#include "ItemSharedSpec.h"
+#include "IItem.h"
+#include "ItemHandle.h"
+#include <Boost/log/trivial.hpp>
 
-class Item {
+class CoreServiceLocator;
+
+class Item : public IItem {
+
+	friend class ItemLibrary;
+	friend class ItemGenerator;
+
 public:
-	Item(ItemSpecification* itemSpecification, int count = 1);
-	void performItemPrimaryAction(CoreServiceLocator* coreServiceLocator);
-	void performItemSecondaryAction(CoreServiceLocator* coreServiceLocator);
-	ItemId getItemId();
-	int getItemMaxStackCount();
-	int getItemCount();
-	ImageTexture2D* getItemIcon();
-	void setItemCount(int count);
-	bool isCompatibleWith(Item* target);
-	Item* clone();
+	virtual ~Item();
+	virtual ImageTexture2D* getItemIcon() override;
+	virtual void itemPrimaryActionUpdate(ItemHandle* item, CoreServiceLocator* coreServiceLocator) override;
+	virtual void itemPrimaryActionEnd(ItemHandle* item, CoreServiceLocator* coreServiceLocator) override;
+	virtual void itemSecondaryActionUpdate(ItemHandle* item, CoreServiceLocator* coreServiceLocator) override;
+	virtual void itemSecondaryActionEnd(ItemHandle* item, CoreServiceLocator* coreServiceLocator) override;
+	virtual ItemId getItemId() override;
+	virtual float getItemBreakScalingFactor() override;
+	virtual int getItemMaxStackCount() override;
+	virtual bool isCompatibleWith(IItem* target) override;
 private:
-	ItemSpecification* m_itemSpecification;
-	int m_count;
+	Item();
+
+	ItemSharedSpec* m_itemSharedSpec;
 };

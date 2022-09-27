@@ -1,24 +1,21 @@
 #pragma once
 #include "Core/Services/ItemLibrary/ItemIdEnum.h"
-#include "Core/Services/ItemLibrary/ItemSlot.h"
-#include "CraftingRecipeContract.h"
+#include "Core/Services/ItemLibrary/ItemHandle.h"
 #include <string>
 #include <Boost/log/trivial.hpp>
 
 class CraftingRecipe {
 public:
-	CraftingRecipe(int recipeRows, int recipeColumns, Item*** recipe, Item* recipeResult);
+	CraftingRecipe(int recipeRows, int recipeColumns, ItemHandle*** recipe, ItemHandle* recipeResult);
 	~CraftingRecipe();
-	ItemId getRecipeResultItemId();
-	CraftingRecipeContract* getCraftingRecipeContract();
-	bool matchesItemPattern(unsigned int patternRows, unsigned int patternCols, ItemSlot*** itemPattern);
+	int getRecipeCols();
+	int getRecipeRows();
+	ItemHandle* getRecipeResult();
+	ItemHandle*** getRecipe();
 private:
-	bool matchesSubItemPattern(unsigned int patternRowOffset, unsigned int patternColOffset, ItemSlot*** itemPattern);
-	bool matchEmptyPatternAroundSubPattern(unsigned int patternRows, unsigned int patternCols, unsigned int patternRowOffset, unsigned int patternColOffset, ItemSlot*** itemPattern);
 
-	Item*** m_recipe;
+	ItemHandle*** m_recipe;
 	int m_recipeRows;
 	int m_recipeColumns;
-	Item* m_recipeResult;
-	CraftingRecipeContract* m_contract;
+	ItemHandle* m_recipeResult;
 };

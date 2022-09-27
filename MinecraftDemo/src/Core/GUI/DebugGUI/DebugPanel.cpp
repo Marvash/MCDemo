@@ -28,7 +28,7 @@ void DebugPanel::draw() {
         setPlayerPosition(player->m_position);
         setPlayerLook(cameraSystem->m_front);
         setPlayerVelocity(player->m_movementComponent->getVelocity());
-        Item* selectedItem = inventory->getSelectedItem();
+        ItemHandle* selectedItem = inventory->getSelectedItem();
         std::stringstream stringBuilder;
         std::string itemName = "";
         if (selectedItem != nullptr) {
@@ -40,8 +40,8 @@ void DebugPanel::draw() {
         }
         setSelectedItemName(itemName);
         std::string targetCubeName = "None";
-        if (player->getTargetCube() != nullptr) {
-            targetCubeName = Cube::getDisplayName(player->getTargetCube()->getCubeId());
+        if (player->getTargetBlock() != nullptr) {
+            targetCubeName = m_coreServiceLocator->getBlockManager()->getDisplayName(player->getTargetBlock()->getBlockId());
         }
         setTargetCubeName(targetCubeName);
         std::string movementModeName = m_coreServiceLocator->getMovementSystem()->getMovementModeDisplayName(player->m_movementComponent->getMovementMode());

@@ -3,7 +3,7 @@
 #include "Core/Events/MouseMoveEvent.h"
 #include "Core/Events/MouseScrollEvent.h"
 #include "Core/GameObject/GameObject.h"
-#include "Core/Cube/Cube.h"
+#include "Core/Services/BlockLibrary/Block.h"
 #include "Core/Services/MovementSystem/MovementModeEnum.h"
 #include "Core/Components/MovementComponent.h"
 #include <glm/glm.hpp>
@@ -15,11 +15,11 @@ public:
 	Player(CoreServiceLocator* coreServiceLocator);
 	void onNotify(Event& newEvent) override;
 	void update() override;
-	Cube* getTargetCube();
+	Block* getTargetBlock();
 	bool getIsOpenInventory();
 	// TODO: Move getFirstSolidCube and getLastPlaceableCube in World or something (they do not belong in player)
-	Cube* getFirstSolidCube();
-	Cube* getLastPlaceableCube();
+	Block* getFirstNonEmptyBlock();
+	Block* getLastEmptyBlock();
 
 private:
 	void processKeyinput();
@@ -29,8 +29,8 @@ private:
 	void processInventoryKeyInput();
 	void handleGameplayInput();
 	void handleInventoryInput();
-	void performNoItemPrimaryAction();
-	Cube* m_targetCube;
+	Block* m_targetBlock;
+	
 
 	float m_jumpForce;
 	float m_targetCubeRayLength;

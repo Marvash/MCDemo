@@ -1,9 +1,12 @@
 #pragma once
-#include "Core/Cube/Cube.h"
+#include "Core/Services/BlockLibrary/Block.h"
+#include "Core/Services/BlockLibrary/BlockFaceEnum.h"
 #include <Boost/log/trivial.hpp>
 #include "Core/Services/Atlas/Atlas.h"
 #include "Core/Services/Biome/BiomeLibrary.h"
 #include "Core/Components/RenderingComponent.h"
+
+class BlockManager;
 
 class Chunk {
 public:
@@ -20,6 +23,21 @@ public:
 		MESHLOADED
 	};
 
+	Chunk(BlockManager* blockManager, BiomeLibrary* biomeManager, Atlas* atlas, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition);
+	Chunk(BlockManager* blockManager, BiomeLibrary* biomeManager, Atlas* atlas, Block*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition);
+	~Chunk();
+	void buildMesh();
+	void loadMesh();
+	Block* getBlockValue(int x, int y, int z);
+	static void deleteChunkData(Block*** chunkData, int height, int width);
+	Block*** getBlockMatrix();
+	void setPosition(glm::vec3& position);
+	Block* getCubeByCoords(glm::f64vec3 coords);
+	Block* findNeighbourBlock(BlockFace neighbourSide, int height, int width, int depth);
+	Block* findNeighbourBlock(BlockFace neighbourSide, Block* cube);
+	void forceChunkMeshUpdate();
+	RenderingComponent* getRenderingComponent();
+
 	Chunk* leftNeighbour;
 	Chunk* rightNeighbour;
 	Chunk* frontNeighbour;
@@ -28,26 +46,20 @@ public:
 	bool init;
 	bool canDraw;
 	ChunkState state;
-
-	Chunk(BiomeLibrary* biomeManager, Atlas* atlas, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition);
-	Chunk(BiomeLibrary* biomeManager, Atlas* atlas, Cube*** blockMatrix, int chunkHeight, int chunkSideSize, glm::vec3 chunkPosition);
-	~Chunk();
-	void buildMesh();
-	void loadMesh();
-	Cube* getBlockValue(int x, int y, int z);
-	static void deleteChunkData(Cube*** chunkData, int height, int width);
-	Cube*** getBlockMatrix();
-	void setPosition(glm::vec3& position);
-	Cube* getCubeByCoords(glm::f64vec3 coords);
-	Cube* findNeighbourBlock(Cube::FaceSide neighbourSide, int height, int width, int depth);
-	Cube* findNeighbourBlock(Cube::FaceSide neighbourSide, Cube* cube);
-	RenderingComponent* getRenderingComponent();
+	
 private:
+
+	void renderingSetup();
+	void addFaceCoordinates(size_t& vertexCoordsBaseIndex, BlockFace faceSide, float vertexBaseHeight, float vertexBaseWidth, float vertexBaseDepth);
+	void addFaceTexIndexes(size_t& vertexIndexesBaseIndex, int textureCoordinatesIndex, int colorIndex, int secondaryTextureCoordinatesIndex);
+	void addFaceIndexes(GLuint vertexBaseIndex, size_t& indexCount);
+	void cleanVerticesArrays();
+	void initEmptyBlockMatrix();
 
 	static const float blockSideSize;
 
 	GLuint VAO, VBOVCoords, VBOVTexIndexes, EBO;
-	Cube*** m_blockMatrix;
+	Block*** m_blockMatrix;
 	size_t meshIndexesCount;
 	size_t newMeshIndexesCount;
 	size_t meshVertexesCount;
@@ -59,16 +71,10 @@ private:
 	GLint* vertexesTexIndexesCompact;
 	GLint* vertexesTexIndexes;
 	RenderingComponent m_renderingComponent;
+	BlockManager* m_blockManager;
 
 	Atlas* m_atlas;
 	BiomeLibrary* m_biomeManager;
 	int chunkHeight;
 	int chunkSideSize;
-
-	void renderingSetup();
-	void addFaceCoordinates(size_t& vertexCoordsBaseIndex, Cube::FaceSide faceSide, float vertexBaseHeight, float vertexBaseWidth, float vertexBaseDepth);
-	void addFaceTexIndexes(size_t& vertexIndexesBaseIndex, int textureCoordinatesIndex, int colorIndex);
-	void addFaceIndexes(GLuint vertexBaseIndex, size_t& indexCount);
-	void cleanVerticesArrays();
-	void initEmptyBlockMatrix();
 };

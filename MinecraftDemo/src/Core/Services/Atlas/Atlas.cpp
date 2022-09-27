@@ -15,12 +15,16 @@ Atlas::~Atlas() {
 	delete m_texCoords;
 }
 
-AtlasTexture* Atlas::getAtlasTexture() {
-	return m_texture;
-}
-
 TextureBuffer* Atlas::getTexCoordsBuffer() {
 	return m_texCoords;
+}
+
+TextureBuffer* Atlas::getSecondaryTexCoordsBuffer() {
+	return m_secondaryTexCoords;
+}
+
+AtlasTexture* Atlas::getAtlasTexture() {
+	return m_texture;
 }
 
 void Atlas::init() {
@@ -33,6 +37,7 @@ void Atlas::init() {
 	m_texture = new AtlasTexture(mipFilePaths);
 	m_atlasTexCoords = new AtlasTexCoordinates(m_texture->m_atlasWidth, m_texture->m_atlasHeight);
 	m_texCoords = new TextureBuffer(m_atlasTexCoords->m_atlasTexCoordinates, m_atlasTexCoords->TEX_COORDINATES_SIZE);
+	m_secondaryTexCoords = new TextureBuffer(m_atlasTexCoords->m_atlasSecondaryTexCoordinates, m_atlasTexCoords->SECONDARY_TEX_COORDINATES_SIZE);
 }
 
 void Atlas::onNotify(Event& newEvent) {
@@ -43,59 +48,114 @@ void Atlas::notify(Event& newEvent) {
 
 }
 
-int Atlas::getAtlasTexIndex(CubeId cubeId, Cube::FaceSide faceSide) {
-	switch (cubeId) {
-	case CubeId::GRASS_BLOCK:
-		switch (faceSide) {
-		case Cube::FaceSide::RIGHT:
-		case Cube::FaceSide::LEFT:
-		case Cube::FaceSide::FRONT:
-		case Cube::FaceSide::BACK:
+int Atlas::getBlockSecondaryTexIndex(BlockBreakingContext::BlockBreakStage stage) {
+	switch (stage) {
+		case BlockBreakingContext::BlockBreakStage::BREAKPROGRESS0:
+			return -1;
+		case BlockBreakingContext::BlockBreakStage::BREAKPROGRESS1:
 			return 0;
-		case Cube::FaceSide::TOP:
+		case BlockBreakingContext::BlockBreakStage::BREAKPROGRESS2:
+			return 8;
+		case BlockBreakingContext::BlockBreakStage::BREAKPROGRESS3:
+			return 16;
+		case BlockBreakingContext::BlockBreakStage::BREAKPROGRESS4:
 			return 24;
-		case Cube::FaceSide::BOTTOM:
+		case BlockBreakingContext::BlockBreakStage::BREAKPROGRESS5:
+			return 32;
+		case BlockBreakingContext::BlockBreakStage::BREAKPROGRESS6:
+			return 40;
+		case BlockBreakingContext::BlockBreakStage::BREAKPROGRESS7:
+			return 48;
+		case BlockBreakingContext::BlockBreakStage::BREAKPROGRESS8:
+			return 56;
+		case BlockBreakingContext::BlockBreakStage::BREAKPROGRESS9:
+			return 64;
+		case BlockBreakingContext::BlockBreakStage::BREAKPROGRESS10:
+			return 72;
+	}
+}
+
+int Atlas::getBlockTexIndex(BlockId blockId, BlockFace blockFace) {
+	switch (blockId) {
+	case BlockId::GRASS:
+		switch (blockFace) {
+		case BlockFace::RIGHT:
+		case BlockFace::LEFT:
+		case BlockFace::FRONT:
+		case BlockFace::BACK:
+			return 0;
+		case BlockFace::TOP:
+			return 24;
+		case BlockFace::BOTTOM:
 			return 48;
 		}
 		break;
-	case CubeId::DIRT_BLOCK:
+	case BlockId::DIRT:
 		return 72;
-	case CubeId::STONE_BLOCK:
+	case BlockId::STONE:
 		return 96;
-	case CubeId::SAND_BLOCK:
+	case BlockId::SAND:
 		return 120;
-	case CubeId::SNOWY_GRASS_BLOCK:
-		switch (faceSide) {
-		case Cube::FaceSide::RIGHT:
-		case Cube::FaceSide::LEFT:
-		case Cube::FaceSide::FRONT:
-		case Cube::FaceSide::BACK:
+	case BlockId::SNOWY_GRASS:
+		switch (blockFace) {
+		case BlockFace::RIGHT:
+		case BlockFace::LEFT:
+		case BlockFace::FRONT:
+		case BlockFace::BACK:
 			return 144;
-		case Cube::FaceSide::TOP:
+		case BlockFace::TOP:
 			return 168;
-		case Cube::FaceSide::BOTTOM:
+		case BlockFace::BOTTOM:
 			return 192;
 		}
 		break;
-	case CubeId::OAK_LOG_BLOCK:
-		switch (faceSide) {
-		case Cube::FaceSide::RIGHT:
-		case Cube::FaceSide::LEFT:
-		case Cube::FaceSide::FRONT:
-		case Cube::FaceSide::BACK:
+	case BlockId::OAK_LOG:
+		switch (blockFace) {
+		case BlockFace::RIGHT:
+		case BlockFace::LEFT:
+		case BlockFace::FRONT:
+		case BlockFace::BACK:
 			return 216;
-		case Cube::FaceSide::TOP:
-		case Cube::FaceSide::BOTTOM:
+		case BlockFace::TOP:
+		case BlockFace::BOTTOM:
 			return 240;
 		}
 		break;
-	case CubeId::LEAVES_BLOCK:
+	case BlockId::LEAVES:
 		return 264;
 		break;
-	case CubeId::PLANK_BLOCK:
+	case BlockId::PLANK:
 		return 288;
 		break;
 	}
 	BOOST_LOG_TRIVIAL(warning) << "Returning -1";
 	return -1;
+}
+
+int Atlas::getItemTexIndex(ItemId itemId) {
+	switch (itemId) {
+	case ItemId::STICK:
+		return 312;
+	case ItemId::WOODEN_AXE:
+		return 336;
+	case ItemId::WOODEN_HOE:
+		return 360;
+	case ItemId::WOODEN_PICKAXE:
+		return 384;
+	case ItemId::WOODEN_SHOVEL:
+		return 408;
+	case ItemId::WOODEN_SWORD:
+		return 432;
+	case ItemId::STONE_AXE:
+		return 456;
+	case ItemId::STONE_HOE:
+		return 480;
+	case ItemId::STONE_PICKAXE:
+		return 504;
+	case ItemId::STONE_SHOVEL:
+		return 528;
+	case ItemId::STONE_SWORD:
+		return 552;
+	}
+	return 576;
 }

@@ -48,7 +48,7 @@ private:
 	unsigned int m_craftingTableCols;
 	float m_viewportWidth;
 	float m_viewportHeight;
-	ItemSlot* m_dragSourceItemSlot;
+	ItemHandle* m_dragSourceItemSlot;
 	ImVec2 m_windowP0;
 	ImVec2 m_windowP1;
 	ImGuiWindowFlags m_windowFlags;

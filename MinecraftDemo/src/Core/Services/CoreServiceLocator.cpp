@@ -48,8 +48,12 @@ Inventory* CoreServiceLocator::getInventory() {
 	return m_inventory;
 }
 
-ItemLibrary* CoreServiceLocator::getItemLibrary() {
-	return m_itemLibrary;
+ItemGenerator* CoreServiceLocator::getItemGenerator() {
+	return m_itemGenerator;
+}
+
+BlockManager* CoreServiceLocator::getBlockManager() {
+	return m_blockManager;
 }
 
 CraftingTable* CoreServiceLocator::getCraftingTable() {
@@ -100,8 +104,12 @@ void CoreServiceLocator::provide(Inventory* inventoryService) {
 	m_inventory = inventoryService;
 }
 
-void CoreServiceLocator::provide(ItemLibrary* itemLibraryService) {
-	m_itemLibrary = itemLibraryService;
+void CoreServiceLocator::provide(ItemGenerator* itemGeneratorService) {
+	m_itemGenerator = itemGeneratorService;
+}
+
+void CoreServiceLocator::provide(BlockManager* blockManagerService) {
+	m_blockManager = blockManagerService;
 }
 
 void CoreServiceLocator::provide(CraftingTable* craftingTable) {

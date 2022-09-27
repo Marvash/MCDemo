@@ -20,8 +20,9 @@ ChunkManager::ChunkManager(CoreEventDispatcher* eventDispatcher) :
 	
 }
 
-void ChunkManager::init(BiomeLibrary* biomeManager, Atlas* atlas) {
-	m_terrainGen = new TerrainGenerator(biomeManager, CHUNK_SIDE_SIZE, CHUNK_HEIGHT);
+void ChunkManager::init(BiomeLibrary* biomeManager, Atlas* atlas, BlockManager* blockManager) {
+	m_blockManager = blockManager;
+	m_terrainGen = new TerrainGenerator(biomeManager, m_blockManager, CHUNK_SIDE_SIZE, CHUNK_HEIGHT);
 	for (int i = 0; i < CHUNK_ARRAY_WIDTH; i++) {
 		m_chunkMatrix[i] = new Chunk * [CHUNK_ARRAY_DEPTH];
 		for (int j = 0; j < CHUNK_ARRAY_DEPTH; j++) {
@@ -31,7 +32,7 @@ void ChunkManager::init(BiomeLibrary* biomeManager, Atlas* atlas) {
 			//BOOST_LOG_TRIVIAL(info) << i << " " << j;
 			//BOOST_LOG_TRIVIAL(info) << xPos << " " << yPos << " " << zPos;
 			glm::vec3 chunkPosition = glm::vec3(xPos, yPos, zPos);
-			m_chunkMatrix[i][j] = new Chunk(biomeManager, atlas, CHUNK_HEIGHT, CHUNK_SIDE_SIZE, chunkPosition);
+			m_chunkMatrix[i][j] = new Chunk(m_blockManager, biomeManager, atlas, CHUNK_HEIGHT, CHUNK_SIDE_SIZE, chunkPosition);
 			m_chunksRenderingComponents.push_back(m_chunkMatrix[i][j]->getRenderingComponent());
 		}
 	}
@@ -65,7 +66,7 @@ void ChunkManager::generateChunks() {
 void ChunkManager::generateSingleChunk(glm::vec3 chunkPosition, int widthIndex, int depthIndex, Chunk* chunk) {
 
 	// Async terrain generation happens here
-	Cube*** chunkBlockMatrix = chunk->getBlockMatrix();
+	Block*** chunkBlockMatrix = chunk->getBlockMatrix();
 	m_terrainGen->generateChunk(chunkBlockMatrix, chunkPosition);
 	m_terrainGen->decorateChunk(chunkBlockMatrix, chunkPosition);
 
@@ -183,152 +184,65 @@ std::vector<RenderingComponent*>* ChunkManager::getChunkRenderingComponents() {
 	return &m_chunksRenderingComponents;
 }
 
-void ChunkManager::computeAdjacentCubes(Cube*** adjacentCubes, GameObject* gameObject, int radius) {
-	if (radius < 1) {
-		return;
-	}
-	int size = (radius * 2) + 1;
-	glm::vec3 basePosition = gameObject->m_position;
-	convertToCenteredCubeCoordinates(basePosition);
-	glm::vec3 position;
-	for (int h = 0; h < size; h++) {
-		for (int w = 0; w < size; w++) {
-			for (int d = 0; d < size; d++) {
-				position.x = basePosition.x + float(w - int(size / 2.0f));
-				position.y = basePosition.y + float(h - int(size / 2.0f));
-				position.z = basePosition.z + float(d - int(size / 2.0f));
-				Cube* cube = getCubeByCoords(position);
-				if (cube != nullptr) {
-					adjacentCubes[h][w][d] = *cube;
-				}
-				else {
-					adjacentCubes[h][w][d] = Cube();
-				}
-			}
-		}
-	}
-}
-
 void ChunkManager::convertToCenteredCubeCoordinates(glm::vec3& coords) {
 	coords.x = glm::floor(coords.x) + 0.5f;
 	coords.y = glm::floor(coords.y) + 0.5f;
 	coords.z = glm::floor(coords.z) + 0.5f;
 }
 
-glm::vec3 ChunkManager::getCubeAbsCoords(Cube* cube) {
-	Chunk* chunk = cube->getChunkRef();
+glm::vec3 ChunkManager::getCubeAbsCoords(Block* block) {
+	Chunk* chunk = block->getChunkRef();
 	int halfChunkSize = CHUNK_SIDE_SIZE / 2;
 	if (chunk != nullptr) {
-		return glm::vec3((chunk->chunkPosition.x - halfChunkSize) + cube->getCubeCoordsOffset().x, 
-			chunk->chunkPosition.y + cube->getCubeCoordsOffset().y, 
-			(chunk->chunkPosition.z - halfChunkSize) + cube->getCubeCoordsOffset().z);
+		return glm::vec3((chunk->chunkPosition.x - halfChunkSize) + block->getBlockCoordsOffset().x,
+			chunk->chunkPosition.y + block->getBlockCoordsOffset().y,
+			(chunk->chunkPosition.z - halfChunkSize) + block->getBlockCoordsOffset().z);
 	}
 	return glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
-Cube* ChunkManager::solidBlockCast(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength) {
-	std::vector<Cube*> cubes = getCubesInRay(rayOrigin, direction, rayLength);
-	Cube* target = nullptr;
-	if (cubes.size() > 0) {
-		for (int i = 0; i < cubes.size(); i++) {
-			if (cubes.at(i)->getCubeId() != CubeId::AIR_BLOCK && cubes.at(i)->getCubeId() != CubeId::UNGENERATED_BLOCK) {
-				target = cubes.at(i);
-				i = cubes.size();
+Block* ChunkManager::solidBlockCast(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength) {
+	std::vector<Block*> blocks = getCubesInRay(rayOrigin, direction, rayLength);
+	Block* target = nullptr;
+	if (blocks.size() > 0) {
+		for (int i = 0; i < blocks.size(); i++) {
+			if (blocks.at(i)->getBlockId() != BlockId::AIR && blocks.at(i)->getBlockId() != BlockId::NONE) {
+				target = blocks.at(i);
+				i = blocks.size();
 			}
 		}
 	}
 	return target;
 }
 
-void ChunkManager::destroyBlock(Cube* toDestroy) {
-	lockLP();
-	if (toDestroy != nullptr) {
-		toDestroy->setCubeId(CubeId::AIR_BLOCK);
-		Chunk* ownerChunk = toDestroy->getChunkRef();
-		ownerChunk->buildMesh();
-		ownerChunk->loadMesh();
-		ownerChunk->state = Chunk::ChunkState::MESHLOADED;
-		if (ownerChunk->leftNeighbour != nullptr) {
-			ownerChunk->leftNeighbour->buildMesh();
-			ownerChunk->leftNeighbour->loadMesh();
-			ownerChunk->leftNeighbour->state = Chunk::ChunkState::MESHLOADED;
-		}
-		if (ownerChunk->rightNeighbour != nullptr) {
-			ownerChunk->rightNeighbour->buildMesh();
-			ownerChunk->rightNeighbour->loadMesh();
-			ownerChunk->rightNeighbour->state = Chunk::ChunkState::MESHLOADED;
-		}
-		if (ownerChunk->frontNeighbour != nullptr) {
-			ownerChunk->frontNeighbour->buildMesh();
-			ownerChunk->frontNeighbour->loadMesh();
-			ownerChunk->frontNeighbour->state = Chunk::ChunkState::MESHLOADED;
-		}
-		if (ownerChunk->backNeighbour != nullptr) {
-			ownerChunk->backNeighbour->buildMesh();
-			ownerChunk->backNeighbour->loadMesh();
-			ownerChunk->backNeighbour->state = Chunk::ChunkState::MESHLOADED;
-		}
+void ChunkManager::updateBlockNeighbouringChunks(Block* block) {
+	Chunk* ownerChunk = block->getChunkRef();
+	ownerChunk->buildMesh();
+	ownerChunk->loadMesh();
+	ownerChunk->state = Chunk::ChunkState::MESHLOADED;
+	if (ownerChunk->leftNeighbour != nullptr) {
+		ownerChunk->leftNeighbour->buildMesh();
+		ownerChunk->leftNeighbour->loadMesh();
+		ownerChunk->leftNeighbour->state = Chunk::ChunkState::MESHLOADED;
 	}
-	unlockLP();
-	//Naive solution (ray marching)
-	/*
-	glm::vec3 rayEnd = playerPosition;
-	float currentIncrement = 0.0f;
-	float incrementStep = 0.1f;
-	Cube* toDestroy = nullptr;
-	internalLock.lock();
-	while (toDestroy == nullptr && glm::length(rayEnd - playerPosition) < rayLength) {
-		rayEnd = playerPosition + (playerLookDirection * currentIncrement);
-		toDestroy = getCubeByCoords(rayEnd);
-		if (toDestroy != nullptr && toDestroy->cubeId == CubeId::AIR_BLOCK) {
-			toDestroy = nullptr;
-		}
-		currentIncrement += incrementStep;
+	if (ownerChunk->rightNeighbour != nullptr) {
+		ownerChunk->rightNeighbour->buildMesh();
+		ownerChunk->rightNeighbour->loadMesh();
+		ownerChunk->rightNeighbour->state = Chunk::ChunkState::MESHLOADED;
 	}
-	if (toDestroy != nullptr) {
-		toDestroy->setCubeId(CubeId::AIR_BLOCK);
-		Chunk* ownerChunk = toDestroy->chunkRef;
-		ownerChunk->state = Chunk::ChunkState::SHOULDREBUILD;
-		if (ownerChunk->leftNeighbour != nullptr && ownerChunk->leftNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
-			ownerChunk->leftNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
-		}
-		if (ownerChunk->rightNeighbour != nullptr && ownerChunk->rightNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
-			ownerChunk->rightNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
-		}
-		if (ownerChunk->frontNeighbour != nullptr && ownerChunk->frontNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
-			ownerChunk->frontNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
-		}
-		if (ownerChunk->backNeighbour != nullptr && ownerChunk->backNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
-			ownerChunk->backNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
-		}
+	if (ownerChunk->frontNeighbour != nullptr) {
+		ownerChunk->frontNeighbour->buildMesh();
+		ownerChunk->frontNeighbour->loadMesh();
+		ownerChunk->frontNeighbour->state = Chunk::ChunkState::MESHLOADED;
 	}
-	internalLock.unlock();
-	*/
+	if (ownerChunk->backNeighbour != nullptr) {
+		ownerChunk->backNeighbour->buildMesh();
+		ownerChunk->backNeighbour->loadMesh();
+		ownerChunk->backNeighbour->state = Chunk::ChunkState::MESHLOADED;
+	}
 }
 
-void ChunkManager::placeBlock(Cube* toPlace, CubeId cubeId) {
-	lockLP();
-	if (toPlace != nullptr) {
-		toPlace->setCubeId(cubeId);
-		Chunk* ownerChunk = toPlace->getChunkRef();
-		ownerChunk->state = Chunk::ChunkState::SHOULDREBUILD;
-		if (ownerChunk->leftNeighbour != nullptr && ownerChunk->leftNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
-			ownerChunk->leftNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
-		}
-		if (ownerChunk->rightNeighbour != nullptr && ownerChunk->rightNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
-			ownerChunk->rightNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
-		}
-		if (ownerChunk->frontNeighbour != nullptr && ownerChunk->frontNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
-			ownerChunk->frontNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
-		}
-		if (ownerChunk->backNeighbour != nullptr && ownerChunk->backNeighbour->state > Chunk::ChunkState::SHOULDREBUILD) {
-			ownerChunk->backNeighbour->state = Chunk::ChunkState::SHOULDREBUILD;
-		}
-	}
-	unlockLP();
-}
-
-Cube* ChunkManager::getCubeByCoords(glm::f64vec3 coords) {
+Block* ChunkManager::getCubeByCoords(glm::f64vec3 coords) {
 	glm::f64vec3 originChunkPos = m_chunkMatrix[0][0]->chunkPosition;
 	//BOOST_LOG_TRIVIAL(info) << originChunkPos.x << " " << originChunkPos.y << " " << originChunkPos.z;
 	originChunkPos.x = originChunkPos.x - ((double)CHUNK_SIDE_SIZE / 2.0);
@@ -337,8 +251,8 @@ Cube* ChunkManager::getCubeByCoords(glm::f64vec3 coords) {
 	int chunkDepthIndex = glm::abs(int((coords.z - originChunkPos.z) / (double)CHUNK_SIDE_SIZE));
 	Chunk* tmp = m_chunkMatrix[chunkWidthIndex][chunkDepthIndex];
 	//BOOST_LOG_TRIVIAL(info) << coords.x << " " << coords.y << " " << coords.z;
-	Cube* cube = m_chunkMatrix[chunkWidthIndex][chunkDepthIndex]->getCubeByCoords(coords);
-	return cube;
+	Block* block = m_chunkMatrix[chunkWidthIndex][chunkDepthIndex]->getCubeByCoords(coords);
+	return block;
 }
 
 void ChunkManager::updateGenerationOrigin(glm::vec3& playerPos) {
@@ -464,7 +378,7 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 	}
 }
 
-std::vector<Cube*> ChunkManager::getCubesInRay(glm::vec3 rayOrigin, glm::vec3 rayDirection, float rayLength) {
+std::vector<Block*> ChunkManager::getCubesInRay(glm::vec3 rayOrigin, glm::vec3 rayDirection, float rayLength) {
 	glm::vec3 rayDirNorm = glm::normalize(rayDirection);
 	float dor = glm::sqrt(rayDirNorm.x * rayDirNorm.x + rayDirNorm.z * rayDirNorm.z);
 	float ym = rayDirNorm.y / dor;
@@ -481,8 +395,8 @@ std::vector<Cube*> ChunkManager::getCubesInRay(glm::vec3 rayOrigin, glm::vec3 ra
 	float xRayLength = 0.0f;
 	float yRayLength = 0.0f;
 	float zRayLength = 0.0f;
-	std::vector<Cube*> cubes;
-	Cube* startingCube = getCubeByCoords(rayOrigin);
+	std::vector<Block*> cubes;
+	Block* startingCube = getCubeByCoords(rayOrigin);
 	if (startingCube != nullptr) {
 		glm::vec3 startingCubePos = getCubeAbsCoords(startingCube);
 		cubes.push_back(startingCube);
@@ -543,13 +457,13 @@ std::vector<Cube*> ChunkManager::getCubesInRay(glm::vec3 rayOrigin, glm::vec3 ra
 			nextCubePosition.z += zStep;
 		}
 
-		Cube* nextCube = getCubeByCoords(nextCubePosition);
+		Block* nextCube = getCubeByCoords(nextCubePosition);
 		cubes.push_back(nextCube);
 	}
 	return cubes;
 }
 
-void ChunkManager::getCubesInRay(glm::vec3 rayOrigin, glm::vec3 rayDirection, float rayLength, std::vector<Cube*>& cubes) {
+void ChunkManager::getCubesInRay(glm::vec3 rayOrigin, glm::vec3 rayDirection, float rayLength, std::vector<Block*>& cubes) {
 	glm::vec3 rayDirNorm = glm::normalize(rayDirection);
 	float dor = glm::sqrt(rayDirNorm.x * rayDirNorm.x + rayDirNorm.z * rayDirNorm.z);
 	float ym = rayDirNorm.y / dor;
@@ -566,7 +480,7 @@ void ChunkManager::getCubesInRay(glm::vec3 rayOrigin, glm::vec3 rayDirection, fl
 	float xRayLength = 0.0f;
 	float yRayLength = 0.0f;
 	float zRayLength = 0.0f;
-	Cube* startingCube = getCubeByCoords(rayOrigin);
+	Block* startingCube = getCubeByCoords(rayOrigin);
 	if (startingCube != nullptr) {
 		glm::vec3 startingCubePos = getCubeAbsCoords(startingCube);
 		cubes.push_back(startingCube);
@@ -627,7 +541,7 @@ void ChunkManager::getCubesInRay(glm::vec3 rayOrigin, glm::vec3 rayDirection, fl
 			nextCubePosition.z += zStep;
 		}
 
-		Cube* nextCube = getCubeByCoords(nextCubePosition);
+		Block* nextCube = getCubeByCoords(nextCubePosition);
 		cubes.push_back(nextCube);
 	}
 }

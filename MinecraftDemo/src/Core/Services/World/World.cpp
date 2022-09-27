@@ -42,24 +42,16 @@ std::vector<RenderingComponent*>* World::getChunkComponents() {
 	return m_chunkManager->getChunkRenderingComponents();
 }
 
-void World::getCubesInRay(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength, std::vector<Cube*>& cubes) {
+void World::getCubesInRay(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength, std::vector<Block*>& cubes) {
 	m_chunkManager->getCubesInRay(rayOrigin, direction, rayLength, cubes);
 }
 
-Cube* World::getCubeByCoords(glm::vec3 coords) {
+Block* World::getCubeByCoords(glm::vec3 coords) {
 	return m_chunkManager->getCubeByCoords(coords);
 }
 
-glm::vec3 World::getCubeAbsCoords(Cube* cube) {
+glm::vec3 World::getCubeAbsCoords(Block* cube) {
 	return m_chunkManager->getCubeAbsCoords(cube);
-}
-
-void World::destroyBlock(Cube* toDestroy) {
-	m_chunkManager->destroyBlock(toDestroy);
-}
-
-void World::placeBlock(Cube* toPlace, CubeId cubeId) {
-	m_chunkManager->placeBlock(toPlace, cubeId);
 }
 
 void World::onNotify(Event& newEvent) {

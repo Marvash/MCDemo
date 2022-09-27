@@ -21,6 +21,7 @@ void CameraSystem::updateRenderingData() {
     m_cameraRenderingData.zoom = m_zoom;
     updateViewMatrix();
     m_cameraRenderingData.viewMatrix = &m_viewMatrix;
+    m_cameraRenderingData.position = &m_cameraPosition;
 }
 
 void CameraSystem::setPlayerPosition(glm::vec3& position) {

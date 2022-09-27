@@ -10,7 +10,8 @@
 #include "Core/Biomes/SavanaBiome.h"
 #include "Core/Biomes/BiomeBuilder.h"
 #include "Core/Biomes/BiomeColors.h"
-#include "Core/Cube/Cube.h"
+#include "Core/Services/BlockLibrary/BlockIdEnum.h"
+#include "Core/Services/BlockLibrary/BlockFaceEnum.h"
 #include "Core/Textures/TextureBuffer.h"
 #include "Core/Services/CoreService.h"
 #include "Core/CoreEventDispatcher.h"
@@ -22,7 +23,7 @@ public:
 	
 	unsigned int getBiomesCount();
 	TextureBuffer* getBiomeColorsBuffer();
-	int getBiomeCubeColors(Biome::BiomeId biomeId, CubeId cubeId, Cube::FaceSide faceSide);
+	int getBiomeCubeColors(Biome::BiomeId biomeId, BlockId cubeId, BlockFace faceSide);
 	Biome** getBiomes();
 	void init();
 	void onNotify(Event& newEvent) override;

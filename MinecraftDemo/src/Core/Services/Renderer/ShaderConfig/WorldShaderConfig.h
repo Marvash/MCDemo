@@ -9,7 +9,7 @@
 
 class WorldShaderConfig : public ShaderConfig {
 public:
-	WorldShaderConfig(Shader* shader, Texture* atlasTexture, Texture* texCoords, Texture* biomeColors);
+	WorldShaderConfig(Shader* shader, Texture* atlasTexture, Texture* texCoords, Texture* biomeColors, Texture* secondaryTexCoords);
 	void prepareShader(ModelData* modelData, ShaderData* shaderData) override;
 	void setViewMatrix(glm::mat4* viewMatrix);
 	void setProjectionMatrix(glm::mat4* projectionMatrix);
@@ -21,6 +21,7 @@ private:
 	Texture* m_atlasTexture;
 	Texture* m_vertexTexCoords;
 	Texture* m_vertexTexColor;
+	Texture* m_vertexSecondaryTexCoords;
 	glm::mat4* m_viewMatrix;
 	glm::mat4* m_projectionMatrix;
 };

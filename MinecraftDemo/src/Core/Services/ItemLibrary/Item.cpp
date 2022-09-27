@@ -1,43 +1,46 @@
 #include "Item.h"
 
-Item::Item(ItemSpecification* itemSpecification, int count) :
-	m_itemSpecification(itemSpecification),
-	m_count(count) {
+Item::Item() :
+	m_itemSharedSpec(nullptr) {
 
 }
 
-void Item::performItemPrimaryAction(CoreServiceLocator* coreServiceLocator) {
-	m_itemSpecification->performItemPrimaryAction(coreServiceLocator);
-}
+Item::~Item() {
 
-void Item::performItemSecondaryAction(CoreServiceLocator* coreServiceLocator) {
-	m_itemSpecification->performItemSecondaryAction(coreServiceLocator);
-}
-
-ItemId Item::getItemId() {
-	return m_itemSpecification->getItemId();
-}
-
-int Item::getItemCount() {
-	return m_count;
-}
-
-void Item::setItemCount(int count) {
-	m_count = glm::max(glm::min(count, m_itemSpecification->getItemMaxStackCount()), 0);
-}
-
-bool Item::isCompatibleWith(Item* target) {
-	return target != nullptr && getItemId() == target->getItemId();
-}
-
-int Item::getItemMaxStackCount() {
-	return m_itemSpecification->getItemMaxStackCount();
 }
 
 ImageTexture2D* Item::getItemIcon() {
-	return m_itemSpecification->getItemIcon();
+	return m_itemSharedSpec->getItemIcon();
 }
 
-Item* Item::clone() {
-	return new Item(m_itemSpecification, m_count);
+void Item::itemPrimaryActionUpdate(ItemHandle* item, CoreServiceLocator* coreServiceLocator) {
+
+}
+
+void Item::itemPrimaryActionEnd(ItemHandle* item, CoreServiceLocator* coreServiceLocator) {
+
+}
+
+void Item::itemSecondaryActionUpdate(ItemHandle* item, CoreServiceLocator* coreServiceLocator) {
+
+}
+
+void Item::itemSecondaryActionEnd(ItemHandle* item, CoreServiceLocator* coreServiceLocator) {
+
+}
+
+ItemId Item::getItemId() {
+	return m_itemSharedSpec->getItemId();
+}
+
+float Item::getItemBreakScalingFactor() {
+	return m_itemSharedSpec->getItemBreakScalingFactor();
+}
+
+int Item::getItemMaxStackCount() {
+	return m_itemSharedSpec->getItemMaxStackCount();
+}
+
+bool Item::isCompatibleWith(IItem* target) {
+	return target != nullptr && target->getItemId() != ItemId::NONE && getItemId() == target->getItemId();
 }

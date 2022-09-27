@@ -76,12 +76,11 @@ void InventoryGUI::draw() {
 	drawCraftingTable();
 	ImGui::End();
 	if (m_isDraggingItem) {
-		Item* draggedItem = m_dragSourceItemSlot->getItem();
 		ImageTexture2D* icon = nullptr;
 		int itemCount = 0;
-		if (draggedItem != nullptr) {
-			icon = draggedItem->getItemIcon();
-			itemCount = draggedItem->getItemCount();
+		if (m_dragSourceItemSlot != nullptr) {
+			icon = m_dragSourceItemSlot->getItemIcon();
+			itemCount = m_dragSourceItemSlot->getItemCount();
 			drawDraggedItem(m_itemSlotSize, icon, itemCount);
 		}
 	}
@@ -97,12 +96,12 @@ void InventoryGUI::drawInventory() {
 		currentSlotP0.x = inventoryP0.x + glm::round(strideIndex * m_itemSlotSize);
 		drawInventoryDNDBox(i, m_itemSlotSize, currentSlotP0);
 		drawSlot(m_itemSlotSize, currentSlotP0, ImColor(0.4f, 0.4f, 0.4f, 1.0f));
-		ItemSlot* currentItemSlot = m_inventory->getItemSlot(i);
+		ItemHandle* currentItemSlot = m_inventory->getItemInSlot(i);
 		ImageTexture2D* icon = nullptr;
 		int itemCount = 0;
-		if (!(currentItemSlot->isEmpty() || (m_isDraggingItem && currentItemSlot == m_dragSourceItemSlot))) {
-			icon = currentItemSlot->getItem()->getItemIcon();
-			itemCount = currentItemSlot->getItem()->getItemCount();
+		if (!(currentItemSlot->isNullItem() || (m_isDraggingItem && currentItemSlot == m_dragSourceItemSlot))) {
+			icon = currentItemSlot->getItemIcon();
+			itemCount = currentItemSlot->getItemCount();
 			drawIcon(m_itemSlotSize, currentSlotP0, icon);
 			if (itemCount > 1) {
 				drawItemCount(m_itemSlotSize, currentSlotP0, itemCount);
@@ -136,12 +135,12 @@ void InventoryGUI::drawCraftingTable() {
 			int targetId = (row * m_craftingTableCols) + col;
 			drawCraftingTableDNDBox(targetId, m_itemSlotSize, currentSlotP0);
 			drawSlot(m_itemSlotSize, currentSlotP0, ImColor(0.4f, 0.4f, 0.4f, 1.0f));
-			ItemSlot* currentItemSlot = m_craftingTable->getItemSlot(targetId);
+			ItemHandle* currentItem = m_craftingTable->getItemSlot(targetId);
 			ImageTexture2D* icon = nullptr;
 			int itemCount = 0;
-			if (!(currentItemSlot->isEmpty() || (m_isDraggingItem && currentItemSlot == m_dragSourceItemSlot))) {
-				icon = currentItemSlot->getItem()->getItemIcon();
-				itemCount = currentItemSlot->getItem()->getItemCount();
+			if (!(currentItem->isNullItem() || (m_isDraggingItem && currentItem == m_dragSourceItemSlot))) {
+				icon = currentItem->getItemIcon();
+				itemCount = currentItem->getItemCount();
 				drawIcon(m_itemSlotSize, currentSlotP0, icon);
 				if (itemCount > 1) {
 					drawItemCount(m_itemSlotSize, currentSlotP0, itemCount);
@@ -159,12 +158,12 @@ void InventoryGUI::drawCraftingTable() {
 	}
 	drawResultDNDBox(m_itemSlotSize, currentSlotP0);
 	drawSlot(m_itemSlotSize, currentSlotP0, ImColor(0.4f, 0.4f, 0.4f, 1.0f));
-	ItemSlot* currentItemSlot = m_craftingTable->getResultItemSlot();
+	ItemHandle* currentItem = m_craftingTable->getResultItemSlot();
 	ImageTexture2D* icon = nullptr;
 	int itemCount = 0;
-	if (!(currentItemSlot->isEmpty() || (m_isDraggingItem && currentItemSlot == m_dragSourceItemSlot))) {
-		icon = currentItemSlot->getItem()->getItemIcon();
-		itemCount = currentItemSlot->getItem()->getItemCount();
+	if (!(currentItem->isNullItem() || (m_isDraggingItem && currentItem == m_dragSourceItemSlot))) {
+		icon = currentItem->getItemIcon();
+		itemCount = currentItem->getItemCount();
 		drawIcon(m_itemSlotSize, currentSlotP0, icon);
 		if (itemCount > 1) {
 			drawItemCount(m_itemSlotSize, currentSlotP0, itemCount);
@@ -211,21 +210,36 @@ void InventoryGUI::drawInventoryDNDBox(int targetId, float slotSize, ImVec2& win
 	ImGui::SetCursorScreenPos(p0);
 	ImGui::BeginChild("InventoryDNDChild", targetSize);
 	ImGui::Button("##DNDButton", targetSize);
-	if (ImGui::IsItemActivated()) {
-		if (!m_isDraggingItem) {
-			if (!m_inventory->getItemSlot(targetId)->isEmpty()) {
-				m_isDraggingItem = true;
-				m_dragSourceItemSlot = m_inventory->getItemSlot(targetId);
+	if (ImGui::IsItemHovered()) {
+		if (ImGui::IsMouseClicked(0)) {
+			if (!m_isDraggingItem) {
+				if (!m_inventory->getItemInSlot(targetId)->isNullItem()) {
+					m_isDraggingItem = true;
+					m_dragSourceItemSlot = m_inventory->getItemInSlot(targetId);
+				}
+			}
+			else {
+				ItemHandle* dragTargetItemSlot = m_inventory->getItemInSlot(targetId);
+				if (m_dragSourceItemSlot == m_craftingTable->getResultItemSlot()) {
+					if (dragTargetItemSlot->isNullItem()) {
+						dragTargetItemSlot->swapHandle(m_dragSourceItemSlot);
+						m_craftingTable->applyRecipeCosts();
+						m_craftingTable->matchRecipe();
+					}
+				}
+				else if(dragTargetItemSlot->isCompatibleWith(m_dragSourceItemSlot)) {
+					dragTargetItemSlot->mergeWithHandle(m_dragSourceItemSlot);
+					m_craftingTable->matchRecipe();
+				}
+				else {
+					dragTargetItemSlot->swapHandle(m_dragSourceItemSlot);
+					m_craftingTable->matchRecipe();
+				}
+				resetDNDLogic();
 			}
 		}
-		else {
-			ItemSlot* m_dragTargetItemSlot = m_inventory->getItemSlot(targetId);
-			m_dragTargetItemSlot->resolveSlotDrag(m_dragSourceItemSlot);
-			if (m_dragSourceItemSlot == m_craftingTable->getResultItemSlot()) {
-				m_craftingTable->fulfillMatchingRecipeContract();
-			}
-			m_craftingTable->matchRecipe();
-			resetDNDLogic();
+		else if (ImGui::IsMouseClicked(1)) {
+			m_inventory->splitItemInSlot(targetId);
 		}
 	}
 	ImGui::EndChild();
@@ -258,21 +272,37 @@ void InventoryGUI::drawCraftingTableDNDBox(int targetId, float slotSize, ImVec2&
 	ImGui::SetCursorScreenPos(p0);
 	ImGui::BeginChild("craftingDNDChild", targetSize);
 	ImGui::Button("##DNDButton", targetSize);
-	if (ImGui::IsItemActivated()) {
-		if (!m_isDraggingItem) {
-			if (!m_craftingTable->getItemSlot(targetId)->isEmpty()) {
-				m_isDraggingItem = true;
-				m_dragSourceItemSlot = m_craftingTable->getItemSlot(targetId);
+	if (ImGui::IsItemHovered()) {
+		if (ImGui::IsMouseClicked(0)) {
+			if (!m_isDraggingItem) {
+				if (!m_craftingTable->getItemSlot(targetId)->isNullItem()) {
+					m_isDraggingItem = true;
+					m_dragSourceItemSlot = m_craftingTable->getItemSlot(targetId);
+				}
+			}
+			else {
+				ItemHandle* dragTargetItemSlot = m_craftingTable->getItemSlot(targetId);
+				if (m_dragSourceItemSlot == m_craftingTable->getResultItemSlot()) {
+					if (dragTargetItemSlot->isNullItem()) {
+						dragTargetItemSlot->swapHandle(m_dragSourceItemSlot);
+						m_craftingTable->applyRecipeCosts();
+						m_craftingTable->matchRecipe();
+					}
+				}
+				else if (dragTargetItemSlot->isCompatibleWith(m_dragSourceItemSlot)) {
+					dragTargetItemSlot->mergeWithHandle(m_dragSourceItemSlot);
+					m_craftingTable->matchRecipe();
+				}
+				else {
+					dragTargetItemSlot->swapHandle(m_dragSourceItemSlot);
+					m_craftingTable->matchRecipe();
+				}
+				resetDNDLogic();
 			}
 		}
-		else {
-			ItemSlot* m_dragTargetItemSlot = m_craftingTable->getItemSlot(targetId);
-			m_dragTargetItemSlot->resolveSlotDrag(m_dragSourceItemSlot);
-			if (m_dragSourceItemSlot == m_craftingTable->getResultItemSlot()) {
-				m_craftingTable->fulfillMatchingRecipeContract();
-			}
+		else if (ImGui::IsMouseClicked(1)) {
+			m_craftingTable->splitItemSlot(targetId);
 			m_craftingTable->matchRecipe();
-			resetDNDLogic();
 		}
 	}
 	ImGui::EndChild();
@@ -308,7 +338,7 @@ void InventoryGUI::drawResultDNDBox(float slotSize, ImVec2& windowP0) {
 	ImGui::Button("##DNDButton", targetSize);
 	if (ImGui::IsItemActivated()) {
 		if (!m_isDraggingItem) {
-			if (!m_craftingTable->getResultItemSlot()->isEmpty()) {
+			if (!m_craftingTable->getResultItemSlot()->isNullItem()) {
 				m_isDraggingItem = true;
 				m_dragSourceItemSlot = m_craftingTable->getResultItemSlot();
 			}

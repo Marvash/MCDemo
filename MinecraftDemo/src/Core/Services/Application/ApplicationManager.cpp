@@ -3,7 +3,8 @@
 
 ApplicationManager::ApplicationManager(Core* core, CoreEventDispatcher* eventDispatcher) : CoreService(eventDispatcher),
 	m_core(core),
-	m_deltaTime(0.0) {
+	m_deltaTime(0.0),
+	m_time(0.0) {
 
 }
 
@@ -17,4 +18,8 @@ void ApplicationManager::onNotify(Event& newEvent) {
 
 double ApplicationManager::getDeltaTime() {
 	return m_deltaTime;
+}
+
+double ApplicationManager::getTime() {
+	return m_time;
 }
