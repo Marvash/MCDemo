@@ -125,6 +125,13 @@ void CraftingTable::splitItemSlot(unsigned int slot) {
 	}
 }
 
+void CraftingTable::addItemInEmptyCraftingSlot(ItemId itemId, int count, unsigned int slot) {
+	ItemHandle* item = getItemSlot(slot);
+	if (item->isNullItem() && count > 0) {
+		m_itemGenerator->changeItemHandle(item, itemId, count);
+	}
+}
+
 void CraftingTable::onNotify(Event& newEvent) {
 
 }

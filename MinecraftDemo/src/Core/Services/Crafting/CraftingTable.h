@@ -14,6 +14,7 @@ public:
 	ItemHandle* getItemSlot(int row, int column);
 	ItemHandle* getItemSlot(int index);
 	ItemHandle* getResultItemSlot();
+	void addItemInEmptyCraftingSlot(ItemId itemId, int count, unsigned int slot);
 	void splitItemSlot(unsigned int slot);
 	void matchRecipe();
 	void applyRecipeCosts();
