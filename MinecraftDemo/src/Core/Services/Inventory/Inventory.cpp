@@ -84,7 +84,6 @@ void Inventory::addItemInEmptyInventorySlot(ItemId itemId, int count, unsigned i
 	ItemHandle* item = m_inventory[slot];
 	if (item->isNullItem() && count > 0) {
 		m_itemGenerator->changeItemHandle(item, itemId, count);
-		BOOST_LOG_TRIVIAL(info) << "ITEM COUNT IS " << item->getItemCount();
 	}
 }
 

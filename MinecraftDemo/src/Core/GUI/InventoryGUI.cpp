@@ -239,7 +239,31 @@ void InventoryGUI::drawInventoryDNDBox(int targetId, float slotSize, ImVec2& win
 			}
 		}
 		else if (ImGui::IsMouseClicked(1)) {
-			m_inventory->splitItemInSlot(targetId);
+			if (!m_isDraggingItem) {
+				m_inventory->splitItemInSlot(targetId);
+			}
+			else {
+				ItemHandle* dragTargetItemSlot = m_inventory->getItemInSlot(targetId);
+				if (dragTargetItemSlot == m_dragSourceItemSlot) {
+					m_inventory->splitItemInSlot(targetId);
+				}
+				else if (dragTargetItemSlot->isCompatibleWith(m_dragSourceItemSlot)) {
+					dragTargetItemSlot->addToItemCount(1);
+					m_dragSourceItemSlot->subtractToItemCount(1);
+					if (m_dragSourceItemSlot->isNullItem()) {
+						resetDNDLogic();
+					}
+					m_craftingTable->matchRecipe();
+				}
+				else if(dragTargetItemSlot->isNullItem()) {
+					m_inventory->addItemInEmptyInventorySlot(m_dragSourceItemSlot->getItemId(), 1, targetId);
+					m_dragSourceItemSlot->subtractToItemCount(1);
+					if (m_dragSourceItemSlot->isNullItem()) {
+						resetDNDLogic();
+					}
+					m_craftingTable->matchRecipe();
+				}
+			}
 		}
 	}
 	ImGui::EndChild();
@@ -301,8 +325,32 @@ void InventoryGUI::drawCraftingTableDNDBox(int targetId, float slotSize, ImVec2&
 			}
 		}
 		else if (ImGui::IsMouseClicked(1)) {
-			m_craftingTable->splitItemSlot(targetId);
-			m_craftingTable->matchRecipe();
+			if (!m_isDraggingItem) {
+				m_inventory->splitItemInSlot(targetId);
+				m_craftingTable->matchRecipe();
+			}
+			else {
+				ItemHandle* dragTargetItemSlot = m_inventory->getItemInSlot(targetId);
+				if (dragTargetItemSlot == m_dragSourceItemSlot) {
+					m_craftingTable->splitItemSlot(targetId);
+				}
+				else if (dragTargetItemSlot->isCompatibleWith(m_dragSourceItemSlot)) {
+					dragTargetItemSlot->addToItemCount(1);
+					m_dragSourceItemSlot->subtractToItemCount(1);
+					if (m_dragSourceItemSlot->isNullItem()) {
+						resetDNDLogic();
+					}
+					m_craftingTable->matchRecipe();
+				}
+				else if (dragTargetItemSlot->isNullItem()) {
+					m_craftingTable->addItemInEmptyCraftingSlot(m_dragSourceItemSlot->getItemId(), 1, targetId);
+					m_dragSourceItemSlot->subtractToItemCount(1);
+					if (m_dragSourceItemSlot->isNullItem()) {
+						resetDNDLogic();
+					}
+					m_craftingTable->matchRecipe();
+				}
+			}
 		}
 	}
 	ImGui::EndChild();
