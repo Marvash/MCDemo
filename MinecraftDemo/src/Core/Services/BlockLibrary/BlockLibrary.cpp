@@ -115,6 +115,16 @@ void BlockLibrary::generateBlockSpecifications() {
 	blockSpecification->m_itemWeaknesses.push_back(ItemId::WOODEN_PICKAXE);
 	blockSpecification->m_itemWeaknesses.push_back(ItemId::STONE_PICKAXE);
 	m_blockSpecifications[blockSpecification->m_blockId] = blockSpecification;
+	blockSpecification = new BlockSharedSpec();
+	blockSpecification->m_blockId = BlockId::COBBLESTONE;
+	blockSpecification->m_blockItemId = ItemId::COBBLESTONE_BLOCK_ITEM;
+	blockSpecification->m_displayName = "Cobblestone Block";
+	blockSpecification->m_isTransparent = false;
+	blockSpecification->m_isRenderable = true;
+	blockSpecification->m_blockHardness = 20.0f;
+	blockSpecification->m_itemWeaknesses.push_back(ItemId::WOODEN_PICKAXE);
+	blockSpecification->m_itemWeaknesses.push_back(ItemId::STONE_PICKAXE);
+	m_blockSpecifications[blockSpecification->m_blockId] = blockSpecification;
 }
 
 void BlockLibrary::generateDroppableBlockSpecifications() {
@@ -157,8 +167,15 @@ void BlockLibrary::generateDroppableBlockSpecifications() {
 	droppableBlockSpecification = new DroppableBlockSharedSpec();
 	droppableBlockSpecification->m_coreServiceLocator = m_coreServiceLocator;
 	droppableBlockSpecification->m_droppedCount = 1;
-	droppableBlockSpecification->m_droppedItem = ItemId::STONE_BLOCK_ITEM;
+	droppableBlockSpecification->m_droppedItem = ItemId::COBBLESTONE_BLOCK_ITEM;
 	droppableBlockSpecification->m_exclusiveItemDropList.push_back(ItemId::WOODEN_PICKAXE);
 	droppableBlockSpecification->m_exclusiveItemDropList.push_back(ItemId::STONE_PICKAXE);
 	m_droppableBlockSpecifications[BlockId::STONE] = droppableBlockSpecification;
+	droppableBlockSpecification = new DroppableBlockSharedSpec();
+	droppableBlockSpecification->m_coreServiceLocator = m_coreServiceLocator;
+	droppableBlockSpecification->m_droppedCount = 1;
+	droppableBlockSpecification->m_droppedItem = ItemId::COBBLESTONE_BLOCK_ITEM;
+	droppableBlockSpecification->m_exclusiveItemDropList.push_back(ItemId::WOODEN_PICKAXE);
+	droppableBlockSpecification->m_exclusiveItemDropList.push_back(ItemId::STONE_PICKAXE);
+	m_droppableBlockSpecifications[BlockId::COBBLESTONE] = droppableBlockSpecification;
 }

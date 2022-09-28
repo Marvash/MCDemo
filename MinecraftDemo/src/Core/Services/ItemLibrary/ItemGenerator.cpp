@@ -39,6 +39,7 @@ ItemHandle* ItemGenerator::createItem(ItemId itemId, unsigned int count) {
 		case ItemId::OAK_LOG_BLOCK_ITEM:
 		case ItemId::LEAVES_BLOCK_ITEM:
 		case ItemId::PLANK_BLOCK_ITEM:
+		case ItemId::COBBLESTONE_BLOCK_ITEM:
 			item = createPlaceableItem(itemId);
 			break;
 	}
@@ -74,6 +75,7 @@ void ItemGenerator::changeItemHandle(ItemHandle* itemHandle, ItemId itemId, unsi
 	case ItemId::OAK_LOG_BLOCK_ITEM:
 	case ItemId::LEAVES_BLOCK_ITEM:
 	case ItemId::PLANK_BLOCK_ITEM:
+	case ItemId::COBBLESTONE_BLOCK_ITEM:
 		item = createPlaceableItem(itemId);
 		break;
 	}

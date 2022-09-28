@@ -10,5 +10,6 @@ enum class BlockId {
 	OAK_LOG,
 	LEAVES,
 	PLANK,
+	COBBLESTONE,
 	NONE
 };

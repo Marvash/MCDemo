@@ -123,10 +123,10 @@ int Atlas::getBlockTexIndex(BlockId blockId, BlockFace blockFace) {
 		break;
 	case BlockId::LEAVES:
 		return 264;
-		break;
 	case BlockId::PLANK:
 		return 288;
-		break;
+	case BlockId::COBBLESTONE:
+		return 600;
 	}
 	BOOST_LOG_TRIVIAL(warning) << "Returning -1";
 	return -1;

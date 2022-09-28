@@ -101,10 +101,10 @@ void CraftingRecipeBuilder::buildStoneAxeRecipe() {
 	unsigned int recipeRows = 3;
 	unsigned int recipeCols = 2;
 	ItemHandle*** recipe = initEmptyRecipe(recipeRows, recipeCols);
-	recipe[0][0] = m_itemGenerator->createItem(ItemId::STONE_BLOCK_ITEM);
-	recipe[0][1] = m_itemGenerator->createItem(ItemId::STONE_BLOCK_ITEM);
+	recipe[0][0] = m_itemGenerator->createItem(ItemId::COBBLESTONE_BLOCK_ITEM);
+	recipe[0][1] = m_itemGenerator->createItem(ItemId::COBBLESTONE_BLOCK_ITEM);
 	recipe[1][1] = m_itemGenerator->createItem(ItemId::STICK);
-	recipe[1][0] = m_itemGenerator->createItem(ItemId::STONE_BLOCK_ITEM);
+	recipe[1][0] = m_itemGenerator->createItem(ItemId::COBBLESTONE_BLOCK_ITEM);
 	recipe[2][1] = m_itemGenerator->createItem(ItemId::STICK);
 	recipe[2][0] = m_itemGenerator->createItem(ItemId::NONE);
 	ItemHandle* recipeResult = m_itemGenerator->createItem(ItemId::STONE_AXE);
@@ -116,8 +116,8 @@ void CraftingRecipeBuilder::buildStoneHoeRecipe() {
 	unsigned int recipeRows = 3;
 	unsigned int recipeCols = 2;
 	ItemHandle*** recipe = initEmptyRecipe(recipeRows, recipeCols);
-	recipe[0][0] = m_itemGenerator->createItem(ItemId::STONE_BLOCK_ITEM);
-	recipe[0][1] = m_itemGenerator->createItem(ItemId::STONE_BLOCK_ITEM);
+	recipe[0][0] = m_itemGenerator->createItem(ItemId::COBBLESTONE_BLOCK_ITEM);
+	recipe[0][1] = m_itemGenerator->createItem(ItemId::COBBLESTONE_BLOCK_ITEM);
 	recipe[1][1] = m_itemGenerator->createItem(ItemId::STICK);
 	recipe[1][0] = m_itemGenerator->createItem(ItemId::NONE);
 	recipe[2][1] = m_itemGenerator->createItem(ItemId::STICK);
@@ -131,9 +131,9 @@ void CraftingRecipeBuilder::buildStonePickaxeRecipe() {
 	unsigned int recipeRows = 3;
 	unsigned int recipeCols = 3;
 	ItemHandle*** recipe = initEmptyRecipe(recipeRows, recipeCols);
-	recipe[0][0] = m_itemGenerator->createItem(ItemId::STONE_BLOCK_ITEM);
-	recipe[0][1] = m_itemGenerator->createItem(ItemId::STONE_BLOCK_ITEM);
-	recipe[0][2] = m_itemGenerator->createItem(ItemId::STONE_BLOCK_ITEM);
+	recipe[0][0] = m_itemGenerator->createItem(ItemId::COBBLESTONE_BLOCK_ITEM);
+	recipe[0][1] = m_itemGenerator->createItem(ItemId::COBBLESTONE_BLOCK_ITEM);
+	recipe[0][2] = m_itemGenerator->createItem(ItemId::COBBLESTONE_BLOCK_ITEM);
 	recipe[1][0] = m_itemGenerator->createItem(ItemId::NONE);
 	recipe[1][1] = m_itemGenerator->createItem(ItemId::STICK);
 	recipe[1][2] = m_itemGenerator->createItem(ItemId::NONE);
@@ -149,7 +149,7 @@ void CraftingRecipeBuilder::buildStoneShovelRecipe() {
 	unsigned int recipeRows = 3;
 	unsigned int recipeCols = 1;
 	ItemHandle*** recipe = initEmptyRecipe(recipeRows, recipeCols);
-	recipe[0][0] = m_itemGenerator->createItem(ItemId::STONE_BLOCK_ITEM);
+	recipe[0][0] = m_itemGenerator->createItem(ItemId::COBBLESTONE_BLOCK_ITEM);
 	recipe[1][0] = m_itemGenerator->createItem(ItemId::STICK);
 	recipe[2][0] = m_itemGenerator->createItem(ItemId::STICK);
 	ItemHandle* recipeResult = m_itemGenerator->createItem(ItemId::STONE_SHOVEL);
@@ -161,8 +161,8 @@ void CraftingRecipeBuilder::buildStoneSwordRecipe() {
 	unsigned int recipeRows = 3;
 	unsigned int recipeCols = 1;
 	ItemHandle*** recipe = initEmptyRecipe(recipeRows, recipeCols);
-	recipe[0][0] = m_itemGenerator->createItem(ItemId::STONE_BLOCK_ITEM);
-	recipe[1][0] = m_itemGenerator->createItem(ItemId::STONE_BLOCK_ITEM);
+	recipe[0][0] = m_itemGenerator->createItem(ItemId::COBBLESTONE_BLOCK_ITEM);
+	recipe[1][0] = m_itemGenerator->createItem(ItemId::COBBLESTONE_BLOCK_ITEM);
 	recipe[2][0] = m_itemGenerator->createItem(ItemId::STICK);
 	ItemHandle* recipeResult = m_itemGenerator->createItem(ItemId::STONE_SWORD);
 	CraftingRecipe* craftingRecipe = new CraftingRecipe(recipeRows, recipeCols, recipe, recipeResult);
