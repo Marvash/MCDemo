@@ -326,11 +326,11 @@ void InventoryGUI::drawCraftingTableDNDBox(int targetId, float slotSize, ImVec2&
 		}
 		else if (ImGui::IsMouseClicked(1)) {
 			if (!m_isDraggingItem) {
-				m_inventory->splitItemInSlot(targetId);
+				m_craftingTable->splitItemSlot(targetId);
 				m_craftingTable->matchRecipe();
 			}
 			else {
-				ItemHandle* dragTargetItemSlot = m_inventory->getItemInSlot(targetId);
+				ItemHandle* dragTargetItemSlot = m_craftingTable->getItemSlot(targetId);
 				if (dragTargetItemSlot == m_dragSourceItemSlot) {
 					m_craftingTable->splitItemSlot(targetId);
 				}
@@ -343,6 +343,7 @@ void InventoryGUI::drawCraftingTableDNDBox(int targetId, float slotSize, ImVec2&
 					m_craftingTable->matchRecipe();
 				}
 				else if (dragTargetItemSlot->isNullItem()) {
+
 					m_craftingTable->addItemInEmptyCraftingSlot(m_dragSourceItemSlot->getItemId(), 1, targetId);
 					m_dragSourceItemSlot->subtractToItemCount(1);
 					if (m_dragSourceItemSlot->isNullItem()) {

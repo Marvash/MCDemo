@@ -784,6 +784,37 @@ AtlasTexCoordinates::AtlasTexCoordinates(unsigned int atlasWidth, unsigned int a
 	m_atlasTexCoordinates[598] = -1.0f;
 	m_atlasTexCoordinates[599] = -1.0f;
 
+	// COBBLESTONE 
+
+	// Top left
+	m_atlasTexCoordinates[600] = getCoordX(3);
+	m_atlasTexCoordinates[601] = -1.0f;
+	m_atlasTexCoordinates[602] = -1.0f;
+	m_atlasTexCoordinates[603] = getCoordY(5);
+	m_atlasTexCoordinates[604] = -1.0f;
+	m_atlasTexCoordinates[605] = -1.0f;
+	// Top right
+	m_atlasTexCoordinates[606] = getCoordX(4);
+	m_atlasTexCoordinates[607] = -1.0f;
+	m_atlasTexCoordinates[608] = -1.0f;
+	m_atlasTexCoordinates[609] = getCoordY(5);
+	m_atlasTexCoordinates[610] = -1.0f;
+	m_atlasTexCoordinates[611] = -1.0f;
+	// Bottom right
+	m_atlasTexCoordinates[612] = getCoordX(4);
+	m_atlasTexCoordinates[613] = -1.0f;
+	m_atlasTexCoordinates[614] = -1.0f;
+	m_atlasTexCoordinates[615] = getCoordY(6);
+	m_atlasTexCoordinates[616] = -1.0f;
+	m_atlasTexCoordinates[617] = -1.0f;
+	// Bottom left
+	m_atlasTexCoordinates[618] = getCoordX(3);
+	m_atlasTexCoordinates[619] = -1.0f;
+	m_atlasTexCoordinates[620] = -1.0f;
+	m_atlasTexCoordinates[621] = getCoordY(6);
+	m_atlasTexCoordinates[622] = -1.0f;
+	m_atlasTexCoordinates[623] = -1.0f;
+
 
 	// SECONDARY TEX COORDINATES
 	// BLOCK BREAK TEXTURE 1

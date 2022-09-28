@@ -72,6 +72,12 @@ void ItemLibrary::generateItemSpecifications() {
 	itemSharedSpec->m_itemBreakScalingFactor = 1.0f;
 	m_itemSpecifications[ItemId::PLANK_BLOCK_ITEM] = itemSharedSpec;
 	itemSharedSpec = new ItemSharedSpec();
+	itemSharedSpec->m_itemId = ItemId::COBBLESTONE_BLOCK_ITEM;
+	itemSharedSpec->m_itemIcon = m_iconLibrary->getItemIcon(ItemId::COBBLESTONE_BLOCK_ITEM);
+	itemSharedSpec->m_itemMaxStackCount = 64;
+	itemSharedSpec->m_itemBreakScalingFactor = 1.0f;
+	m_itemSpecifications[ItemId::COBBLESTONE_BLOCK_ITEM] = itemSharedSpec;
+	itemSharedSpec = new ItemSharedSpec();
 	itemSharedSpec->m_itemId = ItemId::STICK;
 	itemSharedSpec->m_itemIcon = m_iconLibrary->getItemIcon(ItemId::STICK);
 	itemSharedSpec->m_itemMaxStackCount = 64;
@@ -177,6 +183,10 @@ void ItemLibrary::generatePlaceableItemSpecifications() {
 	placeableItemSharedSpec->m_itemPlaceInterval = 0.3f;
 	placeableItemSharedSpec->m_blockId = BlockId::PLANK;
 	m_placeableItemSpecifications[ItemId::PLANK_BLOCK_ITEM] = placeableItemSharedSpec;
+	placeableItemSharedSpec = new PlaceableItemSharedSpec();
+	placeableItemSharedSpec->m_itemPlaceInterval = 0.3f;
+	placeableItemSharedSpec->m_blockId = BlockId::COBBLESTONE;
+	m_placeableItemSpecifications[ItemId::COBBLESTONE_BLOCK_ITEM] = placeableItemSharedSpec;
 }
 
 ItemSharedSpec* ItemLibrary::getItemSpecification(ItemId itemId) {

@@ -94,7 +94,6 @@ void CraftingTable::applyRecipeCosts() {
 				int patternRowIndex = patternRowOffset + i;
 				int patternColIndex = patternColOffset + j;
 				ItemHandle* patternItem = m_craftingTable[patternRowIndex][patternColIndex];
-				BOOST_LOG_TRIVIAL(info) << "whatever " << patternRowOffset << " " << patternColOffset << " " <<  i << " " << j;
 				ItemHandle* recipeItem = recipe[i][j];
 				if (!recipeItem->isNullItem()) {
 					unsigned int toSubtract = recipeItem->getItemCount() * recipeMatchCount;

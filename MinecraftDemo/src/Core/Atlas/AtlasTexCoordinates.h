@@ -7,7 +7,7 @@ public:
 	~AtlasTexCoordinates();
 	GLfloat* m_atlasTexCoordinates;
 	GLfloat* m_atlasSecondaryTexCoordinates;
-	const size_t TEX_COORDINATES_SIZE = 648;
+	const size_t TEX_COORDINATES_SIZE = 624;
 	const size_t SECONDARY_TEX_COORDINATES_SIZE = 80;
 
 private:
