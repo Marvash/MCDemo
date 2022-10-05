@@ -12,9 +12,11 @@ public:
 	ItemGenerator(CoreEventDispatcher* coreEventDispatcher);
 	void init(ItemLibrary* itemLibrary);
 	void onNotify(Event& newEvent) override;
-	ItemHandle* createItem(ItemId itemId, unsigned int count = 1);
+	ItemHandle* createItemHandle(ItemId itemId, unsigned int count = 1);
 	void changeItemHandle(ItemHandle* itemHandle, ItemId itemId, unsigned int count = 1);
 private:
+	IItem* createItem(ItemId itemId);
+
 	IItem* createDefaultItem(ItemId itemId);
 	IItem* createPlaceableItem(ItemId itemId);
 

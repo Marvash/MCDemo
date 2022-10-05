@@ -15,7 +15,7 @@ void ItemGenerator::onNotify(Event& newEvent) {
 
 }
 
-ItemHandle* ItemGenerator::createItem(ItemId itemId, unsigned int count) {
+IItem* ItemGenerator::createItem(ItemId itemId) {
 	IItem* item = nullptr;
 	switch (itemId) {
 		case ItemId::STICK:
@@ -43,8 +43,13 @@ ItemHandle* ItemGenerator::createItem(ItemId itemId, unsigned int count) {
 			item = createPlaceableItem(itemId);
 			break;
 	}
+	return item;
+}
+
+ItemHandle* ItemGenerator::createItemHandle(ItemId itemId, unsigned int count) {
 	ItemHandle* itemHandle = new ItemHandle();
 	itemHandle->setNullItemInstance(m_nullItem);
+	IItem* item = createItem(itemId);
 	if (item != nullptr) {
 		itemHandle->setWrappedItemInstance(item, count);
 	}
@@ -52,38 +57,11 @@ ItemHandle* ItemGenerator::createItem(ItemId itemId, unsigned int count) {
 }
 
 void ItemGenerator::changeItemHandle(ItemHandle* itemHandle, ItemId itemId, unsigned int count) {
-	IItem* item = nullptr;
-	switch (itemId) {
-	case ItemId::STICK:
-	case ItemId::WOODEN_AXE:
-	case ItemId::WOODEN_HOE:
-	case ItemId::WOODEN_PICKAXE:
-	case ItemId::WOODEN_SHOVEL:
-	case ItemId::WOODEN_SWORD:
-	case ItemId::STONE_AXE:
-	case ItemId::STONE_HOE:
-	case ItemId::STONE_PICKAXE:
-	case ItemId::STONE_SHOVEL:
-	case ItemId::STONE_SWORD:
-		item = createDefaultItem(itemId);
-		break;
-	case ItemId::DIRT_BLOCK_ITEM:
-	case ItemId::GRASS_BLOCK_ITEM:
-	case ItemId::SNOWY_GRASS_BLOCK_ITEM:
-	case ItemId::SAND_BLOCK_ITEM:
-	case ItemId::STONE_BLOCK_ITEM:
-	case ItemId::OAK_LOG_BLOCK_ITEM:
-	case ItemId::LEAVES_BLOCK_ITEM:
-	case ItemId::PLANK_BLOCK_ITEM:
-	case ItemId::COBBLESTONE_BLOCK_ITEM:
-		item = createPlaceableItem(itemId);
-		break;
-	}
 	itemHandle->setNull();
+	IItem* item = createItem(itemId);
 	if (item != nullptr) {
 		itemHandle->setWrappedItemInstance(item, count);
 	}
-	
 }
 
 IItem* ItemGenerator::createDefaultItem(ItemId itemId) {

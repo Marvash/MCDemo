@@ -25,10 +25,10 @@ void CraftingTable::init(CraftingRecipeLibrary* craftingRecipeLibrary, ItemGener
 	for (int i = 0; i < CRAFTING_TABLE_SLOTS; i++) {
 		m_craftingTable[i] = new ItemHandle * [CRAFTING_TABLE_SLOTS];
 		for (int j = 0; j < CRAFTING_TABLE_SLOTS; j++) {
-			m_craftingTable[i][j] = m_itemGenerator->createItem(ItemId::NONE);
+			m_craftingTable[i][j] = m_itemGenerator->createItemHandle(ItemId::NONE);
 		}
 	}
-	m_craftingResult = m_itemGenerator->createItem(ItemId::NONE);
+	m_craftingResult = m_itemGenerator->createItemHandle(ItemId::NONE);
 }
 
 ItemHandle* CraftingTable::getItemSlot(int row, int column) {

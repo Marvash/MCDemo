@@ -160,6 +160,7 @@
     <ClCompile Include="src\Core\GUI\ItemBar.cpp" />
     <ClCompile Include="src\Core\Services\Crafting\CraftingRecipeLibrary.cpp" />
     <ClCompile Include="src\Core\Services\Crafting\CraftingRecipe.cpp" />
+    <ClCompile Include="src\Core\Services\Inventory\InventoryUIInteractions.cpp" />
     <ClCompile Include="src\Core\Services\ItemLibrary\ItemHandle.cpp" />
     <ClCompile Include="src\Core\Services\ItemLibrary\Item.cpp" />
     <ClCompile Include="src\Core\Services\ItemLibrary\IconLibrary\IconLibrary.cpp" />
@@ -279,6 +280,7 @@
     <ClInclude Include="src\Core\GUI\ItemBar.h" />
     <ClInclude Include="src\Core\Services\Crafting\CraftingRecipeLibrary.h" />
     <ClInclude Include="src\Core\Services\Crafting\CraftingRecipe.h" />
+    <ClInclude Include="src\Core\Services\Inventory\InventoryUIInteractions.h" />
     <ClInclude Include="src\Core\Services\ItemLibrary\IItem.h" />
     <ClInclude Include="src\Core\Services\ItemLibrary\ItemHandle.h" />
     <ClInclude Include="src\Core\Services\ItemLibrary\Item.h" />

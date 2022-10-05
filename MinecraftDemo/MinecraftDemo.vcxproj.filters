@@ -360,6 +360,9 @@
     <ClCompile Include="src\Core\Services\BlockLibrary\BlockManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\Services\Inventory\InventoryUIInteractions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\Random\PerlinGenerator\PerlinNoiseGenerator.h">
@@ -783,6 +786,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Services\BlockLibrary\BlockManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Services\Inventory\InventoryUIInteractions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

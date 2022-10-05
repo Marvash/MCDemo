@@ -14,7 +14,7 @@ Inventory::~Inventory() {
 void Inventory::init(ItemGenerator* itemGenerator) {
 	m_itemGenerator = itemGenerator;
 	for (int i = 0; i < TOTAL_SLOTS; i++) {
-		m_inventory[i] = m_itemGenerator->createItem(ItemId::NONE);
+		m_inventory[i] = m_itemGenerator->createItemHandle(ItemId::NONE);
 	}
 }
 
