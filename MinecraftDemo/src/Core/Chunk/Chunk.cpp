@@ -13,7 +13,6 @@ Chunk::Chunk(BlockManager* blockManager, BiomeLibrary* biomeManager, Atlas* atla
 	chunkPosition(chunkPosition),
 	init(false),
 	state(ChunkState::SHOULDREGENERATE),
-	canDraw(false),
 	m_atlas(atlas),
 	m_biomeManager(biomeManager),
 	m_blockManager(blockManager) {
@@ -38,7 +37,6 @@ Chunk::Chunk(BlockManager* blockManager, BiomeLibrary* biomeManager, Atlas* atla
 	vertexesTexIndexesCompact(nullptr),
 	init(false),
 	state(ChunkState::SHOULDREGENERATE),
-	canDraw(false),
 	m_blockMatrix(blockMatrix),
 	m_atlas(atlas),
 	m_biomeManager(biomeManager),

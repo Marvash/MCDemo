@@ -19,7 +19,7 @@ public:
 		SHOULDREBUILD,
 		// Mesh is built
 		MESHBUILT,
-		// Mesh is loaded, canDraw = true
+		// Mesh is loaded
 		MESHLOADED
 	};
 
@@ -44,7 +44,6 @@ public:
 	Chunk* backNeighbour;
 	glm::vec3 chunkPosition;
 	bool init;
-	bool canDraw;
 	ChunkState state;
 	
 private:

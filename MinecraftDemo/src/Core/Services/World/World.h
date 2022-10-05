@@ -11,7 +11,6 @@ public:
 	void startThreads();
 	void stopThreads();
 	void reloadChunks();
-	void updateRenderableChunks();
 	void updateGenerationOrigin(glm::vec3& position);
 	std::vector<RenderingComponent*>* getChunkComponents();
 	void getCubesInRay(glm::vec3& rayOrigin, glm::vec3& direction, float rayLength, std::vector<Block*>& cubes);

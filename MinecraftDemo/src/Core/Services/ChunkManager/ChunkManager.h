@@ -25,7 +25,6 @@ public:
 	ChunkManager(CoreEventDispatcher* eventDispatcher);
 	~ChunkManager();
 	void generateChunks();
-	void updateRenderableChunks();
 	std::vector<RenderingComponent*>* getChunkRenderingComponents();
 	void rebuildChunks();
 	void reloadChunks();

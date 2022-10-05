@@ -139,20 +139,18 @@ void ChunkManager::reloadChunks() {
 			if (m_chunkMatrix[i][j]->state == Chunk::ChunkState::MESHBUILT) {
 				m_chunkMatrix[i][j]->loadMesh();
 				m_chunkMatrix[i][j]->state = Chunk::ChunkState::MESHLOADED;
-				m_chunkMatrix[i][j]->canDraw = true;
+				m_chunkMatrix[i][j]->getRenderingComponent()->m_enabled = true;
 				rebuiltChunks++;
 			}
-			//std::cout << m_chunkMatrix[i][j]->chunkPosition.x << " " << m_chunkMatrix[i][j]->chunkPosition.z << std::endl;
-			
 		}
 	}
 	unlockHP();
 }
 
 void ChunkManager::rebuildChunks() {
-	lockLP();
 	for (int i = 0; i < CHUNK_ARRAY_WIDTH; i++) {
 		for (int j = 0; j < CHUNK_ARRAY_DEPTH; j++) {
+			lockLP();
 			if (m_buildersShouldStop) {
 				unlockLP();
 				return;
@@ -162,22 +160,9 @@ void ChunkManager::rebuildChunks() {
 				m_chunkMatrix[i][j]->buildMesh();
 				m_chunkMatrix[i][j]->state = Chunk::ChunkState::MESHBUILT;
 			}
-			
+			unlockLP();
 		}
 	}
-	unlockLP();
-}
-
-void ChunkManager::updateRenderableChunks() {
-	lockHP();
-	for (int i = 0; i < CHUNK_ARRAY_WIDTH; i++) {
-		for (int j = 0; j < CHUNK_ARRAY_DEPTH; j++) {
-			if (m_chunkMatrix[i][j]->state == Chunk::ChunkState::MESHLOADED || m_chunkMatrix[i][j]->canDraw) {
-				 m_chunkMatrix[i][j]->getRenderingComponent()->m_enabled = true;
-			}
-		}
-	}
-	unlockHP();
 }
 
 std::vector<RenderingComponent*>* ChunkManager::getChunkRenderingComponents() {
@@ -297,7 +282,7 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 			for (int j = 0; j < CHUNK_ARRAY_DEPTH; j++) {
 				if (i == 0) {
 					m_chunkMatrix[i][j]->state = Chunk::ChunkState::SHOULDREGENERATE;
-					m_chunkMatrix[i][j]->canDraw = false;
+					m_chunkMatrix[i][j]->getRenderingComponent()->m_enabled = false;
 					toMove[j] = m_chunkMatrix[i][j];
 					m_chunkMatrix[i][j] = m_chunkMatrix[i + 1][j];
 					if(m_chunkMatrix[i][j]->state > Chunk::ChunkState::SHOULDREBUILD)
@@ -318,7 +303,8 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 			for (int j = 0; j < CHUNK_ARRAY_DEPTH; j++) {
 				if (i == (CHUNK_ARRAY_WIDTH - 1)) {
 					m_chunkMatrix[i][j]->state = Chunk::ChunkState::SHOULDREGENERATE;
-					m_chunkMatrix[i][j]->canDraw = false;
+					m_chunkMatrix[i][j]->getRenderingComponent()->m_enabled = false;
+
 					toMove[j] = m_chunkMatrix[i][j];
 					m_chunkMatrix[i][j] = m_chunkMatrix[i - 1][j];
 					if (m_chunkMatrix[i][j]->state > Chunk::ChunkState::SHOULDREBUILD)
@@ -339,7 +325,7 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 			for (int i = 0; i < CHUNK_ARRAY_WIDTH; i++) {
 				if (j == 0) {
 					m_chunkMatrix[i][j]->state = Chunk::ChunkState::SHOULDREGENERATE;
-					m_chunkMatrix[i][j]->canDraw = false;
+					m_chunkMatrix[i][j]->getRenderingComponent()->m_enabled = false;
 					toMove[i] = m_chunkMatrix[i][j];
 					m_chunkMatrix[i][j] = m_chunkMatrix[i][j + 1];
 					if (m_chunkMatrix[i][j]->state > Chunk::ChunkState::SHOULDREBUILD)
@@ -360,7 +346,8 @@ void ChunkManager::moveChunkMatrix(ChunkSide side) {
 			for (int i = 0; i < CHUNK_ARRAY_WIDTH; i++) {
 				if (j == (CHUNK_ARRAY_DEPTH - 1)) {
 					m_chunkMatrix[i][j]->state = Chunk::ChunkState::SHOULDREGENERATE;
-					m_chunkMatrix[i][j]->canDraw = false;
+					m_chunkMatrix[i][j]->getRenderingComponent()->m_enabled = false;
+
 					toMove[i] = m_chunkMatrix[i][j];
 					m_chunkMatrix[i][j] = m_chunkMatrix[i][j - 1];
 					if (m_chunkMatrix[i][j]->state > Chunk::ChunkState::SHOULDREBUILD)

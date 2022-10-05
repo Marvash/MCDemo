@@ -30,10 +30,6 @@ void World::reloadChunks() {
 	m_chunkManager->reloadChunks();
 }
 
-void World::updateRenderableChunks() {
-	m_chunkManager->updateRenderableChunks();
-}
-
 void World::updateGenerationOrigin(glm::vec3& position) {
 	m_chunkManager->updateGenerationOrigin(position);
 }
