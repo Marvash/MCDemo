@@ -163,11 +163,13 @@ void Renderer::onNotify(Event& newEvent) {
 		}
 		case EventType::WINDOW_RESIZE: {
 			WindowResizeEvent* windowResizeEvent = static_cast<WindowResizeEvent*>(&newEvent);
-			m_screenWidth = windowResizeEvent->m_windowWidth;
-			m_screenHeight = windowResizeEvent->m_windowHeight;
-			setViewport(0, 0, m_screenWidth, m_screenHeight);
-			if (m_msaaEnabled) {
-				msaaResize();
+			if (windowResizeEvent->m_windowWidth > 0 && windowResizeEvent->m_windowHeight > 0) {
+				m_screenWidth = windowResizeEvent->m_windowWidth;
+				m_screenHeight = windowResizeEvent->m_windowHeight;
+				setViewport(0, 0, m_screenWidth, m_screenHeight);
+				if (m_msaaEnabled) {
+					msaaResize();
+				}
 			}
 			break;
 		}

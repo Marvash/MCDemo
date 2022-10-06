@@ -5,13 +5,13 @@ layout (location = 1) in int aVertexTexCoordsIndex;
 layout (location = 2) in int aVertexTexColorIndex;
 layout (location = 3) in int aVertexSecondaryTexCoordsIndex;
 
-out vec2 texCoords1;
-out vec2 texCoords2;
-out vec2 texCoords3;
+centroid out vec2 texCoords1;
+centroid out vec2 texCoords2;
+centroid out vec2 texCoords3;
 out vec3 texColor1;
 out vec3 texColor2;
 out vec3 texColor3;
-out vec2 secondaryTexCoords;
+centroid out vec2 secondaryTexCoords;
 
 uniform mat4 mvp;
 uniform samplerBuffer vertexesTexData;
