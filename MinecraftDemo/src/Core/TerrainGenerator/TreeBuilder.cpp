@@ -24,28 +24,28 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::OAK_LOG);
+		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].changeBlock(BlockId::OAK_LOG);
 	}
 	treeY += 1.0f;
 	if (treeX > xChunkMin && treeX < xChunkMax && treeZ > yChunkMin && treeZ < yChunkMax) {
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::OAK_LOG);
+		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].changeBlock(BlockId::OAK_LOG);
 	}
 	treeY += 1.0f;
 	if (treeX > xChunkMin && treeX < xChunkMax && treeZ > yChunkMin && treeZ < yChunkMax) {
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::OAK_LOG);
+		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].changeBlock(BlockId::OAK_LOG);
 	}
 	treeY += 1.0f;
 	if (treeX > xChunkMin && treeX < xChunkMax && treeZ > yChunkMin && treeZ < yChunkMax) {
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::OAK_LOG);
+		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].changeBlock(BlockId::OAK_LOG);
 	}
 	for (int i = -treeWidth; i <= treeWidth; i++) {
 		for (int j = -treeWidth; j <= treeWidth; j++) {
@@ -56,7 +56,7 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 				relativeTreeZ = tmpTreeZ - yChunkMin;
 				relativeTreeY = treeY;
 				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getBlockId() == BlockId::AIR) {
-					m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::LEAVES);
+					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].changeBlock(BlockId::LEAVES);
 				}
 			}
 		}
@@ -66,7 +66,7 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::OAK_LOG);
+		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].changeBlock(BlockId::OAK_LOG);
 	}
 	for (int i = -treeWidth; i <= treeWidth; i++) {
 		for (int j = -treeWidth; j <= treeWidth; j++) {
@@ -77,7 +77,7 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 				relativeTreeZ = tmpTreeZ - yChunkMin;
 				relativeTreeY = treeY;
 				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getBlockId() == BlockId::AIR) {
-					m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::LEAVES);
+					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].changeBlock(BlockId::LEAVES);
 				}
 			}
 		}
@@ -87,7 +87,7 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 		relativeTreeX = treeX - xChunkMin;
 		relativeTreeZ = treeZ - yChunkMin;
 		relativeTreeY = treeY;
-		m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::OAK_LOG);
+		blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].changeBlock(BlockId::OAK_LOG);
 	}
 	for (int i = -treeWidth; i <= treeWidth; i++) {
 		for (int j = -treeWidth; j <= treeWidth; j++) {
@@ -98,22 +98,7 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 				relativeTreeZ = tmpTreeZ - yChunkMin;
 				relativeTreeY = treeY;
 				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getBlockId() == BlockId::AIR) {
-					m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::LEAVES);
-				}
-			}
-		}
-	}
-	treeY += 1.0f;
-	for (int i = -treeWidth; i <= treeWidth; i++) {
-		for (int j = -treeWidth; j <= treeWidth; j++) {
-			tmpTreeX = treeX + i;
-			tmpTreeZ = treeZ + j;
-			if (tmpTreeX > xChunkMin && tmpTreeX < xChunkMax && tmpTreeZ > yChunkMin && tmpTreeZ < yChunkMax) {
-				relativeTreeX = tmpTreeX - xChunkMin;
-				relativeTreeZ = tmpTreeZ - yChunkMin;
-				relativeTreeY = treeY;
-				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getBlockId() == BlockId::AIR) {
-					m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::LEAVES);
+					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].changeBlock(BlockId::LEAVES);
 				}
 			}
 		}
@@ -128,7 +113,22 @@ void TreeBuilder::buildForestTree(float treeY, float treeX, float treeZ, float c
 				relativeTreeZ = tmpTreeZ - yChunkMin;
 				relativeTreeY = treeY;
 				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getBlockId() == BlockId::AIR) {
-					m_blockManager->changeBlock(&blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)], BlockId::LEAVES);
+					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].changeBlock(BlockId::LEAVES);
+				}
+			}
+		}
+	}
+	treeY += 1.0f;
+	for (int i = -treeWidth; i <= treeWidth; i++) {
+		for (int j = -treeWidth; j <= treeWidth; j++) {
+			tmpTreeX = treeX + i;
+			tmpTreeZ = treeZ + j;
+			if (tmpTreeX > xChunkMin && tmpTreeX < xChunkMax && tmpTreeZ > yChunkMin && tmpTreeZ < yChunkMax) {
+				relativeTreeX = tmpTreeX - xChunkMin;
+				relativeTreeZ = tmpTreeZ - yChunkMin;
+				relativeTreeY = treeY;
+				if (blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].getBlockId() == BlockId::AIR) {
+					blockMatrix[int(relativeTreeY)][int(relativeTreeX)][int(relativeTreeZ)].changeBlock(BlockId::LEAVES);
 				}
 			}
 		}

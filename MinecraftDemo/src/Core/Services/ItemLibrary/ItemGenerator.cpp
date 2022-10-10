@@ -9,6 +9,7 @@ ItemGenerator::ItemGenerator(CoreEventDispatcher* coreEventDispatcher) :
 void ItemGenerator::init(ItemLibrary* itemLibrary) {
 	m_itemLibrary = itemLibrary;
 	m_nullItem = createDefaultItem(ItemId::NONE);
+	ItemHandle::m_itemGenerator = this;
 }
 
 void ItemGenerator::onNotify(Event& newEvent) {

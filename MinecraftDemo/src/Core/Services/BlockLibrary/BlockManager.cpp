@@ -15,6 +15,7 @@ void BlockManager::notify(Event& newEvent) {
 
 void BlockManager::init(BlockLibrary* blockLibrary) {
 	m_blockLibrary = blockLibrary;
+	Block::m_blockManager = this;
 }
 
 void BlockManager::breakBlock(ItemHandle* itemUsed, Block* toBreak) {
@@ -25,7 +26,6 @@ void BlockManager::breakBlock(ItemHandle* itemUsed, Block* toBreak) {
 
 void BlockManager::changeBlock(Block* block, BlockId blockId) {
 	block->m_blockId = blockId;
-	Chunk* parentChunk = block->getChunkRef();
 }
 
 std::string& BlockManager::getDisplayName(BlockId blockId) const {

@@ -15,7 +15,7 @@ void PlaceableItem::itemSecondaryActionUpdate(ItemHandle* item, CoreServiceLocat
 		Player* player = coreServiceLocator->getGameObjectManager()->getPlayer();
 		Block* lastEmptyBlock = player->getLastEmptyBlock();
 		if (lastEmptyBlock != nullptr) {
-			coreServiceLocator->getBlockManager()->changeBlock(lastEmptyBlock, m_placeableItemSharedSpec->getBlockId());
+			lastEmptyBlock->changeBlock(m_placeableItemSharedSpec->getBlockId());
 			lastEmptyBlock->getChunkRef()->forceChunkMeshUpdate();
 			m_lastPlacedTime = currentTime;
 			item->subtractToItemCount(1);

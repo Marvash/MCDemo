@@ -4,6 +4,7 @@
 #include "Core/Services/ItemLibrary/IItem.h"
 
 class Chunk;
+class BlockManager;
 
 class Block {
 
@@ -18,7 +19,9 @@ public:
 	glm::vec3& getBlockCoordsOffset();
 	void setBiomeRef(Biome* biome);
 	BlockId getBlockId() const;
+	void changeBlock(BlockId blockId);
 private:
+	static BlockManager* m_blockManager;
 	BlockId m_blockId;
 	Biome* m_biomeRef;
 	Chunk* m_chunkRef;

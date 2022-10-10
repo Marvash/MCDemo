@@ -65,7 +65,7 @@ void CraftingTable::matchRecipe() {
 	m_matchedRecipeResult = m_craftingRecipeLibrary->matchItemPattern(CRAFTING_TABLE_SLOTS, CRAFTING_TABLE_SLOTS, m_craftingTable);
 	if (m_matchedRecipeResult != nullptr) {
 		ItemHandle* resultItem = m_matchedRecipeResult->getRecipeResult();
-		m_itemGenerator->changeItemHandle(m_craftingResult, resultItem->getItemId(), m_matchedRecipeResult->getMatchCount() * resultItem->getItemCount());
+		m_craftingResult->changeItem(resultItem->getItemId(), m_matchedRecipeResult->getMatchCount() * resultItem->getItemCount());
 	}
 	else {
 		m_craftingResult->setNull();
@@ -113,7 +113,7 @@ void CraftingTable::splitItemSlot(unsigned int slot) {
 					ItemHandle* currentItem = m_craftingTable[i][j];
 					if (currentItem->isNullItem()) {
 						int countHalf = (itemToSplit->getItemCount() / 2);
-						m_itemGenerator->changeItemHandle(currentItem, itemToSplit->getItemId(), countHalf);
+						currentItem->changeItem(itemToSplit->getItemId(), countHalf);
 						itemToSplit->subtractToItemCount(countHalf);
 						i = CRAFTING_TABLE_SLOTS;
 						j = CRAFTING_TABLE_SLOTS;
@@ -127,7 +127,7 @@ void CraftingTable::splitItemSlot(unsigned int slot) {
 void CraftingTable::addItemInEmptyCraftingSlot(ItemId itemId, int count, unsigned int slot) {
 	ItemHandle* item = getItemSlot(slot);
 	if (item->isNullItem() && count > 0) {
-		m_itemGenerator->changeItemHandle(item, itemId, count);
+		item->changeItem(itemId, count);
 	}
 }
 

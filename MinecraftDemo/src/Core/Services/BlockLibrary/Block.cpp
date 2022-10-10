@@ -1,5 +1,8 @@
 #include "Block.h"
 #include "Core/Chunk/Chunk.h"
+#include "BlockManager.h"
+
+BlockManager* Block::m_blockManager;
 
 Block::Block() {}
 
@@ -30,4 +33,8 @@ BlockId Block::getBlockId() const {
 
 glm::vec3& Block::getBlockCoordsOffset() {
 	return m_offset;
+}
+
+void Block::changeBlock(BlockId blockId) {
+	m_blockManager->changeBlock(this, blockId);
 }

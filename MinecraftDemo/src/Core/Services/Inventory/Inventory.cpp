@@ -73,7 +73,7 @@ void Inventory::addItem(ItemId itemId, int count) {
 		for (int i = 0; (i < TOTAL_SLOTS) && (itemsLeft > 0); i++) {
 			ItemHandle* item = m_inventory[i];
 			if (item->isNullItem()) {
-				m_itemGenerator->changeItemHandle(item, itemId, itemsLeft);
+				item->changeItem(itemId, itemsLeft);
 				itemsLeft -= item->getItemCount();
 			}
 		}
@@ -83,7 +83,7 @@ void Inventory::addItem(ItemId itemId, int count) {
 void Inventory::addItemInEmptyInventorySlot(ItemId itemId, int count, unsigned int slot) {
 	ItemHandle* item = m_inventory[slot];
 	if (item->isNullItem() && count > 0) {
-		m_itemGenerator->changeItemHandle(item, itemId, count);
+		item->changeItem(itemId, count);
 	}
 }
 
@@ -109,7 +109,7 @@ void Inventory::splitItemInSlot(unsigned int slot) {
 				ItemHandle* item = m_inventory[i];
 				if (item->isNullItem()) {
 					int countHalf = (itemToSplit->getItemCount() / 2);
-					m_itemGenerator->changeItemHandle(item, itemToSplit->getItemId(), countHalf);
+					item->changeItem(itemToSplit->getItemId(), countHalf);
 					itemToSplit->subtractToItemCount(countHalf);
 					break;
 				}

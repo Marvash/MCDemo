@@ -6,13 +6,15 @@
 #include "Block.h"
 
 class BlockManager : CoreService {
+
+friend class Block;
+
 public:
 	BlockManager(CoreEventDispatcher* coreEventDispatcher);
 	void onNotify(Event& newEvent) override;
 	void notify(Event& newEvent) override;
 	void init(BlockLibrary* m_blockLibrary);
 	void breakBlock(ItemHandle* itemUsed, Block* toBreak);
-	void changeBlock(Block* block, BlockId blockId);
 	std::string& getDisplayName(BlockId blockId) const;
 	bool isTransparent(BlockId blockId) const;
 	bool isRenderable(BlockId blockId) const;
@@ -25,6 +27,8 @@ public:
 	bool isBlockBeingBroken(Block* block);
 	BlockBreakingContext::BlockBreakStage getBreakingStage();
 private:
+	void changeBlock(Block* block, BlockId blockId);
+
 	BlockLibrary* m_blockLibrary;
 	BlockBreakingContext* m_blockBreakingContext;
 };

@@ -396,7 +396,7 @@ void TerrainGenerator::generateChunk(Block*** &blockMatrix, glm::vec3& chunkPosi
 						}
 					}
 				}
-				m_blockManager->changeBlock(&blockMatrix[i][j][w], blockId);
+				blockMatrix[i][j][w].changeBlock(blockId);
 				blockMatrix[i][j][w].setBiomeRef(biome);
 			}
 		}

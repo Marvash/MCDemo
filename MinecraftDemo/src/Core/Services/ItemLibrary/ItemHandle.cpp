@@ -1,8 +1,11 @@
 #include "ItemHandle.h"
 #include "IItem.h"
 #include "Core/Services/CoreServiceLocator.h"
+#include "ItemGenerator.h"
 
-ItemHandle::ItemHandle() : 
+ItemGenerator* ItemHandle::m_itemGenerator;
+
+ItemHandle::ItemHandle() :
 	m_wrappedItem(nullptr),
 	m_nullItem(nullptr),
 	m_itemCount(0)
@@ -124,4 +127,8 @@ int ItemHandle::mergeWithHandle(ItemHandle* item) {
 		item->subtractToItemCount(countToMerge);
 	}
 	return countToMerge;
+}
+
+void ItemHandle::changeItem(ItemId itemId, unsigned int count) {
+	 m_itemGenerator->changeItemHandle(this, itemId, count);
 }
