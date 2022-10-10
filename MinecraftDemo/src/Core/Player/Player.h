@@ -17,9 +17,7 @@ public:
 	void update() override;
 	Block* getTargetBlock();
 	bool getIsOpenInventory();
-	// TODO: Move getFirstSolidCube and getLastPlaceableCube in World or something (they do not belong in player)
-	Block* getFirstNonEmptyBlock();
-	Block* getLastEmptyBlock();
+	float getTargetCubeRayLength();
 
 private:
 	void processKeyinput();

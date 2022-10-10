@@ -8,7 +8,9 @@ DefaultItem::DefaultItem(IItem* wrappedItem) :
 
 void DefaultItem::itemPrimaryActionUpdate(ItemHandle* item, CoreServiceLocator* coreServiceLocator) {
 	Player* player = coreServiceLocator->getGameObjectManager()->getPlayer();
-	Block* targetBlock = player->getFirstNonEmptyBlock();
+	glm::vec3 cameraPos = coreServiceLocator->getCameraSystem()->getCameraPosition();
+	glm::vec3 cameraLookDir = coreServiceLocator->getCameraSystem()->m_front;
+	Block* targetBlock = coreServiceLocator->getWorld()->getFirstNonEmptyBlock(cameraPos, cameraLookDir, player->getTargetCubeRayLength());
 	if (targetBlock != nullptr) {
 		double deltaTime = coreServiceLocator->getApplicationManager()->getDeltaTime();
 		//BOOST_LOG_TRIVIAL(info) << "UPDATING BREAKING CONTEXT";

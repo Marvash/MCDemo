@@ -209,6 +209,9 @@ bool Player::getIsOpenInventory() {
 	return m_isOpenInventory;
 }
 
+float Player::getTargetCubeRayLength() {
+	return m_targetCubeRayLength;
+}
 
 void Player::processMouseInput() {
 	static bool leftMousePressed = false;
@@ -252,48 +255,10 @@ void Player::update() {
 	}
 	m_coreServiceLocator->getCameraSystem()->setPlayerPosition(m_position);
 	m_coreServiceLocator->getWorld()->updateGenerationOrigin(m_position);
-	m_targetBlock = getFirstNonEmptyBlock();
+	glm::vec3 cameraPos = m_coreServiceLocator->getCameraSystem()->getCameraPosition();
+	glm::vec3 cameraLookDir = m_coreServiceLocator->getCameraSystem()->m_front;
+	m_targetBlock = m_coreServiceLocator->getWorld()->getFirstNonEmptyBlock(cameraPos, cameraLookDir, m_targetCubeRayLength);
 	glm::vec3 coords = m_coreServiceLocator->getWorld()->getCubeAbsCoords(m_coreServiceLocator->getWorld()->getCubeByCoords(m_position));
 	//BOOST_LOG_TRIVIAL(info) << "pos: " << m_position.x << " " << m_position.y << " " << m_position.z;
 	//BOOST_LOG_TRIVIAL(info) << "coords: " << coords.x << " " << coords.y << " " << coords.z;
-}
-
-Block* Player::getFirstNonEmptyBlock() {
-	Block* target = nullptr;
-	std::vector<Block*> cubesInRay;
-	glm::vec3 cameraPos = m_coreServiceLocator->getCameraSystem()->getCameraPosition();
-	glm::vec3 cameraLookDir = m_coreServiceLocator->getCameraSystem()->m_front;
-	//BOOST_LOG_TRIVIAL(info) << "player pos: " << m_position.x << " " << m_position.y << " " << m_position.z;
-	//BOOST_LOG_TRIVIAL(info) << "player campos: " << cameraPos.x << " " << cameraPos.y << " " << cameraPos.z;
-	//BOOST_LOG_TRIVIAL(info) << "player front: " << cameraLookDir.x << " " << cameraLookDir.y << " " << cameraLookDir.z;
-	m_coreServiceLocator->getWorld()->getCubesInRay(cameraPos, cameraLookDir, m_targetCubeRayLength, cubesInRay);
-	if (cubesInRay.size() > 0) {
-		for (int i = 0; i < cubesInRay.size(); i++) {
-			glm::vec3 cubeCoords = m_coreServiceLocator->getWorld()->getCubeAbsCoords(cubesInRay.at(i));
-			//BOOST_LOG_TRIVIAL(info) << "cube " << i << " coords: " << cubeCoords.x << " " << cubeCoords.y << " " << cubeCoords.z;
-			if (cubesInRay.at(i)->getBlockId() != BlockId::AIR && cubesInRay.at(i)->getBlockId() != BlockId::NONE) {
-				target = cubesInRay.at(i);
-				//BOOST_LOG_TRIVIAL(info) << "target is cube " << i;
-				break;
-			}
-		}
-	}
-	return target;
-}
-
-Block* Player::getLastEmptyBlock() {
-	Block* target = nullptr;
-	std::vector<Block*> cubesInRay;
-	glm::vec3 cameraPos = m_coreServiceLocator->getCameraSystem()->getCameraPosition();
-	glm::vec3 cameraLookDir = m_coreServiceLocator->getCameraSystem()->m_front;
-	m_coreServiceLocator->getWorld()->getCubesInRay(cameraPos, cameraLookDir, m_targetCubeRayLength, cubesInRay);
-	if (cubesInRay.size() > 0) {
-		for (int i = 0; i < cubesInRay.size(); i++) {
-			if (i > 0 && cubesInRay.at(i)->getBlockId() != BlockId::AIR && cubesInRay.at(i)->getBlockId() != BlockId::NONE) {
-				target = cubesInRay.at(i - 1);
-				break;
-			}
-		}
-	}
-	return target;
 }

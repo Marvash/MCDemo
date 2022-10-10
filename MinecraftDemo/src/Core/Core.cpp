@@ -73,7 +73,7 @@ void Core::initializeCoreServices() {
 	m_serviceLocator->getInventory()->init(m_serviceLocator->getItemGenerator());
 	m_chunkManager->init(m_biomeLibrary, m_atlas, m_serviceLocator->getBlockManager());
 	m_serviceLocator->getMovementSystem()->init(m_chunkManager);
-	m_serviceLocator->getWorld()->init(m_chunkManager);
+	m_serviceLocator->getWorld()->init(m_chunkManager, m_serviceLocator->getCameraSystem());
 	m_serviceLocator->getGraphics()->init(m_renderer);
 	m_serviceLocator->getGraphics()->setCameraRenderingData(m_serviceLocator->getCameraSystem()->getCameraRenderingData());
 	m_serviceLocator->getAtlasService()->init(m_atlas);
