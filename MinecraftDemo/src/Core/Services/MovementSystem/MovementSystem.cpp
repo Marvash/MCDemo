@@ -88,7 +88,7 @@ std::string MovementSystem::getMovementModeDisplayName(MovementMode movementMode
 	return std::string("Unknown Movement Mode");
 }
 
-bool MovementSystem::AABBCollision(const AABBCollider* collider1, const AABBCollider* collider2) {
+bool MovementSystem::AABBCollisionTest(const AABBCollider* collider1, const AABBCollider* collider2) {
 	const AABBCollider* smallerCollider = collider1;
 	const AABBCollider* biggerCollider = collider2;
 	if ((collider1->bottomRightBack.x - collider1->bottomLeftBack.x) <= (collider2->bottomRightBack.x - collider2->bottomLeftBack.x)) {
@@ -135,7 +135,7 @@ bool MovementSystem::isObjectInBlock(GameObject* gameObject, Block* block) {
 			glm::f64vec3 blockCoords = m_chunkManager->getCubeAbsCoords(block);
 			AABBCollider blockCollider;
 			blockCollider.buildAABBCollider(blockCoords, Chunk::blockSideSize / 2.0f, Chunk::blockSideSize / 2.0f);
-			return AABBCollision(&collider, &blockCollider);
+			return AABBCollisionTest(&collider, &blockCollider);
 		}
 	}
 	return false;
