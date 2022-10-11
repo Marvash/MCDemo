@@ -9,6 +9,7 @@
 #include "Core/Services/MovementSystem/MovementModes/FlyNoClipMovementMode.h"
 #include "Core/Services/MovementSystem/MovementModes/FlyMovementMode.h"
 #include "AABBCollider.h"
+#include <boost/log/trivial.hpp>
 
 class MovementComponent;
 
@@ -21,7 +22,9 @@ public:
 	void registerObject(GameObject* gameObject, MovementComponent* movementComponent);
 	void update(double deltaTime);
 	void setMovementMode(GameObject* gameObject, MovementMode movementMode);
+	bool isObjectInBlock(GameObject* gameObject, Block* block);
 	std::string getMovementModeDisplayName(MovementMode movementMode);
+	bool AABBCollisionTest(const AABBCollider* collider1, const AABBCollider* collider2);
 
 	std::map<GameObject*, MovementComponent*> m_registeredObjects;
 

@@ -38,6 +38,8 @@ public:
 	void forceChunkMeshUpdate();
 	RenderingComponent* getRenderingComponent();
 
+	static const float blockSideSize;
+
 	Chunk* leftNeighbour;
 	Chunk* rightNeighbour;
 	Chunk* frontNeighbour;
@@ -47,7 +49,6 @@ public:
 	ChunkState state;
 	
 private:
-
 	void renderingSetup();
 	void addFaceCoordinates(size_t& vertexCoordsBaseIndex, BlockFace faceSide, float vertexBaseHeight, float vertexBaseWidth, float vertexBaseDepth);
 	void addFaceTexIndexes(size_t& vertexIndexesBaseIndex, int textureCoordinatesIndex, int colorIndex, int secondaryTextureCoordinatesIndex);
@@ -55,7 +56,7 @@ private:
 	void cleanVerticesArrays();
 	void initEmptyBlockMatrix();
 
-	static const float blockSideSize;
+	
 
 	GLuint VAO, VBOVCoords, VBOVTexIndexes, EBO;
 	Block*** m_blockMatrix;

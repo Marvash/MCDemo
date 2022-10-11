@@ -87,3 +87,56 @@ std::string MovementSystem::getMovementModeDisplayName(MovementMode movementMode
 	}
 	return std::string("Unknown Movement Mode");
 }
+
+bool MovementSystem::AABBCollision(const AABBCollider* collider1, const AABBCollider* collider2) {
+	const AABBCollider* smallerCollider = collider1;
+	const AABBCollider* biggerCollider = collider2;
+	if ((collider1->bottomRightBack.x - collider1->bottomLeftBack.x) <= (collider2->bottomRightBack.x - collider2->bottomLeftBack.x)) {
+		smallerCollider = collider1;
+		biggerCollider = collider2;
+	}
+	else {
+		smallerCollider = collider2;
+		biggerCollider = collider1;
+	}
+	if (((smallerCollider->bottomLeftBack.x >= biggerCollider->bottomLeftBack.x) && (smallerCollider->bottomLeftBack.x <= biggerCollider->bottomRightBack.x)) || ((smallerCollider->bottomRightBack.x >= biggerCollider->bottomLeftBack.x) && (smallerCollider->bottomRightBack.x <= biggerCollider->bottomRightBack.x))) {
+		if ((collider1->bottomLeftFront.z - collider1->bottomLeftBack.z) <= (collider2->bottomLeftFront.z - collider2->bottomLeftBack.z)) {
+			smallerCollider = collider1;
+			biggerCollider = collider2;
+		}
+		else {
+			smallerCollider = collider2;
+			biggerCollider = collider1;
+		}
+		if (((smallerCollider->bottomLeftBack.z >= biggerCollider->bottomLeftBack.z) && (smallerCollider->bottomLeftBack.z <= biggerCollider->bottomLeftFront.z)) || ((smallerCollider->bottomLeftFront.z >= biggerCollider->bottomLeftBack.z) && (smallerCollider->bottomLeftFront.z <= biggerCollider->bottomLeftFront.z))) {
+			if ((collider1->topLeftBack.y - collider1->bottomLeftBack.y) <= (collider2->topLeftBack.y - collider2->bottomLeftBack.y)) {
+				smallerCollider = collider1;
+				biggerCollider = collider2;
+			}
+			else {
+				smallerCollider = collider2;
+				biggerCollider = collider1;
+			}
+			if (((smallerCollider->bottomLeftBack.y >= biggerCollider->bottomLeftBack.y) && (smallerCollider->bottomLeftBack.y <= biggerCollider->topLeftBack.y)) || ((smallerCollider->topLeftBack.y >= biggerCollider->bottomLeftBack.y) && (smallerCollider->topLeftBack.y <= biggerCollider->topLeftBack.y))) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool MovementSystem::isObjectInBlock(GameObject* gameObject, Block* block) {
+	for (auto& object : m_registeredObjects) {
+		if (gameObject == object.first) {
+			GameObject* gameObject = object.first;
+			MovementComponent* mc = object.second;
+			AABBCollider collider;
+			collider.buildAABBCollider(mc->m_currentPosition, mc->m_colliderHalfWidth, mc->m_colliderHalfHeight);
+			glm::f64vec3 blockCoords = m_chunkManager->getCubeAbsCoords(block);
+			AABBCollider blockCollider;
+			blockCollider.buildAABBCollider(blockCoords, Chunk::blockSideSize / 2.0f, Chunk::blockSideSize / 2.0f);
+			return AABBCollision(&collider, &blockCollider);
+		}
+	}
+	return false;
+}

@@ -16,7 +16,7 @@ void PlaceableItem::itemSecondaryActionUpdate(ItemHandle* item, CoreServiceLocat
 		glm::vec3 cameraPos = coreServiceLocator->getCameraSystem()->getCameraPosition();
 		glm::vec3 cameraLookDir = coreServiceLocator->getCameraSystem()->m_front;
 		Block* lastEmptyBlock = coreServiceLocator->getWorld()->getLastEmptyBlock(cameraPos, cameraLookDir, player->getTargetCubeRayLength());
-		if (lastEmptyBlock != nullptr) {
+		if (lastEmptyBlock != nullptr && !coreServiceLocator->getMovementSystem()->isObjectInBlock(player, lastEmptyBlock)) {
 			lastEmptyBlock->changeBlock(m_placeableItemSharedSpec->getBlockId());
 			lastEmptyBlock->getChunkRef()->forceChunkMeshUpdate();
 			m_lastPlacedTime = currentTime;
