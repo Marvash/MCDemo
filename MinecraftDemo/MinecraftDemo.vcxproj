@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -78,10 +78,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)/3rdparty/include</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)/3rdparty/libs</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)/3rdparty/include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)/3rdparty/include;$(SolutionDir)/MinecraftDemo/src</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)/3rdparty/libs</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -138,36 +140,277 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>PhysXPvdSDK_static_64.lib;PhysXVehicle_static_64.lib;PhysXCharacterKinematic_static_64.lib;LowLevel_static_64.lib;LowLevelAABB_static_64.lib;LowLevelDynamics_static_64.lib;SimulationController_static_64.lib;PhysXExtensions_static_64.lib;PhysXTask_static_64.lib;PhysXFoundation_64.lib;PhysXCooking_64.lib;PhysXCommon_64.lib;PhysX_64.lib;assimp-vc142-mtd.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\AtlasManager.cpp" />
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\Chunk.cpp" />
-    <ClCompile Include="src\ChunkManager.cpp" />
-    <ClCompile Include="src\glad.c" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\PhysxManager.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\PerlinNoiseGenerator.cpp" />
+    <ClCompile Include="src\Core\Components\MovementComponent.cpp" />
+    <ClCompile Include="src\Core\Components\RenderingComponent.cpp" />
+    <ClCompile Include="src\Core\Services\BlockLibrary\Block.cpp" />
+    <ClCompile Include="src\Core\Services\BlockLibrary\BlockLibrary.cpp" />
+    <ClCompile Include="src\Core\Services\BlockLibrary\BlockManager.cpp" />
+    <ClCompile Include="src\Core\Services\BlockLibrary\BlockSharedSpec.cpp" />
+    <ClCompile Include="src\Core\Services\BlockLibrary\DroppableBlockSharedSpec.cpp" />
+    <ClCompile Include="src\Core\Services\Crafting\CraftingPatternMatcher.cpp" />
+    <ClCompile Include="src\Core\Services\Crafting\CraftingPatternMatchResult.cpp" />
+    <ClCompile Include="src\Core\Services\Crafting\CraftingRecipeBuilder.cpp" />
+    <ClCompile Include="src\Core\Services\Crafting\CraftingTable.cpp" />
+    <ClCompile Include="src\Core\GUI\Crosshair.cpp" />
+    <ClCompile Include="src\Core\GUI\InventoryGUI.cpp" />
+    <ClCompile Include="src\Core\GUI\ItemBar.cpp" />
+    <ClCompile Include="src\Core\Services\Crafting\CraftingRecipeLibrary.cpp" />
+    <ClCompile Include="src\Core\Services\Crafting\CraftingRecipe.cpp" />
+    <ClCompile Include="src\Core\Services\Inventory\InventoryUIInteractions.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemHandle.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\Item.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\IconLibrary\IconLibrary.cpp" />
+    <ClCompile Include="src\Core\Services\Inventory\Inventory.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemDecorator.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemGenerator.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemSharedSpec.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\ItemLibrary.cpp" />
+    <ClCompile Include="src\Core\Services\Atlas\AtlasService.cpp" />
+    <ClCompile Include="src\Core\Services\Biome\BiomeService.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\PlaceableItem.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\PlaceableItemSharedSpec.cpp" />
+    <ClCompile Include="src\Core\Services\ItemLibrary\DefaultItem.cpp" />
+    <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\OffScreenPPShaderConfig.cpp" />
+    <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\ScreenShaderConfig.cpp" />
+    <ClCompile Include="src\Core\Services\Renderer\ShaderConfig\WorldShaderConfig.cpp" />
+    <ClCompile Include="src\Core\Services\Renderer\Shader\ShaderLibrary.cpp" />
+    <ClCompile Include="src\Core\Services\MovementSystem\MovementModes\FlyMovementMode.cpp" />
+    <ClCompile Include="src\Core\Services\MovementSystem\MovementModes\FlyNoClipMovementMode.cpp" />
+    <ClCompile Include="src\Core\Application\Application.cpp" />
+    <ClCompile Include="src\Core\Events\KeyEvent.cpp" />
+    <ClCompile Include="src\Core\Biomes\BiomeBuilder.cpp" />
+    <ClCompile Include="src\Core\Biomes\BiomeColors.cpp" />
+    <ClCompile Include="src\Core\Layers\Layer.cpp" />
+    <ClCompile Include="src\Core\Services\Biome\BiomeLibrary.cpp" />
+    <ClCompile Include="src\Core\GUI\DebugGUI\DebugPanel.cpp" />
+    <ClCompile Include="src\Core\Layers\GameLayer.cpp" />
+    <ClCompile Include="src\Core\Layers\GameGUILayer.cpp" />
+    <ClCompile Include="src\Core\Layers\PauseMenuLayer.cpp" />
+    <ClCompile Include="src\Core\LayerStack.cpp" />
+    <ClCompile Include="src\Core\Atlas\AtlasTexCoordinates.cpp" />
+    <ClCompile Include="src\Core\Services\Application\ApplicationManager.cpp" />
+    <ClCompile Include="src\Core\Services\CameraSystem\CameraSystem.cpp" />
+    <ClCompile Include="src\Core\Services\GameObjectManager\GameObjectManager.cpp" />
+    <ClCompile Include="src\Core\Services\Graphics\Graphics.cpp" />
+    <ClCompile Include="src\Core\Services\MovementSystem\MovementSystem.cpp" />
+    <ClCompile Include="src\Core\Services\BlockLibrary\BlockBreakingContext.cpp" />
+    <ClCompile Include="src\Core\Services\World\World.cpp" />
+    <ClCompile Include="src\Core\States\ApplicationCoreState.cpp" />
+    <ClCompile Include="src\Core\States\GameCoreState.cpp" />
+    <ClCompile Include="src\Core\Textures\AtlasTexture.cpp" />
+    <ClCompile Include="src\Core\Services\Atlas\Atlas.cpp" />
+    <ClCompile Include="src\Core\Player\Player.cpp" />
+    <ClCompile Include="src\Core\GameObject\GameObject.cpp" />
+    <ClCompile Include="src\Core\Textures\ImageTexture2D.cpp" />
+    <ClCompile Include="src\Core\Textures\MultisampleTexture2D.cpp" />
+    <ClCompile Include="src\imgui\imgui.cpp" />
+    <ClCompile Include="src\imgui\imgui_demo.cpp" />
+    <ClCompile Include="src\imgui\imgui_draw.cpp" />
+    <ClCompile Include="src\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\imgui\imgui_tables.cpp" />
+    <ClCompile Include="src\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\MinecraftApplication.cpp" />
+    <ClCompile Include="src\Core\Services\CoreServiceLocator.cpp" />
+    <ClCompile Include="src\Core\Events\MouseButtonEvent.cpp" />
+    <ClCompile Include="src\Core\Events\MouseScrollEvent.cpp" />
+    <ClCompile Include="src\Core\Events\MouseMoveEvent.cpp" />
+    <ClCompile Include="src\Core\Services\CoreService.cpp" />
+    <ClCompile Include="src\Core\Exceptions\RendererException.cpp" />
+    <ClCompile Include="src\Core\Events\WindowResizeEvent.cpp" />
+    <ClCompile Include="src\Core\Events\Event.cpp" />
+    <ClCompile Include="src\Core\CoreEventDispatcher.cpp" />
+    <ClCompile Include="src\Core\States\MainMenuCoreState.cpp" />
+    <ClCompile Include="src\Core\States\QuitCoreState.cpp" />
+    <ClCompile Include="src\Core\Exceptions\Exception.cpp" />
+    <ClCompile Include="src\Core\Services\Input\InputManager.cpp" />
+    <ClCompile Include="src\Core\Services\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Core\Biomes\Biome.cpp" />
+    <ClCompile Include="src\Core\Biomes\DesertBiome.cpp" />
+    <ClCompile Include="src\Core\Biomes\ForestBiome.cpp" />
+    <ClCompile Include="src\Core\Biomes\HillsBiome.cpp" />
+    <ClCompile Include="src\Core\Biomes\JungleBiome.cpp" />
+    <ClCompile Include="src\Core\Biomes\MountainsBiome.cpp" />
+    <ClCompile Include="src\Core\Biomes\PlainsBiome.cpp" />
+    <ClCompile Include="src\Core\Biomes\SavanaBiome.cpp" />
+    <ClCompile Include="src\Core\Biomes\TaigaBiome.cpp" />
+    <ClCompile Include="src\Core\Biomes\TundraBiome.cpp" />
+    <ClCompile Include="src\Core\Chunk\Chunk.cpp" />
+    <ClCompile Include="src\Core\Services\ChunkManager\ChunkManager.cpp" />
+    <ClCompile Include="src\Core\Core.cpp" />
+    <ClCompile Include="src\Core\States\InitCoreState.cpp" />
+    <ClCompile Include="src\glad\glad.c" />
+    <ClCompile Include="src\Core\Services\Renderer\Shader\Shader.cpp" />
+    <ClCompile Include="src\Utils\Random\PerlinGenerator\PerlinNoiseGenerator.cpp" />
+    <ClCompile Include="src\Core\TerrainGenerator\TerrainGenerator.cpp" />
+    <ClCompile Include="src\Core\TerrainGenerator\TreeBuilder.cpp" />
+    <ClCompile Include="src\Utils\Mediator\Mediator.cpp" />
+    <ClCompile Include="src\Core\Services\Window\Window.cpp" />
+    <ClCompile Include="src\Core\Exceptions\WindowException.cpp" />
+    <ClCompile Include="src\Core\Seed\WorldSeeds.cpp" />
+    <ClCompile Include="src\Core\Seed\WorldSeedsBuilder.cpp" />
+    <ClCompile Include="src\Core\Events\WindowInitEvent.cpp" />
+    <ClCompile Include="src\Core\Textures\Texture.cpp" />
+    <ClCompile Include="src\Core\Textures\TextureBuffer.cpp" />
+    <ClCompile Include="src\Core\Services\MovementSystem\MovementModes\StandardMovementMode.cpp" />
+    <ClCompile Include="src\Utils\Strategy\StrategyContext.cpp" />
+    <ClCompile Include="src\Utils\Strategy\Strategy.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\AtlasManager.h" />
-    <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\Chunk.h" />
-    <ClInclude Include="src\ChunkManager.h" />
-    <ClInclude Include="src\coreInclude.h" />
-    <ClInclude Include="src\PhysxManager.h" />
-    <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Core\Components\RenderingComponent.h" />
+    <ClInclude Include="src\Core\Exceptions\GameLogicException.h" />
+    <ClInclude Include="src\Core\Services\BlockLibrary\BlockManager.h" />
+    <ClInclude Include="src\Core\Services\BlockLibrary\BlockFaceEnum.h" />
+    <ClInclude Include="src\Core\Services\BlockLibrary\BlockLibrary.h" />
+    <ClInclude Include="src\Core\Services\BlockLibrary\DroppableBlockSharedSpec.h" />
+    <ClInclude Include="src\Core\Services\BlockLibrary\Block.h" />
+    <ClInclude Include="src\Core\Services\BlockLibrary\BlockSharedSpec.h" />
+    <ClInclude Include="src\Core\Services\Crafting\CraftingPatternMatchResult.h" />
+    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipeBuilder.h" />
+    <ClInclude Include="src\Core\Services\Crafting\CraftingPatternMatcher.h" />
+    <ClInclude Include="src\Core\Services\Crafting\CraftingTable.h" />
+    <ClInclude Include="src\Core\Services\BlockLibrary\BlockIdEnum.h" />
+    <ClInclude Include="src\Core\GUI\Crosshair.h" />
+    <ClInclude Include="src\Core\GUI\InventoryGUI.h" />
+    <ClInclude Include="src\Core\GUI\ItemBar.h" />
+    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipeLibrary.h" />
+    <ClInclude Include="src\Core\Services\Crafting\CraftingRecipe.h" />
+    <ClInclude Include="src\Core\Services\Inventory\InventoryUIInteractions.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\IItem.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemHandle.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\Item.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\IconLibrary\IconLibrary.h" />
+    <ClInclude Include="src\Core\Services\Inventory\Inventory.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemDecorator.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemGenerator.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemSharedSpec.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemIdEnum.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\ItemLibrary.h" />
+    <ClInclude Include="src\Core\Inventory\ItemUsageStrategySelector.h" />
+    <ClInclude Include="src\Core\Services\Atlas\AtlasService.h" />
+    <ClInclude Include="src\Core\Services\Biome\BiomeService.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\PlaceableItem.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\PlaceableItemSharedSpec.h" />
+    <ClInclude Include="src\Core\Services\ItemLibrary\DefaultItem.h" />
+    <ClInclude Include="src\Core\Services\Renderer\RendererStructs.h" />
+    <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\OffScreenPPShaderConfig.h" />
+    <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\ScreenShaderConfig.h" />
+    <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\WorldShaderConfig.h" />
+    <ClInclude Include="src\Core\Services\Renderer\ShaderData\ShaderData.h" />
+    <ClInclude Include="src\Core\Services\Renderer\Shader\ShaderEnum.h" />
+    <ClInclude Include="src\Core\Services\Renderer\Shader\ShaderLibrary.h" />
+    <ClInclude Include="src\Core\Services\MovementSystem\MovementModes\FlyMovementMode.h" />
+    <ClInclude Include="src\Core\Services\MovementSystem\MovementModes\FlyNoClipMovementMode.h" />
+    <ClInclude Include="src\Core\Application\Application.h" />
+    <ClInclude Include="src\Core\Components\MovementComponent.h" />
+    <ClInclude Include="src\Core\Events\KeyEvent.h" />
+    <ClInclude Include="src\Core\Biomes\BiomeBuilder.h" />
+    <ClInclude Include="src\Core\Biomes\BiomeColors.h" />
+    <ClInclude Include="src\Core\Layers\Layer.h" />
+    <ClInclude Include="src\Core\Services\Biome\BiomeLibrary.h" />
+    <ClInclude Include="src\Core\GUI\DebugGUI\DebugPanel.h" />
+    <ClInclude Include="src\Core\GUI\GUIElement.h" />
+    <ClInclude Include="src\Core\Layers\GameLayer.h" />
+    <ClInclude Include="src\Core\Layers\GameGUILayer.h" />
+    <ClInclude Include="src\Core\Layers\PauseMenuLayer.h" />
+    <ClInclude Include="src\Core\LayerStack.h" />
+    <ClInclude Include="src\Core\Atlas\AtlasTexCoordinates.h" />
+    <ClInclude Include="src\Core\Services\Application\ApplicationManager.h" />
+    <ClInclude Include="src\Core\Services\CameraSystem\CameraRenderingData.h" />
+    <ClInclude Include="src\Core\Services\CameraSystem\CameraSystem.h" />
+    <ClInclude Include="src\Core\Services\GameObjectManager\GameObjectManager.h" />
+    <ClInclude Include="src\Core\GameObject\GameObjectTypeEnum.h" />
+    <ClInclude Include="src\Core\Services\Graphics\Graphics.h" />
+    <ClInclude Include="src\Core\Services\MovementSystem\AABBCollider.h" />
+    <ClInclude Include="src\Core\Services\MovementSystem\MovementSystem.h" />
+    <ClInclude Include="src\Core\Services\MovementSystem\MovementModeEnum.h" />
+    <ClInclude Include="src\Core\Services\Renderer\ShaderConfig\ShaderConfig.h" />
+    <ClInclude Include="src\Core\Services\BlockLibrary\BlockBreakingContext.h" />
+    <ClInclude Include="src\Core\Services\World\World.h" />
+    <ClInclude Include="src\Core\States\ApplicationCoreState.h" />
+    <ClInclude Include="src\Core\Textures\AtlasTexture.h" />
+    <ClInclude Include="src\Core\Services\Atlas\Atlas.h" />
+    <ClInclude Include="src\Core\Player\Player.h" />
+    <ClInclude Include="src\Core\GameObject\GameObject.h" />
+    <ClInclude Include="src\Core\Textures\ImageTexture2D.h" />
+    <ClInclude Include="src\Core\Textures\MultisampleTexture2D.h" />
+    <ClInclude Include="src\imgui\imconfig.h" />
+    <ClInclude Include="src\imgui\imgui.h" />
+    <ClInclude Include="src\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="src\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\imgui\imgui_internal.h" />
+    <ClInclude Include="src\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\MinecraftApplication.h" />
+    <ClInclude Include="src\Utils\Builder\Builder.h" />
+    <ClInclude Include="src\Core\States\GameCoreState.h" />
+    <ClInclude Include="src\Core\Services\CoreServiceLocator.h" />
+    <ClInclude Include="src\Core\Events\MouseButtonEvent.h" />
+    <ClInclude Include="src\Core\Events\MouseScrollEvent.h" />
+    <ClInclude Include="src\Core\Events\MouseMoveEvent.h" />
+    <ClInclude Include="src\Core\Services\CoreService.h" />
+    <ClInclude Include="src\Core\Services\Input\InputEnums.h" />
+    <ClInclude Include="src\Core\Exceptions\RendererException.h" />
+    <ClInclude Include="src\Core\Events\WindowResizeEvent.h" />
+    <ClInclude Include="src\Core\Events\Event.h" />
+    <ClInclude Include="src\Core\Events\EventTypeEnum.h" />
+    <ClInclude Include="src\Core\QuitCoreState.h" />
+    <ClInclude Include="src\Core\CoreEventDispatcher.h" />
+    <ClInclude Include="src\Core\States\InitCoreState.h" />
+    <ClInclude Include="src\Core\States\MainMenuCoreState.h" />
+    <ClInclude Include="src\Core\States\QuitCoreState.h" />
+    <ClInclude Include="src\Core\Exceptions\Exception.h" />
+    <ClInclude Include="src\Core\Services\Input\InputManager.h" />
+    <ClInclude Include="src\Core\Services\Renderer\Renderer.h" />
+    <ClInclude Include="src\Core\Biomes\Biome.h" />
+    <ClInclude Include="src\Core\Biomes\DesertBiome.h" />
+    <ClInclude Include="src\Core\Biomes\ForestBiome.h" />
+    <ClInclude Include="src\Core\Biomes\HillsBiome.h" />
+    <ClInclude Include="src\Core\Biomes\JungleBiome.h" />
+    <ClInclude Include="src\Core\Biomes\MountainsBiome.h" />
+    <ClInclude Include="src\Core\Biomes\PlainsBiome.h" />
+    <ClInclude Include="src\Core\Biomes\SavanaBiome.h" />
+    <ClInclude Include="src\Core\Biomes\TaigaBiome.h" />
+    <ClInclude Include="src\Core\Biomes\TundraBiome.h" />
+    <ClInclude Include="src\Core\Chunk\Chunk.h" />
+    <ClInclude Include="src\Core\Services\ChunkManager\ChunkManager.h" />
+    <ClInclude Include="src\Core\Core.h" />
+    <ClInclude Include="src\Core\InitCoreState.h" />
+    <ClInclude Include="src\Core\MainMenuCoreState.h" />
+    <ClInclude Include="src\Utils\Builder\SpecializedBuilder.h" />
+    <ClInclude Include="src\Utils\Random\PerlinGenerator\PerlinNoiseGenerator.h" />
+    <ClInclude Include="src\Core\Services\Renderer\Shader\Shader.h" />
     <ClInclude Include="src\stb_image.h" />
-    <ClInclude Include="src\PerlinNoiseGenerator.h" />
+    <ClInclude Include="src\Core\TerrainGenerator\TerrainGenerator.h" />
+    <ClInclude Include="src\Core\TerrainGenerator\TreeBuilder.h" />
+    <ClInclude Include="src\Core\States\CoreStateEnum.h" />
+    <ClInclude Include="src\Utils\Mediator\Mediator.h" />
+    <ClInclude Include="src\Utils\StateMachine\StateMachine.h" />
+    <ClInclude Include="src\Utils\StateMachine\State.h" />
+    <ClInclude Include="src\Core\Services\Window\Window.h" />
+    <ClInclude Include="src\Core\Exceptions\WindowException.h" />
+    <ClInclude Include="src\Core\Seed\WorldSeeds.h" />
+    <ClInclude Include="src\Core\Seed\WorldSeedsBuilder.h" />
+    <ClInclude Include="src\Core\Events\WindowInitEvent.h" />
+    <ClInclude Include="src\Core\Textures\Texture.h" />
+    <ClInclude Include="src\Core\Textures\TextureBuffer.h" />
+    <ClInclude Include="src\Core\Services\MovementSystem\MovementModes\StandardMovementMode.h" />
+    <ClInclude Include="src\Utils\Strategy\StrategyContext.h" />
+    <ClInclude Include="src\Utils\Strategy\Strategy.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fDefaultShader.fs" />
-    <None Include="shaders\fScreenShader.fs" />
-    <None Include="shaders\vDefaultShader.vs" />
-    <None Include="shaders\vScreenShader.vs" />
+    <None Include="shaders\fDefaultShader.frag" />
+    <None Include="shaders\fOffScreenPPShader.frag" />
+    <None Include="shaders\fScreenShader.frag" />
+    <None Include="shaders\vDefaultShader.vert" />
+    <None Include="shaders\vOffScreenPPShader.vert" />
+    <None Include="shaders\vScreenShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
