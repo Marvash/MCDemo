@@ -7,6 +7,8 @@ Dependencies:
  - GLFW (3.3)
  - GLAD (4.2)
  - GLM (0.9.9.8)
+ - ImGui (1.87)
+ - Stb Image (2.27x)
  
 ## Usage
 **W, A, S, D** to move
